@@ -27,7 +27,7 @@ function canvasToBase64(canvas) {
     tempCanvas.width = canvas.width;
     tempCanvas.height = canvas.height;
 
-    ctx.fillStyle = 'black';
+    ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
     ctx.drawImage(canvas, 0, 0);
 
@@ -92,7 +92,7 @@ export async function recognizeRune(canvas) {
 
         const prompt = `Du bist ein Runen-Erkennungssystem. 
 
-Das ERSTE Bild ist eine handgezeichnete Rune (weiße Linien auf schwarzem Hintergrund).
+Das ERSTE Bild ist eine handgezeichnete Rune (schwarze Linien auf weißem Hintergrund).
 Die FOLGENDEN ${RUNE_COUNT} Bilder sind die Referenz-Runen (Rune 1 bis Rune ${RUNE_COUNT}, in dieser Reihenfolge).
 
 Vergleiche die handgezeichnete Rune mit allen Referenz-Runen und finde die beste Übereinstimmung.

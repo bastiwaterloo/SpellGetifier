@@ -6,11 +6,29 @@
 }
 
 .drawing__stage {
+    position: relative;
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    gap: 1rem;
-    flex-wrap: wrap;
+}
+
+/* Leinwand bleibt zentriert; die Runen werden rechts daneben gelegt,
+   ohne die Zentrierung der Leinwand zu beeinflussen. */
+.drawing__stage .rune-alphabet {
+    position: absolute;
+    top: 0;
+    left: calc(100% + 1rem);
+}
+
+@media (max-width: 900px) {
+    .drawing__stage {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .drawing__stage .rune-alphabet {
+        position: static;
+    }
 }
 
 .drawing__actions {

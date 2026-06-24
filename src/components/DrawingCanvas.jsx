@@ -3,7 +3,8 @@ import {
     CANVAS_WIDTH,
     CANVAS_HEIGHT,
     STROKE_COLOR,
-    STROKE_WIDTH
+    STROKE_WIDTH,
+    RUNES_PATH
 } from '../config.js';
 import {recognizeRune, loadRuneTemplates} from '../utils/runeRecognition.js';
 import './DrawingCanvas.css';
@@ -240,7 +241,7 @@ function DrawingCanvas() {
                     {recognitionResult.match && (
                         <div className="drawing__recognized-rune">
                             <img
-                                src={`/runesRough/rune_${String(recognitionResult.match.id).padStart(2, '0')}.png`}
+                                src={`${RUNES_PATH}/rune_${String(recognitionResult.match.id).padStart(2, '0')}.png`}
                                 alt={recognitionResult.match.name}
                                 className="drawing__rune-image"
                             />

@@ -1,4 +1,4 @@
-const RUNE_COUNT = 34;
+export const RUNE_COUNT = 34;
 const RUNE_SIZE = 128;
 
 let runeTemplates = null;

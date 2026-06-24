@@ -1,0 +1,53 @@
+.rune-alphabet {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 220px;
+    max-height: 500px;
+    padding: 1rem;
+    border-radius: 12px;
+    background: #14142099;
+    border: 1px solid #2a2a40;
+}
+
+.rune-alphabet__title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.rune-alphabet__list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-y: auto;
+}
+
+.rune-alphabet__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.35rem;
+    border-radius: 8px;
+    background: #0f0f1a;
+    border: 1px solid #2a2a40;
+}
+
+.rune-alphabet__image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    background: #fff;
+    border-radius: 4px;
+    image-rendering: pixelated;
+}
+
+.rune-alphabet__label {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.6);
+}

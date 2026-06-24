@@ -5,6 +5,14 @@
     gap: 1rem;
 }
 
+.drawing__stage {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
 .drawing__actions {
     display: flex;
     justify-content: center;

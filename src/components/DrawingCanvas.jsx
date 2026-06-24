@@ -7,6 +7,7 @@ import {
     ERASER_WIDTH
 } from '../config.js';
 import {recognizeRune, loadRuneTemplates} from '../utils/runeRecognition.js';
+import RuneAlphabet from './RuneAlphabet.jsx';
 import './DrawingCanvas.css';
 
 function DrawingCanvas() {
@@ -223,18 +224,21 @@ function DrawingCanvas() {
 
     return (
         <div className="drawing">
-            <canvas
-                ref={canvasRef}
-                className="drawing__canvas"
-                style={{width: CANVAS_WIDTH, height: CANVAS_HEIGHT}}
-                onMouseDown={startDrawing}
-                onMouseMove={draw}
-                onMouseUp={stopDrawing}
-                onMouseLeave={stopDrawing}
-                onTouchStart={startDrawing}
-                onTouchMove={draw}
-                onTouchEnd={stopDrawing}
-            />
+            <div className="drawing__stage">
+                <canvas
+                    ref={canvasRef}
+                    className="drawing__canvas"
+                    style={{width: CANVAS_WIDTH, height: CANVAS_HEIGHT}}
+                    onMouseDown={startDrawing}
+                    onMouseMove={draw}
+                    onMouseUp={stopDrawing}
+                    onMouseLeave={stopDrawing}
+                    onTouchStart={startDrawing}
+                    onTouchMove={draw}
+                    onTouchEnd={stopDrawing}
+                />
+                <RuneAlphabet />
+            </div>
 
             <div className="drawing__actions">
                 <button

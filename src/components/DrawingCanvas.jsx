@@ -240,7 +240,7 @@ function DrawingCanvas() {
                     {recognitionResult.match && (
                         <div className="drawing__recognized-rune">
                             <img
-                                src={`/runes/rune_${String(recognitionResult.match.id).padStart(2, '0')}.png`}
+                                src={`/runesRough/rune_${String(recognitionResult.match.id).padStart(2, '0')}.png`}
                                 alt={recognitionResult.match.name}
                                 className="drawing__rune-image"
                             />

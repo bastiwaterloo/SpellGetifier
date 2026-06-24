@@ -138,11 +138,13 @@ function DrawingCanvas() {
         );
         const closurePenalty =
             Math.min(closureGap / Math.max(meanRadius, 1), 1) * 0.25;
-        const rawScore = Math.round(
-            (1 - Math.min(1, shapePenalty + closurePenalty)) * 100
+        const rawScore = Math.max(
+            0,
+            Math.round((1 - Math.min(1, shapePenalty + closurePenalty)) * 100)
         );
+        const nerfedScore = Math.round((rawScore / 100) ** 2 * 100);
 
-        setScore(Math.max(0, rawScore));
+        setScore(nerfedScore);
     };
 
     const downloadCanvas = () => {

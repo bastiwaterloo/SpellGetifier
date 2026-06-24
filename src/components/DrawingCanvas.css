@@ -37,6 +37,15 @@
     background: #404069;
 }
 
+.drawing__button--active {
+    background: #7f5af0;
+    box-shadow: 0 0 0 2px rgba(127, 90, 240, 0.4);
+}
+
+.drawing__button--active:hover {
+    background: #8f6df5;
+}
+
 .drawing__button--primary {
     background: linear-gradient(90deg, #2cb67d, #7f5af0);
     box-shadow: 0 10px 20px rgba(44, 182, 125, 0.18);

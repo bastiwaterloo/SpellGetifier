@@ -3,7 +3,8 @@ import {
     CANVAS_WIDTH,
     CANVAS_HEIGHT,
     STROKE_COLOR,
-    STROKE_WIDTH
+    STROKE_WIDTH,
+    ERASER_WIDTH
 } from '../config.js';
 import {recognizeRune, loadRuneTemplates} from '../utils/runeRecognition.js';
 import './DrawingCanvas.css';
@@ -14,11 +15,13 @@ function DrawingCanvas() {
     const isDrawingRef = useRef(false);
     const pointsRef = useRef([]);
     const currentStrokeRef = useRef([]);
+    const lastPosRef = useRef(null);
 
     const [hasDrawing, setHasDrawing] = useState(false);
     const [score, setScore] = useState(null);
     const [recognitionResult, setRecognitionResult] = useState(null);
     const [isRecognizing, setIsRecognizing] = useState(false);
+    const [isErasing, setIsErasing] = useState(false);
 
     // Canvas mit fester Größe einrichten (HiDPI-fähig).
     const setupCanvas = useCallback(() => {
@@ -42,6 +45,33 @@ function DrawingCanvas() {
         loadRuneTemplates();
     }, [setupCanvas]);
 
+    // Kürzester Abstand eines Punktes zur Strecke a–b.
+    const distanceToSegment = (point, a, b) => {
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const lengthSquared = dx * dx + dy * dy;
+        if (lengthSquared === 0) {
+            return Math.hypot(point.x - a.x, point.y - a.y);
+        }
+        let t = ((point.x - a.x) * dx + (point.y - a.y) * dy) / lengthSquared;
+        t = Math.max(0, Math.min(1, t));
+        return Math.hypot(point.x - (a.x + t * dx), point.y - (a.y + t * dy));
+    };
+
+    // Aufgezeichnete Punkte entfernen, die der Radiergummi überstreicht,
+    // damit die Auswertung zur sichtbaren Zeichnung passt.
+    const eraseRecordedPoints = (from, to) => {
+        const radius = ERASER_WIDTH / 2;
+        pointsRef.current = pointsRef.current
+            .map((stroke) =>
+                stroke.filter((point) => distanceToSegment(point, from, to) > radius)
+            )
+            .filter((stroke) => stroke.length > 0);
+        if (pointsRef.current.length === 0) {
+            setHasDrawing(false);
+        }
+    };
+
     const getPos = (event) => {
         const canvas = canvasRef.current;
         const rect = canvas.getBoundingClientRect();
@@ -56,13 +86,21 @@ function DrawingCanvas() {
         event.preventDefault();
         const ctx = contextRef.current;
         const {x, y} = getPos(event);
+        // Radieren entfernt Pixel (destination-out), Zeichnen malt normal.
+        ctx.globalCompositeOperation = isErasing ? 'destination-out' : 'source-over';
         ctx.strokeStyle = STROKE_COLOR;
-        ctx.lineWidth = STROKE_WIDTH;
+        ctx.lineWidth = isErasing ? ERASER_WIDTH : STROKE_WIDTH;
         ctx.beginPath();
         ctx.moveTo(x, y);
-        currentStrokeRef.current = [{x, y}];
+        // Nur echte Zeichenstriche fließen in die Auswertung ein.
+        currentStrokeRef.current = isErasing ? [] : [{x, y}];
+        lastPosRef.current = {x, y};
         isDrawingRef.current = true;
-        setHasDrawing(true);
+        if (isErasing) {
+            eraseRecordedPoints({x, y}, {x, y});
+        } else {
+            setHasDrawing(true);
+        }
         setScore(null);
     };
 
@@ -73,7 +111,12 @@ function DrawingCanvas() {
         const {x, y} = getPos(event);
         ctx.lineTo(x, y);
         ctx.stroke();
-        currentStrokeRef.current.push({x, y});
+        if (isErasing) {
+            eraseRecordedPoints(lastPosRef.current, {x, y});
+        } else {
+            currentStrokeRef.current.push({x, y});
+        }
+        lastPosRef.current = {x, y};
     };
 
     const stopDrawing = () => {
@@ -194,6 +237,17 @@ function DrawingCanvas() {
             />
 
             <div className="drawing__actions">
+                <button
+                    type="button"
+                    className={
+                        'drawing__button drawing__button--secondary' +
+                        (isErasing ? ' drawing__button--active' : '')
+                    }
+                    onClick={() => setIsErasing((value) => !value)}
+                    aria-pressed={isErasing}
+                >
+                    {isErasing ? 'Radiergummi: an' : 'Radieren'}
+                </button>
                 <button
                     type="button"
                     className="drawing__button drawing__button--secondary"

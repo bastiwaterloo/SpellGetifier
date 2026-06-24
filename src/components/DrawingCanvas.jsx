@@ -4,6 +4,7 @@ import {
     CANVAS_HEIGHT,
     STROKE_COLOR,
     STROKE_WIDTH,
+    ERASER_WIDTH,
     RUNES_PATH
 } from '../config.js';
 import {recognizeRune, loadRuneTemplates} from '../utils/runeRecognition.js';

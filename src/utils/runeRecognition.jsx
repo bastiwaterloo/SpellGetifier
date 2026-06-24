@@ -1,18 +1,17 @@
-import { RUNES_PATH, RUNE_COUNT } from '../config.js';
+import { RUNES_PATH, RUNE_NAMES, RUNE_COUNT } from '../config.js';
 
 let runeDescriptions = null;
 
 async function loadRuneDescriptions() {
     if (runeDescriptions) return runeDescriptions;
 
-    runeDescriptions = [];
-    for (let i = 1; i <= RUNE_COUNT; i++) {
-        runeDescriptions.push({
-            id: i,
-            name: `Rune ${i}`,
-            imagePath: `${RUNES_PATH}/rune_${String(i).padStart(2, '0')}.png`
-        });
-    }
+    runeDescriptions = RUNE_NAMES.map((name, index) => ({
+        id: index + 1,
+        name: name.replace(/_/g, ' '),
+        fileName: name,
+        imagePath: `${RUNES_PATH}/${name}.png`
+    }));
+
     return runeDescriptions;
 }
 
@@ -98,13 +97,13 @@ Die FOLGENDEN ${RUNE_COUNT} Bilder sind die Referenz-Runen (Rune 1 bis Rune ${RU
 Vergleiche die handgezeichnete Rune mit allen Referenz-Runen und finde die beste Übereinstimmung.
 
 WICHTIG: Antworte NUR mit einem JSON-Objekt in diesem Format:
-{"runeId": <nummer>, "confidence": <0-100>}
+{"runeId": <nummer>, "confidence": <0-100|}
 
 Wenn keine Rune passt, antworte:
 {"runeId": null, "confidence": 0}`;
 
         const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
             {
                 method: 'POST',
                 headers: {

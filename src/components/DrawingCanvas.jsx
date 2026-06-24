@@ -7,7 +7,7 @@ import {
     ERASER_WIDTH,
     RUNES_PATH
 } from '../config.js';
-import {recognizeRune, loadRuneTemplates} from '../utils/runeRecognition.js';
+import {recognizeRune, loadRuneTemplates} from '../utils/runeRecognition.jsx';
 import {calculateCircleScore as getCircleScore} from '../utils/utils.ts';
 import RuneAlphabet from './RuneAlphabet.jsx';
 import './DrawingCanvas.css';
@@ -255,7 +255,7 @@ function DrawingCanvas() {
                     {recognitionResult.match && (
                         <div className="drawing__recognized-rune">
                             <img
-                                src={`${RUNES_PATH}/rune_${String(recognitionResult.match.id).padStart(2, '0')}.png`}
+                                src={recognitionResult.match.imagePath}
                                 alt={recognitionResult.match.name}
                                 className="drawing__rune-image"
                             />

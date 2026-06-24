@@ -1,4 +1,4 @@
-import {RUNE_COUNT} from '../utils/runeRecognition.js';
+import {RUNE_COUNT, RUNES_PATH} from '../config.js';
 import './RuneAlphabet.css';
 
 // Alle verfügbaren Runen als "Alphabet" zur Referenz neben der Leinwand.
@@ -15,7 +15,7 @@ function RuneAlphabet() {
                         <li key={id} className="rune-alphabet__item">
                             <img
                                 className="rune-alphabet__image"
-                                src={`/assets/alphabet/rune_${paddedId}.png`}
+                                src={`${RUNES_PATH}/rune_${paddedId}.png`}
                                 alt={`Rune ${id}`}
                                 loading="lazy"
                             />

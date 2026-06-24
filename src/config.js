@@ -4,5 +4,5 @@ export const CANVAS_HEIGHT = 500
 export const STROKE_COLOR = '#ffffff'
 export const STROKE_WIDTH = 2
 
-export const RUNES_PATH = '/runesRough'
+export const RUNES_PATH = '/assets/alphabet'
 export const RUNE_COUNT = 34

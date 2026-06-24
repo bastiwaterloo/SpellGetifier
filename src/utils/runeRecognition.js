@@ -1,4 +1,4 @@
-const RUNE_COUNT = 34;
+import { RUNES_PATH, RUNE_COUNT } from '../config.js';
 
 let runeDescriptions = null;
 
@@ -10,7 +10,7 @@ async function loadRuneDescriptions() {
         runeDescriptions.push({
             id: i,
             name: `Rune ${i}`,
-            imagePath: `/runesRough/rune_${String(i).padStart(2, '0')}.png`
+            imagePath: `${RUNES_PATH}/rune_${String(i).padStart(2, '0')}.png`
         });
     }
     return runeDescriptions;

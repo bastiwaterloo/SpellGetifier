@@ -15,7 +15,7 @@ function RuneAlphabet() {
                         <li key={id} className="rune-alphabet__item">
                             <img
                                 className="rune-alphabet__image"
-                                src={`/runesRough/rune_${paddedId}.png`}
+                                src={`/assets/alphabet/rune_${paddedId}.png`}
                                 alt={`Rune ${id}`}
                                 loading="lazy"
                             />

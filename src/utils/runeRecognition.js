@@ -11,7 +11,7 @@ export async function loadRuneTemplates() {
     for (let i = 1; i <= RUNE_COUNT; i++) {
         const paddedNum = String(i).padStart(2, '0');
         const img = new Image();
-        img.src = `/runes/rune_${paddedNum}.png`;
+        img.src = `/assets/alphabet/rune_${paddedNum}.png`;
 
         await new Promise((resolve, reject) => {
             img.onload = resolve;

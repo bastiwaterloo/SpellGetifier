@@ -5,6 +5,7 @@ import {
     STROKE_COLOR,
     STROKE_WIDTH
 } from '../config.js';
+import {recognizeRune, loadRuneTemplates} from '../utils/runeRecognition.js';
 import './DrawingCanvas.css';
 
 function DrawingCanvas() {
@@ -16,6 +17,8 @@ function DrawingCanvas() {
 
     const [hasDrawing, setHasDrawing] = useState(false);
     const [score, setScore] = useState(null);
+    const [recognitionResult, setRecognitionResult] = useState(null);
+    const [isRecognizing, setIsRecognizing] = useState(false);
 
     // Canvas mit fester Größe einrichten (HiDPI-fähig).
     const setupCanvas = useCallback(() => {
@@ -36,6 +39,7 @@ function DrawingCanvas() {
 
     useEffect(() => {
         setupCanvas();
+        loadRuneTemplates();
     }, [setupCanvas]);
 
     const getPos = (event) => {
@@ -90,6 +94,7 @@ function DrawingCanvas() {
         currentStrokeRef.current = [];
         setHasDrawing(false);
         setScore(null);
+        setRecognitionResult(null);
     };
 
     const calculateScore = () => {
@@ -145,8 +150,26 @@ function DrawingCanvas() {
         setScore(Math.max(0, rawScore));
     };
 
-    const downloadCanvas = () => {
+    const downloadCanvas = async () => {
         const canvas = canvasRef.current;
+
+        setIsRecognizing(true);
+        setRecognitionResult(null);
+
+        try {
+            const result = await recognizeRune(canvas);
+            setRecognitionResult(result);
+        } catch (error) {
+            console.error('Fehler bei der Runen-Erkennung:', error);
+            setRecognitionResult({
+                match: null,
+                confidence: 0,
+                message: 'Fehler bei der Erkennung'
+            });
+        } finally {
+            setIsRecognizing(false);
+        }
+
         const link = document.createElement('a');
         link.download = 'zeichnung.png';
         link.href = canvas.toDataURL('image/png');
@@ -195,13 +218,34 @@ function DrawingCanvas() {
 
             <div className="drawing__result" aria-live="polite">
                 {score === null ? (
-                    <p>Zeichne einen Kreis und klicke dann auf Auswerten.</p>
+                    <p>Zeichne eine Rune und klicke dann auf Speichern.</p>
                 ) : (
                     <p>
                         Score: <strong>{score}</strong> von 100
                     </p>
                 )}
             </div>
+
+            {isRecognizing && (
+                <div className="drawing__recognition">
+                    <p>Erkenne Rune...</p>
+                </div>
+            )}
+
+            {recognitionResult && (
+                <div className={`drawing__recognition ${recognitionResult.match ? 'drawing__recognition--success' : 'drawing__recognition--error'}`}>
+                    <p>{recognitionResult.message}</p>
+                    {recognitionResult.match && (
+                        <div className="drawing__recognized-rune">
+                            <img
+                                src={`/runes/rune_${String(recognitionResult.match.id).padStart(2, '0')}.png`}
+                                alt={recognitionResult.match.name}
+                                className="drawing__rune-image"
+                            />
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

@@ -5,6 +5,14 @@
     gap: 1rem;
 }
 
+.drawing__stage {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
 .drawing__actions {
     display: flex;
     justify-content: center;
@@ -35,6 +43,15 @@
 
 .drawing__button--secondary:hover {
     background: #404069;
+}
+
+.drawing__button--active {
+    background: #7f5af0;
+    box-shadow: 0 0 0 2px rgba(127, 90, 240, 0.4);
+}
+
+.drawing__button--active:hover {
+    background: #8f6df5;
 }
 
 .drawing__button--primary {

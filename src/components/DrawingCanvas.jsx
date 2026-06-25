@@ -11,6 +11,7 @@ import {
     ENABLED_SIGNS
 } from '../config.js';
 import { recognizeRune, itterativeAnalysis } from '../utils/runeRecognition.jsx';
+import { warmUpDetection } from '../utils/iterativeRecognition.js';
 import {
     RECOGNIZERS,
     DEFAULT_RECOGNIZER_ID,
@@ -74,6 +75,20 @@ function DrawingCanvas({onSpellCast}) {
     useEffect(() => {
         setupCanvas();
     }, [setupCanvas]);
+
+    // Warm up the iterative detector while the page is idle so the first
+    // „Alter Zauber“-Wirken doesn't also pay TF.js backend init, template image
+    // decoding, and conv2d shader compilation. Runs once, off the critical path.
+    useEffect(() => {
+        const schedule =
+            window.requestIdleCallback || ((cb) => window.setTimeout(cb, 200));
+        const cancel = window.cancelIdleCallback || window.clearTimeout;
+        const handle = schedule(() => {
+            // Warmup is best-effort; a failure must not break drawing.
+            warmUpDetection().catch(() => {});
+        });
+        return () => cancel(handle);
+    }, []);
 
     // Vorlagen/Beschreibungen des aktiven Recognizers vorladen.
     useEffect(() => {

@@ -123,3 +123,26 @@ export async function detectRunes(canvas) {
     findings,
   };
 }
+
+// Pay the one-time startup costs ahead of the first real scan: select the
+// WebGL backend, decode + cache every template image, and compile the conv2d
+// shader via one tiny throwaway correlation. Doing this when the page opens
+// keeps the first "Alter Zauber" cast from also paying for backend init,
+// image decoding, and shader compilation. The heavy size/rotation scan still
+// runs per cast — this only removes the first-run-only overhead. Safe to call
+// more than once: the backend promise and image cache are memoized.
+export async function warmUpDetection() {
+  await getBackendReady();
+  await loadTemplateImages();
+
+  // A minimal valid conv (8x8 drawing, 4x4 single-channel filter) is enough to
+  // trigger WebGL program compilation; TF.js caches the compiled program so the
+  // first real conv2d skips it.
+  const drawingTensor = tf.tensor4d(new Float32Array(8 * 8), [1, 8, 8, 1]);
+  try {
+    const mask = { width: 4, height: 4, data: new Float32Array(4 * 4).fill(1) };
+    computeBatchedScoreMap(drawingTensor, [mask]);
+  } finally {
+    drawingTensor.dispose();
+  }
+}

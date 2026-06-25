@@ -245,21 +245,24 @@ function DrawingCanvas({onSpellCast}) {
         ctx.restore();
     };
 
-    const performRecognition = async () => {
-        const canvas = canvasRef.current;
-
+    // Gemeinsamer Ablauf für alle Analyse-Modi des „Zauber wirken“-Menüs.
+    // deriveSpell: nur „Alter Zauber“ leitet aus den Funden einen Zauber ab.
+    const runAnalysis = async (analyze, {deriveSpell = false} = {}) => {
+        setIsSpellMenuOpen(false);
         setIsRecognizing(true);
         setRecognitionResult(null);
 
         try {
-            const result = await recognizeRune(canvas);
+            const result = await analyze();
             setRecognitionResult(result);
             if (result.boxes) {
                 drawBoundingBoxes(result.boxes);
             }
-            // Aus der Liste der erkannten Runen den resultierenden Zauber
+            // Aus der Liste der gefundenen Runen den resultierenden Zauber
             // ableiten und nach oben (App) melden.
-            onSpellCast?.(runesToSpell(result.matches ?? []));
+            if (deriveSpell) {
+                onSpellCast?.(runesToSpell(result.findings ?? []));
+            }
         } catch (error) {
             console.error('Fehler bei der Runen-Erkennung:', error);
             setRecognitionResult({
@@ -272,6 +275,21 @@ function DrawingCanvas({onSpellCast}) {
             setIsRecognizing(false);
         }
     };
+
+    // „Zaub-AI-rn“: Gemini-Vision-Erkennung (liefert matches).
+    const castAiSpell = () =>
+        runAnalysis(() => recognizeRune(canvasRef.current));
+
+    // „Alter Zauber“: lokaler iterativer Abgleich (liefert findings + Zauber).
+    const castOldSpell = () =>
+        runAnalysis(
+            () =>
+                itterativeAnalysis({
+                    canvas: canvasRef.current,
+                    strokes: pointsRef.current
+                }),
+            {deriveSpell: true}
+        );
 
     return (
         <div className="drawing">
@@ -321,14 +339,42 @@ function DrawingCanvas({onSpellCast}) {
                 >
                     Löschen
                 </button>
-                <button
-                    type="button"
-                    className="drawing__button drawing__button--secondary"
-                    onClick={performRecognition}
-                    disabled={!hasDrawing || isRecognizing}
-                >
-                    Runen erkennen
-                </button>
+                <div className="drawing__dropdown" ref={spellMenuRef}>
+                    <button
+                        type="button"
+                        className="drawing__button drawing__button--secondary"
+                        onClick={() => setIsSpellMenuOpen((open) => !open)}
+                        disabled={!hasDrawing || isRecognizing}
+                        aria-haspopup="menu"
+                        aria-expanded={isSpellMenuOpen}
+                    >
+                        Zauber wirken ▾
+                    </button>
+                    {isSpellMenuOpen && (
+                        <ul className="drawing__menu" role="menu">
+                            <li role="none">
+                                <button
+                                    type="button"
+                                    role="menuitem"
+                                    className="drawing__menu-item"
+                                    onClick={castAiSpell}
+                                >
+                                    Zaub-AI-rn
+                                </button>
+                            </li>
+                            <li role="none">
+                                <button
+                                    type="button"
+                                    role="menuitem"
+                                    className="drawing__menu-item"
+                                    onClick={castOldSpell}
+                                >
+                                    Alter Zauber
+                                </button>
+                            </li>
+                        </ul>
+                    )}
+                </div>
                 <button
                     type="button"
                     className="drawing__button drawing__button--primary"
@@ -443,6 +489,16 @@ function DrawingCanvas({onSpellCast}) {
             {recognitionResult && (
                 <div className="drawing__recognition drawing__recognition--success">
                     <p>{recognitionResult.message}</p>
+                    {recognitionResult.findings?.length > 0 && (
+                        <ul className="drawing__findings">
+                            {recognitionResult.findings.map((finding, index) => (
+                                <li key={index} className="drawing__finding">
+                                    <strong>{finding.name}</strong>
+                                    {` · ${finding.size}px · (${Math.round(finding.x)}, ${Math.round(finding.y)}) · ${finding.rotation}° · ${finding.score}%`}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                     {recognitionResult.matches?.length > 0 && (
                         <div className="drawing__extracted-runes">
                             {recognitionResult.matches.map((item, index) => (

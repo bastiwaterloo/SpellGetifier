@@ -160,7 +160,7 @@ function spawnGlow(p) {
 
 function spawnFor(i, p) {
   if (i < GLOW_COUNT) return spawnGlow(p);
-  if (i % 7 === 0) return spawnSpark(p);
+  if (i % 5 === 0) return spawnSpark(p);
   return spawnFlame(p);
 }
 

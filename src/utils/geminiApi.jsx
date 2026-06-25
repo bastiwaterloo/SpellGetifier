@@ -1,5 +1,10 @@
 const API_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
 const MODEL = 'gemini-3.5-flash';
+const MAX_RETRIES = 5;
+
+async function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 export async function callGeminiVision(prompt, images, options = {}) {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
@@ -20,42 +25,62 @@ export async function callGeminiVision(prompt, images, options = {}) {
         }
     }));
 
-    const response = await fetch(
-        `${API_BASE_URL}/${MODEL}:generateContent?key=${apiKey}`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                contents: [
-                    {
-                        parts: [
-                            { text: prompt },
-                            ...imageParts
-                        ]
-                    }
-                ],
-                generationConfig: {
-                    temperature,
-                    maxOutputTokens
-                }
-            })
+    const requestBody = JSON.stringify({
+        contents: [
+            {
+                parts: [
+                    { text: prompt },
+                    ...imageParts
+                ]
+            }
+        ],
+        generationConfig: {
+            temperature,
+            maxOutputTokens
         }
-    );
+    });
 
-    if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error?.message || 'Unbekannter API-Fehler');
+    let lastError;
+
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+        try {
+            const response = await fetch(
+                `${API_BASE_URL}/${MODEL}:generateContent?key=${apiKey}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: requestBody
+                }
+            );
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error?.message || `HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+            return {
+                text: textResponse,
+                raw: data
+            };
+
+        } catch (error) {
+            lastError = error;
+            console.warn(`API-Versuch ${attempt}/${MAX_RETRIES} fehlgeschlagen:`, error.message);
+
+            if (attempt < MAX_RETRIES) {
+                const delay = Math.min(1000 * Math.pow(2, attempt - 1), 10000);
+                console.log(`Warte ${delay}ms vor erneutem Versuch...`);
+                await sleep(delay);
+            }
+        }
     }
 
-    const data = await response.json();
-    const textResponse = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-
-    return {
-        text: textResponse,
-        raw: data
-    };
+    throw new Error(`API-Fehler nach ${MAX_RETRIES} Versuchen: ${lastError.message}`);
 }
 
 export function parseJsonResponse(text) {

@@ -151,7 +151,27 @@ function DrawingCanvas() {
         setScore(getCircleScore(pointsRef.current));
     };
 
-    const downloadCanvas = async () => {
+    const drawBoundingBoxes = (boxes) => {
+        const ctx = contextRef.current;
+        if (!ctx || !boxes?.length) return;
+        
+        ctx.save();
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 2;
+        ctx.globalCompositeOperation = 'source-over';
+        
+        boxes.forEach(box => {
+            const x = (box.x / 100) * CANVAS_WIDTH;
+            const y = (box.y / 100) * CANVAS_HEIGHT;
+            const w = (box.w / 100) * CANVAS_WIDTH;
+            const h = (box.h / 100) * CANVAS_HEIGHT;
+            ctx.strokeRect(x, y, w, h);
+        });
+        
+        ctx.restore();
+    };
+
+    const performRecognition = async () => {
         const canvas = canvasRef.current;
 
         setIsRecognizing(true);
@@ -160,21 +180,20 @@ function DrawingCanvas() {
         try {
             const result = await recognizeRune(canvas);
             setRecognitionResult(result);
+            if (result.boxes) {
+                drawBoundingBoxes(result.boxes);
+            }
         } catch (error) {
             console.error('Fehler bei der Runen-Erkennung:', error);
             setRecognitionResult({
-                match: null,
-                confidence: 0,
+                count: 0,
+                boxes: [],
+                images: [],
                 message: 'Fehler bei der Erkennung'
             });
         } finally {
             setIsRecognizing(false);
         }
-
-        const link = document.createElement('a');
-        link.download = 'zeichnung.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
     };
 
     return (
@@ -217,9 +236,10 @@ function DrawingCanvas() {
                 <button
                     type="button"
                     className="drawing__button drawing__button--secondary"
-                    onClick={downloadCanvas}
+                    onClick={performRecognition}
+                    disabled={!hasDrawing || isRecognizing}
                 >
-                    Speichern
+                    Runen erkennen
                 </button>
                 <button
                     type="button"
@@ -248,30 +268,20 @@ function DrawingCanvas() {
             )}
 
             {recognitionResult && (
-                <div
-                    className={`drawing__recognition ${recognitionResult.matches?.length > 0 ? 'drawing__recognition--success' : 'drawing__recognition--error'}`}
-                >
+                <div className="drawing__recognition drawing__recognition--success">
                     <p>{recognitionResult.message}</p>
-                    {recognitionResult.matches?.length > 0 && (
-                        <div className="drawing__recognized-runes">
-                            {recognitionResult.matches.map((match, index) => (
-                                <div key={index} className="drawing__recognized-rune">
-                                    <div className="drawing__rune-image-wrapper">
-                                        <img
-                                            src={match.rune.imagePath}
-                                            alt={match.rune.name}
-                                            className="drawing__rune-image"
-                                            style={{transform: `rotate(${match.rotation}deg)`}}
-                                        />
-                                    </div>
-                                    <span className="drawing__rune-confidence">
-                                        {match.confidence}%
+                    {recognitionResult.images?.length > 0 && (
+                        <div className="drawing__extracted-runes">
+                            {recognitionResult.images.map((imgUrl, index) => (
+                                <div key={index} className="drawing__extracted-rune">
+                                    <img
+                                        src={imgUrl}
+                                        alt={`Rune ${index + 1}`}
+                                        className="drawing__extracted-rune-image"
+                                    />
+                                    <span className="drawing__extracted-rune-label">
+                                        Rune {index + 1}
                                     </span>
-                                    {match.rotation !== 0 && (
-                                        <span className="drawing__rune-rotation">
-                                            {match.rotation}°
-                                        </span>
-                                    )}
                                 </div>
                             ))}
                         </div>

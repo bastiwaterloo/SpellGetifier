@@ -51,6 +51,15 @@
     flex-wrap: wrap;
 }
 
+/* Feuer-POC: 3D-Stage + Debug-Regler nebeneinander. */
+.drawing__fire {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    align-items: flex-start;
+}
+
 .drawing__button {
     color: #fff;
     border: none;
@@ -207,6 +216,14 @@
     justify-content: center;
     gap: 1rem;
     margin-top: 0.75rem;
+}
+
+.drawing__extracted-runes--center {
+    margin-bottom: 0.5rem;
+}
+
+.drawing__extracted-rune--center {
+    border: 2px solid #2563eb;
 }
 
 .drawing__extracted-rune {

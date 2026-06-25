@@ -406,8 +406,8 @@
     "id": "Water_2",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/9/9d/Water.png",
     "explanation": "The water sigil (水の紋, mizu no mon ) works to manipulate, collect, and create water. It is worth noting that many water spells meant to be used over long periods collect water rather than create it. This suggests that creating water is more energetically costly than collecting it. The water sigil is considered one of the four primary tetrad.",
-    "image_filename": "Water.png",
-    "disabled": true
+    "image_filename": "water_simple",
+    "disabled": false
   },
   {
     "type": "sigil",

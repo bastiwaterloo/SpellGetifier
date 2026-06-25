@@ -25,6 +25,17 @@ import {
 import {calculateCircleScore as getCircleScore} from '../utils/utils.ts';
 import {runesToSpell} from '../utils/spell.js';
 import RuneAlphabet from './RuneAlphabet.jsx';
+import ElementStage from './ElementStage.jsx';
+import WaterStage from './WaterStage.jsx';
+import FireStage from './FireStage.jsx';
+import ElementDebugPanel from './ElementDebugPanel.jsx';
+import {getPresetByFile} from '../config/elementPresets.js';
+import {
+    computeQuality,
+    buildAttackParams,
+    applyRuneModifiers,
+    RUNE_MODIFIERS
+} from '../utils/attackMapping.js';
 import './DrawingCanvas.css';
 
 function DrawingCanvas({onSpellCast}) {
@@ -54,6 +65,66 @@ function DrawingCanvas({onSpellCast}) {
     const [templateOutput, setTemplateOutput] = useState('');
 
     const activeRecognizer = getRecognizer(recognizerId);
+
+    // Siegel-Auswahl + Element-Animations-POC.
+    const [selectedSigilFile, setSelectedSigilFile] = useState(null);
+    const [elementParams, setElementParams] = useState(null);
+    const [igniteKey, setIgniteKey] = useState(0);
+    // Stärke der zuletzt gewirkten Attacke (0..100), aus der Zeichenqualität.
+    const [attackStrength, setAttackStrength] = useState(null);
+    // Namen der Ring-Runen, die die Attacke modifiziert haben (für die Anzeige).
+    const [modifierNames, setModifierNames] = useState([]);
+
+    const selectedPreset = getPresetByFile(selectedSigilFile);
+
+    // Konfidenz des erkannten Mitte-Siegels (Element), sonst Mittel der Ring-Runen.
+    const getElementConfidence = (result) => {
+        if (result?.centerSign?.match) {
+            return result.centerSign.match.confidence;
+        }
+        const ring = result?.matches?.filter((m) => m.match) ?? [];
+        if (!ring.length) return null;
+        const sum = ring.reduce((acc, m) => acc + (m.match.confidence ?? 0), 0);
+        return Math.round(sum / ring.length);
+    };
+
+    // Erkannte Ring-Runen als {file, name} (für Modifier + Anzeige).
+    const getRunes = (result) =>
+        (result?.matches ?? [])
+            .filter((m) => m.match?.rune)
+            .map((m) => ({file: m.match.rune.fileName, name: m.match.rune.name}));
+
+    // Zeichenqualität -> Stärke (Power-Parameter), Ring-Runen -> Charakter-Modifier.
+    const igniteAttack = (preset, signals) => {
+        if (!preset) return;
+        const runes = signals.runes ?? [];
+        const runeFiles = runes.map((rune) => rune.file);
+        const quality = computeQuality(signals);
+        const params = applyRuneModifiers(
+            buildAttackParams(preset, quality),
+            runeFiles
+        );
+        setElementParams(params);
+        setAttackStrength(Math.round(quality * 100));
+        setModifierNames(
+            runes.filter((rune) => RUNE_MODIFIERS[rune.file]).map((rune) => rune.name)
+        );
+        setIgniteKey((key) => key + 1);
+    };
+
+    const handleSelectSigil = (file) => {
+        setSelectedSigilFile(file);
+        // Animierbares Siegel: Defaults laden und Animation (neu) zünden.
+        const preset = getPresetByFile(file);
+        if (preset) {
+            setElementParams(preset.defaults);
+            setIgniteKey((key) => key + 1);
+        }
+    };
+
+    const updateElementParam = (key, value) => {
+        setElementParams((prev) => ({...prev, [key]: value}));
+    };
 
     // Canvas mit fester Größe einrichten (HiDPI-fähig).
     const setupCanvas = useCallback(() => {
@@ -234,29 +305,51 @@ function DrawingCanvas({onSpellCast}) {
         setHasDrawing(false);
         setScore(null);
         setRecognitionResult(null);
+        setAttackStrength(null);
+        setModifierNames([]);
     };
 
     const calculateCircleScore = () => {
-        setScore(getCircleScore(pointsRef.current));
+        const circleScore = getCircleScore(pointsRef.current);
+        setScore(circleScore);
+        // Bei gewähltem Element die Attacke an der Kreisqualität ausrichten.
+        if (selectedPreset) {
+            igniteAttack(selectedPreset, {
+                circleScore,
+                confidence: getElementConfidence(recognitionResult),
+                runes: getRunes(recognitionResult)
+            });
+        }
     };
 
-    const drawBoundingBoxes = (boxes) => {
+    const drawBoundingBoxes = (boxes, centerBox = null) => {
         const ctx = contextRef.current;
-        if (!ctx || !boxes?.length) return;
-        
+        if (!ctx) return;
+
         ctx.save();
-        ctx.strokeStyle = 'red';
         ctx.lineWidth = 2;
         ctx.globalCompositeOperation = 'source-over';
-        
-        boxes.forEach(box => {
-            const x = (box.x / 100) * CANVAS_WIDTH;
-            const y = (box.y / 100) * CANVAS_HEIGHT;
-            const w = (box.w / 100) * CANVAS_WIDTH;
-            const h = (box.h / 100) * CANVAS_HEIGHT;
+
+        if (boxes?.length) {
+            ctx.strokeStyle = 'red';
+            boxes.forEach(box => {
+                const x = (box.x / 100) * CANVAS_WIDTH;
+                const y = (box.y / 100) * CANVAS_HEIGHT;
+                const w = (box.w / 100) * CANVAS_WIDTH;
+                const h = (box.h / 100) * CANVAS_HEIGHT;
+                ctx.strokeRect(x, y, w, h);
+            });
+        }
+
+        if (centerBox) {
+            ctx.strokeStyle = 'blue';
+            const x = (centerBox.x / 100) * CANVAS_WIDTH;
+            const y = (centerBox.y / 100) * CANVAS_HEIGHT;
+            const w = (centerBox.w / 100) * CANVAS_WIDTH;
+            const h = (centerBox.h / 100) * CANVAS_HEIGHT;
             ctx.strokeRect(x, y, w, h);
-        });
-        
+        }
+
         ctx.restore();
     };
 
@@ -270,8 +363,23 @@ function DrawingCanvas({onSpellCast}) {
         try {
             const result = await analyze();
             setRecognitionResult(result);
-            if (result.boxes) {
-                drawBoundingBoxes(result.boxes);
+            if (result.boxes || result.centerBox) {
+                drawBoundingBoxes(result.boxes, result.centerBox);
+            }
+            // Element automatisch aus dem erkannten Mitte-Siegel ableiten.
+            const sigilFile = result?.centerSign?.match?.sign?.fileName ?? null;
+            const recognizedPreset = getPresetByFile(sigilFile);
+            const preset = recognizedPreset ?? selectedPreset;
+            if (recognizedPreset) {
+                setSelectedSigilFile(sigilFile); // UI-Auswahl spiegeln
+            }
+            // Erkennungs-Konfidenz + Kreisqualität bestimmen die Attacken-Stärke.
+            if (preset) {
+                igniteAttack(preset, {
+                    circleScore: getCircleScore(pointsRef.current),
+                    confidence: getElementConfidence(result),
+                    runes: getRunes(result)
+                });
             }
             // Aus der Liste der gefundenen Runen den resultierenden Zauber
             // ableiten und nach oben (App) melden.
@@ -326,6 +434,8 @@ function DrawingCanvas({onSpellCast}) {
                     items={ENABLED_SIGNS}
                     path={SIGNS_PATH}
                     side="left"
+                    onSelect={handleSelectSigil}
+                    selectedFile={selectedSigilFile}
                 />
                 <RuneAlphabet
                     title="Runen"
@@ -490,7 +600,18 @@ function DrawingCanvas({onSpellCast}) {
                     </p>
                 ) : (
                     <p>
-                        Score: <strong>{score}</strong> von 100
+                        Kreis: <strong>{score}%</strong> perfekt
+                    </p>
+                )}
+                {attackStrength !== null && selectedPreset && (
+                    <p>
+                        Attacke ({selectedPreset.label}):{' '}
+                        <strong>{attackStrength}%</strong> Stärke
+                    </p>
+                )}
+                {modifierNames.length > 0 && (
+                    <p>
+                        Modifier: <strong>{modifierNames.join(', ')}</strong>
                     </p>
                 )}
             </div>
@@ -550,6 +671,33 @@ function DrawingCanvas({onSpellCast}) {
                             ))}
                         </div>
                     )}
+                </div>
+            )}
+
+            {selectedPreset && elementParams && (
+                <div className="drawing__fire">
+                    {(() => {
+                        const SHADER_STAGES = {water: WaterStage, fire: FireStage};
+                        const StageComponent =
+                            selectedPreset.renderMode === 'shader'
+                                ? SHADER_STAGES[selectedPreset.id]
+                                : ElementStage;
+                        return (
+                            <StageComponent
+                                key={selectedPreset.id}
+                                preset={selectedPreset}
+                                params={elementParams}
+                                igniteKey={igniteKey}
+                            />
+                        );
+                    })()}
+                    <ElementDebugPanel
+                        title={selectedPreset.label}
+                        params={elementParams}
+                        onChange={updateElementParam}
+                        onReset={() => setElementParams(selectedPreset.defaults)}
+                        onReplay={() => setIgniteKey((key) => key + 1)}
+                    />
                 </div>
             )}
         </div>

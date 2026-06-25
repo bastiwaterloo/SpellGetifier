@@ -17,7 +17,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/9/92/Dispersion.png",
     "explanation": "Dispersion (拡散の矢, kakusan no ya ) causes the magic of its seal to pour or \"disperse\" outwards. It isn't known if this sign is directional or semi-directional. It has many similarities to column , with it essentially being a column that leaks its magic outwards rather than shooting or beaming it in a certain direction. Both its normal and inverted variations have been seen, with the difference in their effects being unclear. Interestingly, the effect of inverted column very closely matches that of dispersion, as seen in the snugstone seal . What differentiates the two is currently unknown.",
     "image_filename": "Dispersion.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -67,7 +67,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/c/c8/Float.png",
     "explanation": "Float is a non-directional sign that will make things float in midair, seemingly letting them ignore gravity.",
     "image_filename": "Float.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -147,7 +147,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/b8/Cooling.png",
     "explanation": "Cool (冷やす矢, hiyasu ya ) is a non-directional sign that presumably cools things down. First introduced in the volume 12 bonus, it is featured in the vapor bubble spell, presumably to either make the water cooler to drink or to help it condense from the air for the contraption to gather.",
     "image_filename": "Cooling.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -217,7 +217,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/a/a0/Binding.png",
     "explanation": "based on the name and it's use in Raincleaver , Bind (留める矢) may be used to halt movement of material and bind it together, causing it to act and be moved as a single unit.",
     "image_filename": "Binding.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -277,7 +277,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/5/58/Enlarge.png",
     "explanation": "Enlarge is a semi-directional sign that will cause objects to grow in size (or shrink if inverted). Whether it causes a change in size to just the object it is drawn on or just to objects nearby is seemingly controlled by the presence of either a window or diamond sign respectively. It causes objects to either grow (corners point outwards) or shrink (corners point inwards). A sign may or may not be needed, but it would have to be placed in the center regardless.",
     "image_filename": "Enlarge.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -287,7 +287,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/bf/Crosshair_%28idk%29.png",
     "explanation": "Crosshair is a component of the rainflinger seal. The sign is non-directional. Likely it functions to cause magic to only target things with a corresponding magic aspect as it with the magical effects in the spell",
     "image_filename": "Crosshair.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -297,7 +297,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/bd/Radial.png",
     "explanation": "Radial is a component of the snugstone spell . While it's exact function is unclear, it likely serves to decrease the power of the spells it is used in, such as converting fire into heat.",
     "image_filename": "Radial.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -407,7 +407,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/9/9d/Water.png",
     "explanation": "The water sigil (水の紋, mizu no mon ) works to manipulate, collect, and create water. It is worth noting that many water spells meant to be used over long periods collect water rather than create it. This suggests that creating water is more energetically costly than collecting it. The water sigil is considered one of the four primary tetrad.",
     "image_filename": "Water.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -417,7 +417,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/1/1e/Earth.png",
     "explanation": "The earth sigil (地の紋, chi no mon ) allows for the manipulation of numerous solid substances, chiefly wood, stone, sand, and soil. However, it does not allow for the creation of these solid materials, as seen when it was used in the earth lift spell. The earth sigil is also known as the sigil of might (力の紋, chikara no mon ), and is considered one of the four primary tetrad.",
     "image_filename": "Earth.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sigil",

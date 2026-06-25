@@ -134,7 +134,10 @@ export const TEMPLATE_MARGIN_FACTOR = 1.3
 // textures are released between sub-batches.
 export const ROTATION_BATCH_SIZE = 24
 
-export const ITERATIVE_SIZES = [32, 48, 64, 96, 128, 192, 256]
+// Geometric size grid (~1.25x ratio) over 32–256px. Dense multi-stroke runes
+// are very sensitive to scale mismatch, so steps are kept within ~25% to ensure
+// every drawing is close to some template scale.
+export const ITERATIVE_SIZES = [32, 40, 50, 64, 80, 100, 128, 160, 200, 256]
 export const ITERATIVE_ROTATIONS = Array.from({ length: 36 }, (_, i) => i * 10)
 // Minimum IoU (intersection-over-union) for a template to count as a finding.
 // IoU runs lower than the old coverage score — a near-perfect match is ~0.8,

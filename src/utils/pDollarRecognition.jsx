@@ -42,7 +42,7 @@ function extractRuneStrokes(strokes) {
     for (let index = 0; index < strokes.length; index += 1) {
         const stroke = strokes[index];
         if (stroke.length < 12) continue;
-        const score = getCircleScore([stroke], false);
+        const score = getCircleScore([stroke]);
         if (score > bestCircleScore) {
             bestCircleScore = score;
             bestCircleIndex = index;

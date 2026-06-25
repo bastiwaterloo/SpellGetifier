@@ -1,5 +1,6 @@
 [
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Column",
     "id": "Column",
@@ -8,6 +9,7 @@
     "image_filename": "Column.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Dispersion",
     "id": "Dispersion",
@@ -16,6 +18,7 @@
     "image_filename": "Dispersion.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Levitation",
     "id": "Levitation",
@@ -24,6 +27,7 @@
     "image_filename": "Levitation.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Pull",
     "id": "Pull",
@@ -32,6 +36,7 @@
     "image_filename": "Pull.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Crush",
     "id": "Crush",
@@ -40,6 +45,7 @@
     "image_filename": "Crush.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Puppet",
     "id": "Puppet",
@@ -48,6 +54,7 @@
     "image_filename": "Dancing_Puppet.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Float",
     "id": "Float",
@@ -56,6 +63,7 @@
     "image_filename": "Float.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Region",
     "id": "Region",
@@ -64,6 +72,7 @@
     "image_filename": "Direction.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Convergence",
     "id": "Convergence",
@@ -72,6 +81,7 @@
     "image_filename": "Convergence.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Collection",
     "id": "Collection",
@@ -80,6 +90,7 @@
     "image_filename": "Collection.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Billow",
     "id": "Billow",
@@ -88,6 +99,7 @@
     "image_filename": "Billowing.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Repetition",
     "id": "Repetition",
@@ -96,6 +108,7 @@
     "image_filename": "Repetition.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Stretch",
     "id": "Stretch",
@@ -104,6 +117,7 @@
     "image_filename": "Weave.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Coil",
     "id": "Coil",
@@ -112,6 +126,7 @@
     "image_filename": "Coil_Sign.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Cool",
     "id": "Cool",
@@ -120,6 +135,7 @@
     "image_filename": "Cooling.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Entwine",
     "id": "Entwine",
@@ -128,6 +144,7 @@
     "image_filename": "Entwine.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Sign of Wind",
     "id": "Sign_of_Wind",
@@ -136,6 +153,7 @@
     "image_filename": "Sign_of_Wind.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Aeriforms Defined",
     "id": "Aeriforms_Defined",
@@ -144,6 +162,7 @@
     "image_filename": "Aeriforms_Defined.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Gather",
     "id": "Gather",
@@ -152,6 +171,7 @@
     "image_filename": "Gather.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Glaives",
     "id": "Glaives",
@@ -160,6 +180,7 @@
     "image_filename": "Glaives.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Solidify",
     "id": "Solidify",
@@ -168,6 +189,7 @@
     "image_filename": "Solidify.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Bind",
     "id": "Bind",
@@ -176,6 +198,7 @@
     "image_filename": "Binding.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Envelop",
     "id": "Envelop",
@@ -184,6 +207,7 @@
     "image_filename": "Bend.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Conceal",
     "id": "Conceal",
@@ -192,6 +216,7 @@
     "image_filename": "Sign_of_concealment_redraw.png"
   },
   {
+    "type": "sign",
     "category": "Officially named",
     "name": "Reflect",
     "id": "Reflect",
@@ -200,6 +225,7 @@
     "image_filename": "Sign_of_reflection_redraw.png"
   },
   {
+    "type": "sign",
     "category": "Unofficially Named",
     "name": "Diamond",
     "id": "Diamond",
@@ -208,6 +234,7 @@
     "image_filename": "Diamond_(what_does_it_do).png"
   },
   {
+    "type": "sign",
     "category": "Unofficially Named",
     "name": "Window",
     "id": "Window",
@@ -216,6 +243,7 @@
     "image_filename": "Window.png"
   },
   {
+    "type": "sign",
     "category": "Unofficially Named",
     "name": "Enlarge",
     "id": "Enlarge",
@@ -224,6 +252,7 @@
     "image_filename": "Enlarge.png"
   },
   {
+    "type": "sign",
     "category": "Unofficially Named",
     "name": "Crosshair",
     "id": "Crosshair",
@@ -232,6 +261,7 @@
     "image_filename": "Crosshair_(idk).png"
   },
   {
+    "type": "sign",
     "category": "Unofficially Named",
     "name": "Radial",
     "id": "Radial",
@@ -240,6 +270,7 @@
     "image_filename": "Radial.png"
   },
   {
+    "type": "sign",
     "category": "Unofficially Named",
     "name": "Bolt",
     "id": "Bolt",
@@ -248,6 +279,7 @@
     "image_filename": "Bolt.png"
   },
   {
+    "type": "sign",
     "category": "Unofficially Named",
     "name": "Rain",
     "id": "Rain",
@@ -256,6 +288,7 @@
     "image_filename": "Rain.png"
   },
   {
+    "type": "sign",
     "category": "Unofficially Named",
     "name": "Orb",
     "id": "Orb",
@@ -264,6 +297,7 @@
     "image_filename": "Orb.png"
   },
   {
+    "type": "sign",
     "category": "Unofficially Named",
     "name": "Purify",
     "id": "Purify",
@@ -272,6 +306,7 @@
     "image_filename": "Purify_Sign.png"
   },
   {
+    "type": "sign",
     "category": "Unofficially Named",
     "name": "Link",
     "id": "Link",
@@ -280,6 +315,7 @@
     "image_filename": "Link_Sign.png"
   },
   {
+    "type": "sign",
     "category": "Unofficially Named",
     "name": "Stillness",
     "id": "Stillness",
@@ -288,11 +324,246 @@
     "image_filename": "Stasis_Sign.png"
   },
   {
+    "type": "sign",
     "category": "Unofficially Named",
     "name": "Project",
     "id": "Project",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/4/45/Sign_of_projection_redraw.png",
     "explanation": "Project is likely used to project an effect outwards. It is likely project is only capable of projecting images specified by the spell",
     "image_filename": "Sign_of_projection_redraw.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Fire",
+    "name": "Fire",
+    "id": "Fire_2",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/d/d8/Fire_sigil.png",
+    "explanation": "The base fire sigil (炎の紋, honō no mon ) works to create and manipulate flames or heat depending on the spell in question. The base fire sigil is considered one of the four primary tetrad.",
+    "image_filename": "Fire_sigil.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Fire",
+    "name": "Unburning Flames",
+    "id": "Unburning_Flames",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/8/8d/Unburning_flame_sigil.png",
+    "explanation": "The unburning flames sigil's exact function is unclear, but it is somehow involved in the production of heatless flames as seen in the phantasmal fireball . It is possible that this sigil alone is not enough to produce flames without heat and additional signs are needed, but this is currently unknown.",
+    "image_filename": "Unburning_flame_sigil.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Fire",
+    "name": "Light",
+    "id": "Light",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/a/a6/Light.png",
+    "explanation": "A variant of the fire sigil, the light sigil (光の紋, hikari no mon ) functions to produce magic that manifests in the form of light.",
+    "image_filename": "Light.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Water",
+    "name": "Water",
+    "id": "Water_2",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/9/9d/Water.png",
+    "explanation": "The water sigil (水の紋, mizu no mon ) works to manipulate, collect, and create water. It is worth noting that many water spells meant to be used over long periods collect water rather than create it. This suggests that creating water is more energetically costly than collecting it. The water sigil is considered one of the four primary tetrad.",
+    "image_filename": "Water.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Earth",
+    "name": "Earth",
+    "id": "Earth_2",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/1/1e/Earth.png",
+    "explanation": "The earth sigil (地の紋, chi no mon ) allows for the manipulation of numerous solid substances, chiefly wood, stone, sand, and soil. However, it does not allow for the creation of these solid materials, as seen when it was used in the earth lift spell. The earth sigil is also known as the sigil of might (力の紋, chikara no mon ), and is considered one of the four primary tetrad.",
+    "image_filename": "Earth.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Air",
+    "name": "Wind",
+    "id": "Wind",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/d/d7/Wind_%28redirect%29.png",
+    "explanation": "The wind sigil (風の絞, kaze no mon ) allows for the movement and manipulation, but not the creation, of air. The sigil of wind is also known as the sigil of levitation (浮遊の紋, fuyū no mon ) and, is considered one of the four primary tetrad.",
+    "image_filename": "Wind_(redirect).png"
+  },
+  {
+    "type": "sigil",
+    "category": "Air",
+    "name": "Aeriforms",
+    "id": "Aeriforms",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/4/43/Aeriforms_%28Wind%29.png",
+    "explanation": "The aeriforms sigil (気体の紋, kitai no mon ) allows for the creation and manipulation (but not movement) of air.",
+    "image_filename": "Aeriforms_(Wind).png"
+  },
+  {
+    "type": "sigil",
+    "category": "Air",
+    "name": "Wind Underfoot",
+    "id": "Wind_Underfoot",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/d/d8/Wind_Underfoot.png",
+    "explanation": "The exact function of the wind underfoot sigil (足場のある風の紋, ashiba no aru kaze no mon ) is not yet clear, but it is known that it helps to somehow support solid objects when they are suspended within air, similar to an air platform. The way this functions or the specifics of the effect are not yet clear.",
+    "image_filename": "Wind_Underfoot.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Air",
+    "name": "Whorling Winds",
+    "id": "Whorling_Winds",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/b1/Whorling_Winds.png",
+    "explanation": "Whorling winds helps to manipulate air through rotation. The exact way in which this functions is unknown, as is the reason for it looking so different to the other air sigils. It being three-sided could indicate a connection to the fire sigil, meaning it might be heating the air as we do with hot air balloons.",
+    "image_filename": "Whorling_Winds.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Time",
+    "name": "Repetition",
+    "id": "Repetition",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/bb/Repetition.png",
+    "explanation": "Repetition (くりかえしの矢, kurikaeshi no ya ) helps to prevent objects from changing by continuously resetting time for the objects it affects to the state they had when the spell first affected them. It is similar to a spring, restoring the object to its original state if that object is somehow changed. This can be used to make soft objects elastic or to prevent things from rotting.",
+    "image_filename": "Repetition.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Time",
+    "name": "Stop",
+    "id": "Stop",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/9/90/Time_Stop_Redraw.jpg",
+    "explanation": "Stop outright halts time for the objects it effects. By pairing it with other sigils, it becomes possible to stop time for specific aspects of an object, such as changes in heat if paired with a fire sigil.",
+    "image_filename": "Time_Stop_Redraw.jpg"
+  },
+  {
+    "type": "sigil",
+    "category": "Decorative Sigils",
+    "name": "Bird A",
+    "id": "Bird_A",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/7/70/Bird.png",
+    "explanation": "Bird A is a decorative sigil that creates a bird-like projection made from the seal's magic which will fly around for a while. It's only been seen once within the bird of light beacon spell, The front portion of the spell may or may not be a separate sigil entirely. The design was changed in chapter 28 . Ideally, the spell's sigil should be placed in the center of this sigil.",
+    "image_filename": "Bird.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Decorative Sigils",
+    "name": "Bird B",
+    "id": "Bird_B",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/d/d8/Bird_B_Sign.png",
+    "explanation": "Bird B causes magic to manifest in the shape of a bird, similar to bird A. However, the bird produced by this decorative sigil is noticeably more duck-like compared to bird A.",
+    "image_filename": "Bird_B_Sign.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Decorative Sigils",
+    "name": "Dragon",
+    "id": "Dragon",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/5/57/Dragon_Sign.png",
+    "explanation": "Dragon (巨鱗竜の紋, doragon no mon ) causes magic to manifest in the shape of a dragon . The exact dragon species that this decorative sigil imitates is unknown, although the illustration accompanying it appears to be a Dragonpass Isles Wyrm.",
+    "image_filename": "Dragon_Sign.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Decorative Sigils",
+    "name": "Flower",
+    "id": "Flower",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/2/21/Flower_Sigil.png",
+    "explanation": "Flower causes magic to manifest in the shape of various flowers. The type of flower (and possibly the amount) is determined by five, small, identical signs that surround the sigil, acting as modifiers.",
+    "image_filename": "Flower_Sigil.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Decorative Sigils",
+    "name": "Horse",
+    "id": "Horse",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/7/74/Horse_Sign.png",
+    "explanation": "Horse causes magic to manifest in the shape of a horse, as seen in the water horse spell . With the water horse spell, it is possible to pull loads via the water horse, suggesting that this decorative sigil (and perhaps others as well) has the potential for practical usage.",
+    "image_filename": "Horse_Sign.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Decorative Sigils",
+    "name": "Owlcat",
+    "id": "Owlcat",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/2/23/Owlcat_Sigil_Full.png",
+    "explanation": "Based on its design, this sigil is likely for forming a full Owlcat (猫梟の紋, neko fukurō no mon ) as opposed to just the head of an owlcat , as is the case with the confirmed owlcat head sigil . However, this is yet to be confirmed, and more information is needed.",
+    "image_filename": "Owlcat_Sigil_Full.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Decorative Sigils",
+    "name": "Owlcat Head",
+    "id": "Owlcat_Head",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/4/4c/Owlcat_Sign.png",
+    "explanation": "Owlcat (猫梟の紋, neko fukurō no mon ) Head causes magic to manifest in the shape of the head of an Owlcat with winter plumage, which is almost spherical in shape. This sigil is identical to the normal owlcat sigil , except it is missing the section corresponding to an owlcat's body. This implies that decorative signs can be split into smaller portions which will form the individual body parts corresponding to that section of the decorative sigil.",
+    "image_filename": "Owlcat_Sign.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Decorative Sigils",
+    "name": "Scalewolf",
+    "id": "Scalewolf",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/1/1b/Scalewolf_Sign.png",
+    "explanation": "Scalewolf (鱗狼の矢, uroko ōkami no mon ) causes magic to manifest in the shape of a scalewolf .",
+    "image_filename": "Scalewolf_Sign.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Decorative Sigils",
+    "name": "Torchstag",
+    "id": "Torchstag",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/b5/Torchstag_Sign.png",
+    "explanation": "Torchstag (松明鹿の紋, taimatsu shika no mon ) causes magic to manifest in the shape of a torchstag .",
+    "image_filename": "Torchstag_Sign.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Decorative Sigils",
+    "name": "Liongoat",
+    "id": "Liongoat",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/7/79/Liongoat_Sigil_Redraw.png",
+    "explanation": "Liongoat (松明鹿の矢, shishi yagi no mon ) causes magic to manifest in the shape of a liongoat .",
+    "image_filename": "Liongoat_Sigil_Redraw.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Decorative Sigils",
+    "name": "Valance Leech",
+    "id": "Valance_Leech",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/2/2d/Valance_Leech_Sign.png",
+    "explanation": "Valance leech (帳蛭の紋, tobari hiru no mon ) causes magic to manifest in the shape of a valance leech .",
+    "image_filename": "Valance_Leech_Sign.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Decorative Sigils",
+    "name": "Frillram",
+    "id": "Frillram",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/a/ae/Frillram_Sigil.png",
+    "explanation": "Frillram (襟巻羊, Erimakihitsuji ) causes magic to manifest in the shape of a Frillram .",
+    "image_filename": "Frillram_Sigil.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Decorative Sigils",
+    "name": "Sword",
+    "id": "Sword",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/6/65/Sword_Sigil.png",
+    "explanation": "Sword (剣の紋) causes magic to manifest in the shape of a sword, or target sword(s). It is featured in the Raincleaver Spell and is the very first object-based decorative sigil we've come across.",
+    "image_filename": "Sword_Sigil.png"
+  },
+  {
+    "type": "sigil",
+    "category": "Misc",
+    "name": "Crystalize",
+    "id": "Crystalize",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/e/e3/Ice_Sigil.jpg",
+    "explanation": "Crystalize causes things around such as air or water, or otherwise specified by the seal, to crystalize. This can form crystal , or even ice. It is unknown what dictates whether the sigil turns things to ice or crystal, and may be up to user intent",
+    "image_filename": "Ice_Sigil.jpg"
+  },
+  {
+    "type": "sigil",
+    "category": "Misc",
+    "name": "Smoke",
+    "id": "Smoke",
+    "image_url": "https://static.telepedia.net/witchhatatelierwiki/f/fb/Smoke_Sigil.png",
+    "explanation": "Smoke, (煙, kemuri ) works to create and generate smoke. It has not been seen whether or not the sigil is also capable of manipulating smoke",
+    "image_filename": "Smoke_Sigil.png"
   }
 ]

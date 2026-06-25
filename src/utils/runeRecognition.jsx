@@ -53,16 +53,25 @@ async function loadImageAsBase64(imagePath) {
 function buildPrompt() {
     return `Du bist ein Runen-Erkennungssystem. 
 
-Das ERSTE Bild ist eine handgezeichnete Rune (schwarze Linien auf weißem Hintergrund).
+Das ERSTE Bild ist eine handgezeichnete Zeichnung (schwarze Linien auf weißem Hintergrund).
+Die Zeichnung kann EINE ODER MEHRERE Runen enthalten.
 Die FOLGENDEN ${RUNE_COUNT} Bilder sind die Referenz-Runen (Rune 1 bis Rune ${RUNE_COUNT}, in dieser Reihenfolge).
 
-Vergleiche die handgezeichnete Rune mit allen Referenz-Runen und finde die beste Übereinstimmung.
+Analysiere die handgezeichnete Zeichnung und identifiziere ALLE erkennbaren Runen.
+Vergleiche jede gefundene Rune mit den Referenz-Runen.
+Runen können auch rotiert sein. Prüfe also auch, ob es sich um eine Rune in einer anderen Rotation handelt.
+Bestimme auch die ROTATION jeder Rune in Grad (0-359), wobei 0° die Standardausrichtung ist.
 
-WICHTIG: Antworte NUR mit einem JSON-Objekt in diesem Format:
-{"runeId": <nummer>, "confidence": <0-100>}
+Antworte NUR mit reinem JSON (kein Markdown, keine Code-Blöcke, keine Erklärung):
+{"runes":[{"runeId":1,"confidence":85,"rotation":0}]}
 
-Wenn keine Rune passt, antworte:
-{"runeId": null, "confidence": 0}`;
+- runeId: Nummer der erkannten Referenz-Rune (1 bis ${RUNE_COUNT})
+- confidence: Übereinstimmung in Prozent (0-100)
+- rotation: Grad im Uhrzeigersinn von der Standardausrichtung (0, 90, 180, 270 oder Zwischenwerte)
+
+Reihenfolge: von links nach rechts, von oben nach unten.
+
+Wenn keine Rune erkannt wird: {"runes":[]}`;
 }
 
 export async function recognizeRune(canvas) {
@@ -86,42 +95,49 @@ export async function recognizeRune(canvas) {
         const response = await callGeminiVision(buildPrompt(), images);
         const result = parseJsonResponse(response.text);
 
-        if (!result) {
+        if (!result || !result.runes) {
             return {
-                match: null,
-                confidence: 0,
+                matches: [],
                 message: 'Keine gültige Antwort erhalten'
             };
         }
 
-        if (result.runeId === null || result.confidence < 20) {
+        if (result.runes.length === 0) {
             return {
-                match: null,
-                confidence: 0,
-                message: 'Keine passende Rune gefunden'
+                matches: [],
+                message: 'Keine Runen erkannt'
             };
         }
 
-        const matchedRune = runes.find(r => r.id === result.runeId);
-        if (!matchedRune) {
+        const matches = result.runes
+            .filter(r => r.runeId !== null && r.confidence >= 20)
+            .map(r => {
+                const matchedRune = runes.find(rune => rune.id === r.runeId);
+                return matchedRune ? {
+                    rune: matchedRune,
+                    confidence: r.confidence,
+                    rotation: r.rotation ?? 0
+                } : null;
+            })
+            .filter(Boolean);
+
+        if (matches.length === 0) {
             return {
-                match: null,
-                confidence: 0,
-                message: 'Keine passende Rune gefunden'
+                matches: [],
+                message: 'Keine passenden Runen gefunden'
             };
         }
 
+        const runeNames = matches.map(m => m.rune.name).join(', ');
         return {
-            match: matchedRune,
-            confidence: result.confidence,
-            message: `Erkannt: ${matchedRune.name} (${result.confidence}% Übereinstimmung)`
+            matches,
+            message: `Erkannt: ${runeNames} (${matches.length} Rune${matches.length > 1 ? 'n' : ''})`
         };
 
     } catch (error) {
         console.error('Fehler bei der Runen-Erkennung:', error);
         return {
-            match: null,
-            confidence: 0,
+            matches: [],
             message: `Fehler: ${error.message}`
         };
     }

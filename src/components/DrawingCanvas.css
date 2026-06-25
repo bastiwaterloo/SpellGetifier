@@ -142,17 +142,48 @@
     color: #e53170;
 }
 
+.drawing__recognized-runes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
 .drawing__recognized-rune {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 0.25rem;
     padding: 0.5rem;
     background: #fff;
     border-radius: 8px;
+}
+
+.drawing__rune-image-wrapper {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
 
 .drawing__rune-image {
     width: 64px;
     height: 64px;
     image-rendering: pixelated;
+    transition: transform 0.2s ease;
+}
+
+.drawing__rune-confidence {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #2cb67d;
+}
+
+.drawing__rune-rotation {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #7f5af0;
 }

@@ -249,16 +249,31 @@ function DrawingCanvas() {
 
             {recognitionResult && (
                 <div
-                    className={`drawing__recognition ${recognitionResult.match ? 'drawing__recognition--success' : 'drawing__recognition--error'}`}
+                    className={`drawing__recognition ${recognitionResult.matches?.length > 0 ? 'drawing__recognition--success' : 'drawing__recognition--error'}`}
                 >
                     <p>{recognitionResult.message}</p>
-                    {recognitionResult.match && (
-                        <div className="drawing__recognized-rune">
-                            <img
-                                src={recognitionResult.match.imagePath}
-                                alt={recognitionResult.match.name}
-                                className="drawing__rune-image"
-                            />
+                    {recognitionResult.matches?.length > 0 && (
+                        <div className="drawing__recognized-runes">
+                            {recognitionResult.matches.map((match, index) => (
+                                <div key={index} className="drawing__recognized-rune">
+                                    <div className="drawing__rune-image-wrapper">
+                                        <img
+                                            src={match.rune.imagePath}
+                                            alt={match.rune.name}
+                                            className="drawing__rune-image"
+                                            style={{transform: `rotate(${match.rotation}deg)`}}
+                                        />
+                                    </div>
+                                    <span className="drawing__rune-confidence">
+                                        {match.confidence}%
+                                    </span>
+                                    {match.rotation !== 0 && (
+                                        <span className="drawing__rune-rotation">
+                                            {match.rotation}°
+                                        </span>
+                                    )}
+                                </div>
+                            ))}
                         </div>
                     )}
                 </div>

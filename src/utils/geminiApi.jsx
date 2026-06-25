@@ -1,5 +1,5 @@
 const API_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
-const MODEL = 'gemini-2.5-flash';
+const MODEL = 'gemini-3.5-flash';
 
 export async function callGeminiVision(prompt, images, options = {}) {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
@@ -63,5 +63,23 @@ export function parseJsonResponse(text) {
     if (!jsonMatch) {
         return null;
     }
-    return JSON.parse(jsonMatch[0]);
+
+    let jsonString = jsonMatch[0];
+
+    // Bereinige häufige Probleme in KI-generierten JSON-Antworten
+    jsonString = jsonString
+        // Entferne Trailing Commas vor ] oder }
+        .replace(/,\s*([\]}])/g, '$1')
+        // Entferne Kommentare (// ...)
+        .replace(/\/\/[^\n]*/g, '')
+        // Normalisiere Whitespace
+        .replace(/[\r\n\t]+/g, ' ');
+
+    try {
+        return JSON.parse(jsonString);
+    } catch (error) {
+        console.error('JSON-Parsing fehlgeschlagen:', error.message);
+        console.error('Bereinigte Antwort:', jsonString);
+        return null;
+    }
 }

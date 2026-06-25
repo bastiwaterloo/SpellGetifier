@@ -9,6 +9,9 @@ export function getBackendReady() {
     backendReady = (async () => {
       try {
         await tf.setBackend('webgl');
+        // Release GPU textures immediately instead of pooling them, so peak
+        // memory across thousands of convolutions stays bounded.
+        tf.env().set('WEBGL_DELETE_TEXTURE_THRESHOLD', 0);
       } catch {
         await tf.setBackend('cpu');
       }
@@ -24,20 +27,23 @@ export function getBackendReady() {
 // templates are packed as output channels of one conv2d filter, so N rotations
 // cost one convolution and one GPU->CPU readback instead of N.
 //
-// tf.conv2d performs cross-correlation (no kernel flip), so it computes
-// coverage directly. drawingTensor is a [1, dh, dw, 1] tensor owned by the
-// caller — referenced but NOT disposed here.
+// tf.conv2d performs cross-correlation (no kernel flip), so it computes the
+// intersection (overlapping ink) directly. drawingTensor is a [1, dh, dw, 1]
+// tensor owned by the caller — referenced but NOT disposed here.
 //
-// Per channel the score is the same coverage+penalty metric as a single match:
-//   score = coverage/inkCount - penaltyWeight * penalty/(area - inkCount)
-// with penalty = inkUnderFootprint - coverage. A blank template (inkCount 0)
-// scores 0; a fully-inked template (area === inkCount) suppresses the penalty
-// term, matching the single-template semantics.
+// The per-channel score is intersection-over-union (Jaccard) between the
+// template's ink and the drawing's ink under the template's (margin-padded)
+// footprint:
+//   IoU = intersection / (templateInk + drawingInkUnderFootprint - intersection)
+// IoU penalizes BOTH a template covering ink it shouldn't and a template
+// failing to explain drawn ink, so a simpler rune that merely covers a subset
+// of a complex drawing no longer outscores the correct full rune. A blank
+// template (inkCount 0) scores 0.
 //
 // Returns { results: [{ score, col, row }], outWidth, outHeight,
 //           filterWidth, filterHeight } — one result per input mask, holding
 // that template's best position (top-left col/row in the score map).
-export function computeBatchedScoreMap(drawingTensor, masks, penaltyWeight) {
+export function computeBatchedScoreMap(drawingTensor, masks) {
   const n = masks.length;
   const { width: fw, height: fh } = masks[0];
   const area = fw * fh;
@@ -59,30 +65,20 @@ export function computeBatchedScoreMap(drawingTensor, masks, penaltyWeight) {
     for (let p = 0; p < area; p++) filterData[p * n + c] = d[p];
   }
 
-  // Safe per-channel denominators (avoid divide-by-zero); degenerate channels
-  // are corrected below. penaltyScale zeroes the penalty term when area===ink.
-  const inkSafe = Array.from(inkCounts, (v) => (v > 0 ? v : 1));
-  const denomSafe = Array.from(inkCounts, (v) => (area - v > 0 ? area - v : 1));
-  const penaltyScale = Array.from(inkCounts, (v) => (area - v > 0 ? 1 : 0));
-
   return tf.tidy(() => {
     const filter = tf.tensor4d(filterData, [fh, fw, 1, n]);
     const ones = tf.ones([fh, fw, 1, 1]);
 
-    const coverage = tf.conv2d(drawingTensor, filter, 1, 'valid'); // [1,oH,oW,n]
-    const footprint = tf.conv2d(drawingTensor, ones, 1, 'valid'); // [1,oH,oW,1]
+    const intersection = tf.conv2d(drawingTensor, filter, 1, 'valid'); // [1,oH,oW,n]
+    const drawingInk = tf.conv2d(drawingTensor, ones, 1, 'valid'); // [1,oH,oW,1]
 
-    const inkT = tf.tensor1d(inkSafe);
-    const denomT = tf.tensor1d(denomSafe);
-    const penaltyScaleT = tf.tensor1d(penaltyScale);
+    const inkT = tf.tensor1d(Array.from(inkCounts)); // [n]
+    // union = templateInk + drawingInkUnderFootprint - intersection
+    const union = inkT.add(drawingInk).sub(intersection);
+    const iou = intersection.div(union.add(1e-6)); // [1,oH,oW,n]
 
-    const coverageRatio = coverage.div(inkT);
-    const penalty = footprint.sub(coverage);
-    const penaltyRatio = penalty.div(denomT).mul(penaltyScaleT);
-    const score = coverageRatio.sub(penaltyRatio.mul(penaltyWeight)); // [1,oH,oW,n]
-
-    const [, outH, outW] = score.shape;
-    const flat = score.reshape([outH * outW, n]);
+    const [, outH, outW] = iou.shape;
+    const flat = iou.reshape([outH * outW, n]);
     const bestScores = flat.max(0).dataSync(); // [n]
     const bestIdx = flat.argMax(0).dataSync(); // [n]
 

@@ -234,7 +234,7 @@ function DrawingCanvas() {
                         type="button"
                         className="drawing__button drawing__button--secondary"
                         onClick={() => setIsSpellMenuOpen((open) => !open)}
-                        disabled={!hasDrawing || isRecognizing}
+                        disabled={isRecognizing}
                         aria-haspopup="menu"
                         aria-expanded={isSpellMenuOpen}
                     >

@@ -11,21 +11,24 @@ function loadImage(src) {
   });
 }
 
-// Draw the image scaled to size×size, rotated by rotationDeg, onto a white
-// canvas big enough to hold the rotated square. Returns its ImageData.
-export function rasterizeRotatedScaled(image, size, rotationDeg) {
+// Draw the image scaled to size×size, rotated by rotationDeg, centered on a
+// white canvas. The canvas is the rotated bounding box (size×√2) optionally
+// enlarged by marginFactor to leave a white border around the glyph, so the
+// scoring penalty can see drawn ink spilling past the template. Returns its
+// ImageData. The glyph stays centered, so the box center is the glyph center.
+export function rasterizeRotatedScaled(image, size, rotationDeg, marginFactor = 1) {
   const radians = (rotationDeg * Math.PI) / 180;
-  const diag = Math.ceil(size * Math.SQRT2);
+  const dim = Math.ceil(size * Math.SQRT2 * marginFactor);
   const canvas = document.createElement('canvas');
-  canvas.width = diag;
-  canvas.height = diag;
+  canvas.width = dim;
+  canvas.height = dim;
   const ctx = canvas.getContext('2d');
   ctx.fillStyle = 'white';
-  ctx.fillRect(0, 0, diag, diag);
-  ctx.translate(diag / 2, diag / 2);
+  ctx.fillRect(0, 0, dim, dim);
+  ctx.translate(dim / 2, dim / 2);
   ctx.rotate(radians);
   ctx.drawImage(image, -size / 2, -size / 2, size, size);
-  return ctx.getImageData(0, 0, diag, diag);
+  return ctx.getImageData(0, 0, dim, dim);
 }
 
 export async function loadRuneImages() {

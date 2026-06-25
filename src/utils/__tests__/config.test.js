@@ -4,7 +4,6 @@ import {
   ITERATIVE_SIZES,
   ITERATIVE_ROTATIONS,
   MATCH_THRESHOLD,
-  PENALTY_WEIGHT,
   NMS_RELATIVE,
 } from '../../config.js';
 
@@ -26,8 +25,7 @@ describe('iterative detection constants', () => {
   });
 
   it('defines scoring constants', () => {
-    expect(MATCH_THRESHOLD).toBe(0.6);
-    expect(PENALTY_WEIGHT).toBe(1.0);
+    expect(MATCH_THRESHOLD).toBe(0.5);
     expect(NMS_RELATIVE).toBe(0.5);
   });
 });

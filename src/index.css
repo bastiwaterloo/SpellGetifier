@@ -1,5 +1,5 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Courier New", Courier, monospace;
   line-height: 1.5;
   font-weight: 400;
   color-scheme: light dark;
@@ -9,6 +9,13 @@
 
 * {
   box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
 }
 
 body {

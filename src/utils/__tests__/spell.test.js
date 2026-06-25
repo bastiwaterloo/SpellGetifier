@@ -13,15 +13,60 @@ describe('runesToSpell', () => {
         });
     });
 
-    it('returns the fallback spell regardless of the runes given', () => {
+    it('returns the fallback spell when only ring runes (no sigil) are found', () => {
         const runes = [
-            { name: 'feuer', size: 64, x: 10, y: 20, rotation: 0, score: 88 },
-            { name: 'wasser', size: 48, x: 30, y: 40, rotation: 90, score: 72 }
+            { name: 'Column', type: 'sign', score: 88 },
+            { name: 'Region', type: 'sign', score: 72 }
         ];
 
-        const spell = runesToSpell(runes);
+        expect(runesToSpell(runes)).toEqual({
+            name: 'Platscher',
+            description: 'Das ist nicht sehr effektiv',
+            damage: 0
+        });
+    });
 
-        expect(spell).toEqual({
+    it('creates the Fire spell when a Fire sigil is found', () => {
+        const runes = [
+            { name: 'Column', type: 'sign', score: 70 },
+            { name: 'Fire', type: 'sigil', score: 65 }
+        ];
+
+        expect(runesToSpell(runes)).toEqual({
+            name: 'Feuerball',
+            description: 'Eine Kugel aus lodernden Flammen.',
+            damage: 30
+        });
+    });
+
+    it('creates the Water spell when a Water sigil is found', () => {
+        expect(runesToSpell([{ name: 'Water', type: 'sigil', score: 60 }])).toEqual({
+            name: 'Wasserstrahl',
+            description: 'Ein harter Strahl aus Wasser.',
+            damage: 20
+        });
+    });
+
+    it('creates the Light spell when a Light sigil is found', () => {
+        expect(runesToSpell([{ name: 'Light', type: 'sigil', score: 55 }])).toEqual({
+            name: 'Lichtblitz',
+            description: 'Ein blendender Strahl aus Licht.',
+            damage: 25
+        });
+    });
+
+    it('uses the first (highest-scoring) sigil when several are found', () => {
+        // findings arrive sorted by score descending, so the first sigil wins
+        const runes = [
+            { name: 'Light', type: 'sigil', score: 80 },
+            { name: 'Fire', type: 'sigil', score: 40 }
+        ];
+
+        expect(runesToSpell(runes).name).toBe('Lichtblitz');
+    });
+
+    it('returns the fallback spell for an unknown sigil', () => {
+        expect(runesToSpell([{ name: 'Earth', type: 'sigil', score: 70 }])).toEqual({
             name: 'Platscher',
             description: 'Das ist nicht sehr effektiv',
             damage: 0

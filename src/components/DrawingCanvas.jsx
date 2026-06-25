@@ -24,6 +24,7 @@ import {
 import {calculateCircleScore as getCircleScore} from '../utils/utils.ts';
 import RuneAlphabet from './RuneAlphabet.jsx';
 import ElementStage from './ElementStage.jsx';
+import WaterStage from './WaterStage.jsx';
 import ElementDebugPanel from './ElementDebugPanel.jsx';
 import {getPresetByFile} from '../config/elementPresets.js';
 import './DrawingCanvas.css';
@@ -547,12 +548,21 @@ function DrawingCanvas() {
 
             {selectedPreset && elementParams && (
                 <div className="drawing__fire">
-                    <ElementStage
-                        key={selectedPreset.id}
-                        preset={selectedPreset}
-                        params={elementParams}
-                        igniteKey={igniteKey}
-                    />
+                    {selectedPreset.renderMode === 'shader' ? (
+                        <WaterStage
+                            key={selectedPreset.id}
+                            preset={selectedPreset}
+                            params={elementParams}
+                            igniteKey={igniteKey}
+                        />
+                    ) : (
+                        <ElementStage
+                            key={selectedPreset.id}
+                            preset={selectedPreset}
+                            params={elementParams}
+                            igniteKey={igniteKey}
+                        />
+                    )}
                     <ElementDebugPanel
                         title={selectedPreset.label}
                         params={elementParams}

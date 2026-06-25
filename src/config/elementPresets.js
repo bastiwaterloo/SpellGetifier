@@ -134,18 +134,23 @@ export const ELEMENT_PRESETS = {
   Water: {
     id: 'water',
     label: 'Wasser',
-    color: waterColor,
-    spawn: waterSpawn,
+    renderMode: 'shader',
+    color: waterColor,        // kept for reference; WaterStage colors in-shader
+    spawn: waterSpawn,        // kept for reference; WaterStage spawns internally
     gravity: [0, -2.6, 0],
     cameraTarget: [0, 0.1, 0],
     blending: 'normal',
     opacity: 0.9,
+    water: {
+      baseY: -0.9,
+      poolRadius: 2.0
+    },
     defaults: {
-      particleCount: 800,
+      particleCount: 1200,
       riseSpeed: 1.2,
-      spread: 0.5,
-      flameHeight: 1.8,
-      turbulence: 0.15,
+      spread: 0.6,
+      flameHeight: 1.6,
+      turbulence: 0.12,
       particleSize: 9,
       intensity: 1
     }

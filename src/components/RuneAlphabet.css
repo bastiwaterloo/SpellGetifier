@@ -1,52 +1,64 @@
 .rune-alphabet {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    width: 220px;
-    max-height: 500px;
-    padding: 1rem;
-    border-radius: 12px;
-    background: #14142099;
-    border: 1px solid #2a2a40;
+    gap: var(--space-md);
+    width: 13.75rem;
+    max-height: 31.25rem;
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-subtle);
+    box-shadow: var(--shadow-sm);
 }
 
 .rune-alphabet__title {
     margin: 0;
-    font-size: 1rem;
+    font-size: 0.85rem;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.82);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
 }
 
 .rune-alphabet__list {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
+    gap: var(--space-sm);
     margin: 0;
     padding: 0;
     list-style: none;
     overflow-y: auto;
     overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border) transparent;
+}
+
+.rune-alphabet__list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.rune-alphabet__list::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: var(--radius-full);
 }
 
 .rune-alphabet__item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.25rem;
-    padding: 0.35rem;
-    border-radius: 8px;
-    background: #0f0f1a;
-    border: 1px solid #2a2a40;
-    /* Erlaubt den Grid-Spalten zu schrumpfen, statt horizontal zu überlaufen. */
+    gap: var(--space-xs);
+    padding: var(--space-xs);
+    border-radius: var(--radius-md);
+    background: var(--color-bg);
+    border: 1px solid var(--color-border-subtle);
     min-width: 0;
 }
 
-/* Anklickbare Variante: Button füllt die Zelle und übernimmt das Layout. */
 .rune-alphabet__select {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.25rem;
+    gap: var(--space-xs);
     width: 100%;
     padding: 0;
     color: inherit;
@@ -54,16 +66,16 @@
     border: none;
     cursor: pointer;
     min-width: 0;
+    border-radius: var(--radius-sm);
 }
 
 .rune-alphabet__select--active {
-    outline: 2px solid #ff7a18;
+    outline: 2px solid var(--color-accent);
     outline-offset: 2px;
-    border-radius: 6px;
 }
 
 .rune-alphabet__select:hover .rune-alphabet__image {
-    box-shadow: 0 0 0 2px rgba(255, 122, 24, 0.5);
+    box-shadow: 0 0 0 2px rgba(127, 90, 240, 0.45);
 }
 
 .rune-alphabet__image {
@@ -71,16 +83,16 @@
     aspect-ratio: 1 / 1;
     object-fit: contain;
     background: #fff;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     image-rendering: pixelated;
+    transition: box-shadow 0.15s ease;
 }
 
 .rune-alphabet__label {
     width: 100%;
-    font-size: 0.7rem;
-    line-height: 1.15;
+    font-size: 0.65rem;
+    line-height: 1.2;
     text-align: center;
-    color: rgba(255, 255, 255, 0.6);
-    /* Lange Runennamen umbrechen, statt sie horizontal abzuschneiden. */
+    color: var(--color-text-faint);
     overflow-wrap: anywhere;
 }

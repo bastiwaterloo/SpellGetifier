@@ -6,7 +6,7 @@ function App() {
     <div className="app">
       <header className="app__header">
         <h1>SpellGetifier</h1>
-        <p>Zeichne etwas auf die Leinwand.</p>
+        <p>Zeichne Runen in einen Kreis — bewerte die Form und erkenne deinen Zauber.</p>
       </header>
       <main className="app__main">
         <DrawingCanvas />

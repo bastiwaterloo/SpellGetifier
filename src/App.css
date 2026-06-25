@@ -1,31 +1,36 @@
 .app {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xl);
+    padding: var(--space-2xl) var(--space-lg) var(--space-2xl);
+    min-height: 100vh;
 }
 
 .app__header {
-  text-align: center;
+    text-align: center;
+    max-width: 40rem;
 }
 
 .app__header h1 {
-  margin: 0;
-  font-size: 2.5rem;
-  background: linear-gradient(90deg, #7f5af0, #2cb67d);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+    margin: 0;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(90deg, var(--color-accent), var(--color-success));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 .app__header p {
-  margin: 0.5rem 0 0;
-  opacity: 0.7;
+    margin: var(--space-sm) 0 0;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
 }
 
 .app__main {
-  width: 100%;
-  display: flex;
-  justify-content: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }

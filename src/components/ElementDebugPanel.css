@@ -1,57 +1,68 @@
 .element-debug {
     display: flex;
     flex-direction: column;
-    gap: 0.6rem;
-    width: 260px;
-    padding: 1rem;
-    border-radius: 12px;
-    background: #14142099;
-    border: 1px solid #2a2a40;
+    gap: var(--space-md);
+    width: 16.25rem;
+    padding: var(--space-lg);
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-elevated);
+    border: 1px solid var(--color-border-subtle);
+    box-shadow: var(--shadow-sm);
 }
 
 .element-debug__title {
-    margin: 0 0 0.25rem;
-    font-size: 0.95rem;
-    color: rgba(255, 255, 255, 0.82);
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
 }
 
 .element-debug__row {
     display: grid;
-    grid-template-columns: 6rem 1fr 2.5rem;
+    grid-template-columns: 5.5rem 1fr 3.25rem;
     align-items: center;
-    gap: 0.5rem;
+    gap: var(--space-sm);
     font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--color-text-muted);
 }
 
 .element-debug__slider {
     width: 100%;
-    accent-color: #ff7a18;
+    accent-color: var(--color-accent);
+    cursor: pointer;
 }
 
 .element-debug__value {
     text-align: right;
     font-variant-numeric: tabular-nums;
-    color: rgba(255, 255, 255, 0.55);
+    color: var(--color-text-faint);
 }
 
 .element-debug__actions {
     display: flex;
-    gap: 0.5rem;
-    margin-top: 0.4rem;
+    gap: var(--space-sm);
+    margin-top: var(--space-xs);
 }
 
 .element-debug__button {
     flex: 1;
-    padding: 0.4rem 0.5rem;
+    padding: 0.45rem 0.5rem;
     font-size: 0.78rem;
-    color: #fff;
-    background: #31314f;
-    border: none;
-    border-radius: 8px;
+    font-weight: 500;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
     cursor: pointer;
+    transition: background 0.15s ease;
 }
 
 .element-debug__button:hover {
-    background: #404069;
+    background: #303048;
+}
+
+.element-debug__button:focus-visible {
+    box-shadow: var(--shadow-focus);
 }

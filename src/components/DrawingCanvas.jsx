@@ -10,7 +10,7 @@ import {
     ENABLED_RUNES,
     ENABLED_SIGNS
 } from '../config.js';
-import { recognizeRune, itterativeAnalysis } from '../utils/runeRecognition.jsx';
+import { recognizeRune } from '../utils/runeRecognition.jsx';
 import {
     RECOGNIZERS,
     DEFAULT_RECOGNIZER_ID,
@@ -49,8 +49,6 @@ function DrawingCanvas() {
     const [recognitionResult, setRecognitionResult] = useState(null);
     const [isRecognizing, setIsRecognizing] = useState(false);
     const [isErasing, setIsErasing] = useState(false);
-    const [isSpellMenuOpen, setIsSpellMenuOpen] = useState(false);
-    const spellMenuRef = useRef(null);
     const [recognizerId, setRecognizerId] = useState(DEFAULT_RECOGNIZER_ID);
     const [isDebugMenuOpen, setIsDebugMenuOpen] = useState(false);
     const debugMenuRef = useRef(null);
@@ -62,15 +60,11 @@ function DrawingCanvas() {
     const [trainingMessage, setTrainingMessage] = useState('');
     const [templateOutput, setTemplateOutput] = useState('');
 
-    const activeRecognizer = getRecognizer(recognizerId);
-
     // Siegel-Auswahl + Element-Animations-POC.
     const [selectedSigilFile, setSelectedSigilFile] = useState(null);
     const [elementParams, setElementParams] = useState(null);
     const [igniteKey, setIgniteKey] = useState(0);
-    // Stärke der zuletzt gewirkten Attacke (0..100), aus der Zeichenqualität.
     const [attackStrength, setAttackStrength] = useState(null);
-    // Namen der Ring-Runen, die die Attacke modifiziert haben (für die Anzeige).
     const [modifierNames, setModifierNames] = useState([]);
 
     const selectedPreset = getPresetByFile(selectedSigilFile);
@@ -149,27 +143,6 @@ function DrawingCanvas() {
     useEffect(() => {
         getRecognizer(recognizerId).loadTemplates();
     }, [recognizerId]);
-
-    useEffect(() => {
-        if (!isSpellMenuOpen) return undefined;
-        const handlePointerDown = (event) => {
-            if (
-                spellMenuRef.current &&
-                !spellMenuRef.current.contains(event.target)
-            ) {
-                setIsSpellMenuOpen(false);
-            }
-        };
-        const handleKeyDown = (event) => {
-            if (event.key === 'Escape') setIsSpellMenuOpen(false);
-        };
-        document.addEventListener('pointerdown', handlePointerDown);
-        document.addEventListener('keydown', handleKeyDown);
-        return () => {
-            document.removeEventListener('pointerdown', handlePointerDown);
-            document.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [isSpellMenuOpen]);
 
     useEffect(() => {
         if (!isDebugMenuOpen) return undefined;
@@ -291,6 +264,9 @@ function DrawingCanvas() {
         setRecognitionResult(null);
         setAttackStrength(null);
         setModifierNames([]);
+        setSelectedSigilFile(null);
+        setElementParams(null);
+        setIsRecognizing(false);
     };
 
     const calculateCircleScore = () => {
@@ -337,6 +313,65 @@ function DrawingCanvas() {
         ctx.restore();
     };
 
+    const copyTemplateOutput = async () => {
+        if (!templateOutput) return;
+        try {
+            await navigator.clipboard.writeText(templateOutput);
+            setTrainingMessage('JSON in die Zwischenablage kopiert.');
+        } catch {
+            setTrainingMessage('Kopieren fehlgeschlagen.');
+        }
+    };
+
+    const captureSample = () => {
+        const stroke = extractRunePoints(pointsRef.current);
+        if (stroke.length < 4) {
+            setTrainingMessage('Zu wenig Punkte — bitte einen Runen-Strich zeichnen.');
+            return;
+        }
+        setSamples((previous) => [...previous, stroke]);
+        setTrainingMessage(`Sample ${samples.length + 1} aufgenommen.`);
+    };
+
+    const buildAverageTemplate = () => {
+        const name = trainingName.trim();
+        if (!name) {
+            setTrainingMessage('Bitte zuerst einen Runennamen eingeben.');
+            return;
+        }
+        if (!samples.length) {
+            setTrainingMessage('Noch keine Samples aufgenommen.');
+            return;
+        }
+        const template = createAveragedTemplate(name, samples);
+        setTemplateOutput(JSON.stringify(template, null, 2));
+        setTrainingMessage(
+            `Average-Template „${name}" mit ${samples.length} Samples erzeugt.`
+        );
+    };
+
+    const buildIndividualTemplates = () => {
+        const name = trainingName.trim();
+        if (!name) {
+            setTrainingMessage('Bitte zuerst einen Runennamen eingeben.');
+            return;
+        }
+        if (!samples.length) {
+            setTrainingMessage('Noch keine Samples aufgenommen.');
+            return;
+        }
+        const templates = samples.map((sample, index) =>
+            createTemplateFromStroke(`${name}_${index + 1}`, sample)
+        );
+        setTemplateOutput(JSON.stringify(templates, null, 2));
+        setTrainingMessage(`${templates.length} Einzel-Templates erzeugt.`);
+    };
+
+    const discardSamples = () => {
+        setSamples([]);
+        setTrainingMessage('Samples geleert.');
+    };
+
     const performRecognition = async () => {
         const canvas = canvasRef.current;
 
@@ -377,6 +412,19 @@ function DrawingCanvas() {
         }
     };
 
+    const hasSomethingToClear =
+        hasDrawing ||
+        score !== null ||
+        recognitionResult !== null ||
+        selectedSigilFile !== null ||
+        attackStrength !== null;
+
+    const isRecognitionError =
+        recognitionResult?.message?.includes('Fehler') ?? false;
+
+    const scoreTone =
+        score == null ? 'neutral' : score >= 80 ? 'good' : score >= 50 ? 'mid' : 'low';
+
     return (
         <div className="drawing">
             <div className="drawing__stage">
@@ -384,6 +432,7 @@ function DrawingCanvas() {
                     ref={canvasRef}
                     className="drawing__canvas"
                     style={{width: CANVAS_WIDTH, height: CANVAS_HEIGHT}}
+                    aria-label="Zeichenleinwand"
                     onMouseDown={startDrawing}
                     onMouseMove={draw}
                     onMouseUp={stopDrawing}
@@ -408,50 +457,171 @@ function DrawingCanvas() {
                 />
             </div>
 
-            <div className="drawing__actions">
-                <button
-                    type="button"
-                    className={
-                        'drawing__button drawing__button--secondary' +
-                        (isErasing ? ' drawing__button--active' : '')
-                    }
-                    onClick={() => setIsErasing((value) => !value)}
-                    aria-pressed={isErasing}
-                >
-                    {isErasing ? 'Radiergummi: an' : 'Radieren'}
-                </button>
-                <button
-                    type="button"
-                    className="drawing__button drawing__button--secondary"
-                    onClick={clearCanvas}
-                >
-                    Löschen
-                </button>
-                <button
-                    type="button"
-                    className="drawing__button drawing__button--secondary"
-                    onClick={performRecognition}
-                    disabled={!hasDrawing || isRecognizing}
-                >
-                    Runen erkennen
-                </button>
-                <button
-                    type="button"
-                    className="drawing__button drawing__button--primary"
-                    onClick={calculateCircleScore}
-                    disabled={!hasDrawing}
-                >
-                    Kreis bewerten
-                </button>
-            </div>
+            <nav className="drawing__toolbar" aria-label="Werkzeuge">
+                <div className="drawing__toolbar-group">
+                    <span className="drawing__toolbar-label">Werkzeug</span>
+                    <div className="drawing__toolbar-buttons">
+                        <button
+                            type="button"
+                            className={
+                                'drawing__button drawing__button--secondary' +
+                                (isErasing ? ' drawing__button--active' : '')
+                            }
+                            onClick={() => setIsErasing((value) => !value)}
+                            aria-pressed={isErasing}
+                        >
+                            {isErasing ? 'Radiergummi an' : 'Radieren'}
+                        </button>
+                        <button
+                            type="button"
+                            className="drawing__button drawing__button--secondary"
+                            onClick={clearCanvas}
+                            disabled={!hasSomethingToClear}
+                        >
+                            Löschen
+                        </button>
+                    </div>
+                </div>
+
+                <div className="drawing__toolbar-group">
+                    <span className="drawing__toolbar-label">Auswertung</span>
+                    <div className="drawing__toolbar-buttons">
+                        <button
+                            type="button"
+                            className="drawing__button drawing__button--primary"
+                            onClick={calculateCircleScore}
+                            disabled={!hasDrawing}
+                        >
+                            Kreis bewerten
+                        </button>
+                        <button
+                            type="button"
+                            className="drawing__button drawing__button--secondary"
+                            onClick={performRecognition}
+                            disabled={!hasDrawing || isRecognizing}
+                        >
+                            {isRecognizing ? 'Erkenne…' : 'Runen erkennen'}
+                        </button>
+                    </div>
+                </div>
+
+                <div className="drawing__toolbar-group drawing__toolbar-group--end">
+                    <div className="drawing__dropdown" ref={debugMenuRef}>
+                        <button
+                            type="button"
+                            className="drawing__button drawing__button--ghost"
+                            onClick={() => setIsDebugMenuOpen((open) => !open)}
+                            aria-haspopup="menu"
+                            aria-expanded={isDebugMenuOpen}
+                        >
+                            Entwickler ▾
+                        </button>
+                        {isDebugMenuOpen && (
+                            <div
+                                className="drawing__menu drawing__menu--debug"
+                                role="menu"
+                            >
+                                <p className="drawing__menu-label">Erkenner</p>
+                                {RECOGNIZERS.map((recognizer) => (
+                                    <label
+                                        key={recognizer.id}
+                                        className="drawing__menu-radio"
+                                    >
+                                        <input
+                                            type="radio"
+                                            name="recognizer"
+                                            checked={recognizerId === recognizer.id}
+                                            onChange={() =>
+                                                setRecognizerId(recognizer.id)
+                                            }
+                                        />
+                                        {recognizer.label}
+                                    </label>
+                                ))}
+                                <hr className="drawing__menu-divider" />
+                                <label className="drawing__menu-radio">
+                                    <input
+                                        type="checkbox"
+                                        checked={isTrainingMode}
+                                        onChange={(event) =>
+                                            setIsTrainingMode(event.target.checked)
+                                        }
+                                    />
+                                    Template-Trainer
+                                </label>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </nav>
+
+            <section
+                className="drawing__status"
+                aria-live="polite"
+                aria-label="Status"
+            >
+                {isRecognizing && (
+                    <p className="drawing__status-loading" role="status">
+                        <span className="drawing__spinner" aria-hidden="true" />
+                        Runen werden erkannt…
+                    </p>
+                )}
+
+                {!isRecognizing && score === null && !recognitionResult && (
+                    <p className="drawing__status-hint">
+                        Zeichne einen Kreis mit Runen, bewerte die Form oder starte
+                        die Erkennung.
+                    </p>
+                )}
+
+                {score !== null && (
+                    <div className={`drawing__score drawing__score--${scoreTone}`}>
+                        <div className="drawing__score-header">
+                            <span className="drawing__score-label">Kreisqualität</span>
+                            <strong className="drawing__score-value">{score}%</strong>
+                        </div>
+                        <div
+                            className="drawing__score-track"
+                            role="meter"
+                            aria-valuenow={score}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                            aria-label={`Kreis zu ${score} Prozent perfekt`}
+                        >
+                            <div
+                                className="drawing__score-fill"
+                                style={{width: `${score}%`}}
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {attackStrength !== null && selectedPreset && (
+                    <div className="drawing__attack">
+                        <span className="drawing__attack-label">
+                            Attacke · {selectedPreset.label}
+                        </span>
+                        <strong className="drawing__attack-value">
+                            {attackStrength}% Stärke
+                        </strong>
+                    </div>
+                )}
+
+                {modifierNames.length > 0 && (
+                    <p className="drawing__modifiers">
+                        Modifier:{' '}
+                        <strong>{modifierNames.join(', ')}</strong>
+                    </p>
+                )}
+            </section>
 
             {isTrainingMode && (
-                <div className="drawing__trainer">
+                <section className="drawing__trainer" aria-label="Template-Trainer">
                     <h2 className="drawing__trainer-title">Template-Trainer</h2>
                     <p className="drawing__trainer-hint">
-                        Rune benennen, dann mehrmals (≈5×) mit gleichem
-                        Startpunkt und gleicher Richtung zeichnen und je „Sample
-                        aufnehmen".
+                        Runenname vergeben, dann mehrmals (≈5×) mit gleichem
+                        Startpunkt und gleicher Richtung zeichnen und je Sample
+                        aufnehmen.
                     </p>
                     <label className="drawing__trainer-field">
                         Runenname
@@ -500,9 +670,7 @@ function DrawingCanvas() {
                         </button>
                     </div>
                     {trainingMessage && (
-                        <p className="drawing__trainer-message">
-                            {trainingMessage}
-                        </p>
+                        <p className="drawing__trainer-message">{trainingMessage}</p>
                     )}
                     {templateOutput && (
                         <div className="drawing__trainer-output">
@@ -524,113 +692,124 @@ function DrawingCanvas() {
                             />
                         </div>
                     )}
-                </div>
+                </section>
             )}
 
-            <div className="drawing__result" aria-live="polite">
-                {score === null ? (
-                    <p>
-                        Zeichne etwas und werte den Kreis aus oder wirke einen
-                        Zauber.
+            {recognitionResult && !isRecognizing && (
+                <section
+                    className={
+                        'drawing__recognition' +
+                        (isRecognitionError
+                            ? ' drawing__recognition--error'
+                            : ' drawing__recognition--success')
+                    }
+                    aria-label="Erkennungsergebnis"
+                >
+                    <p className="drawing__recognition-message">
+                        {recognitionResult.message}
                     </p>
-                ) : (
-                    <p>
-                        Kreis: <strong>{score}%</strong> perfekt
-                    </p>
-                )}
-                {attackStrength !== null && selectedPreset && (
-                    <p>
-                        Attacke ({selectedPreset.label}):{' '}
-                        <strong>{attackStrength}%</strong> Stärke
-                    </p>
-                )}
-                {modifierNames.length > 0 && (
-                    <p>
-                        Modifier: <strong>{modifierNames.join(', ')}</strong>
-                    </p>
-                )}
-            </div>
 
-            {isRecognizing && (
-                <div className="drawing__recognition">
-                    <p>Wirke Zauber…</p>
-                </div>
-            )}
-
-            {recognitionResult && (
-                <div className="drawing__recognition drawing__recognition--success">
-                    <p>{recognitionResult.message}</p>
                     {recognitionResult.centerSign && (
-                        <div className="drawing__extracted-runes drawing__extracted-runes--center">
-                            <div className="drawing__extracted-rune drawing__extracted-rune--center">
+                        <div className="drawing__results drawing__results--center">
+                            <h3 className="drawing__results-heading">Mitte-Siegel</h3>
+                            <article className="drawing__result-card drawing__result-card--center">
                                 <img
                                     src={recognitionResult.centerSign.image}
-                                    alt="Center Sigil"
-                                    className="drawing__extracted-rune-image"
+                                    alt="Erkanntes Mitte-Siegel"
+                                    className="drawing__result-crop"
                                 />
                                 {recognitionResult.centerSign.match ? (
-                                    <div className="drawing__match-info">
+                                    <div className="drawing__match">
                                         <img
-                                            src={recognitionResult.centerSign.match.sign.imagePath}
-                                            alt={recognitionResult.centerSign.match.sign.name}
-                                            className="drawing__match-image"
-                                            style={{ transform: `rotate(${recognitionResult.centerSign.match.rotation}deg)` }}
+                                            src={
+                                                recognitionResult.centerSign.match.sign
+                                                    .imagePath
+                                            }
+                                            alt={
+                                                recognitionResult.centerSign.match.sign
+                                                    .name
+                                            }
+                                            className="drawing__match-ref"
+                                            style={{
+                                                transform: `rotate(${recognitionResult.centerSign.match.rotation}deg)`
+                                            }}
                                         />
-                                        <span className="drawing__match-name">{recognitionResult.centerSign.match.sign.name}</span>
-                                        <span className="drawing__match-confidence">{recognitionResult.centerSign.match.confidence}%</span>
-                                        {recognitionResult.centerSign.match.rotation !== 0 && (
-                                            <span className="drawing__match-rotation">Rotation: {recognitionResult.centerSign.match.rotation}°</span>
-                                        )}
-                                        <span className="drawing__match-clock">Position: Mitte</span>
+                                        <span className="drawing__match-name">
+                                            {
+                                                recognitionResult.centerSign.match.sign
+                                                    .name
+                                            }
+                                        </span>
+                                        <span className="drawing__match-meta">
+                                            {
+                                                recognitionResult.centerSign.match
+                                                    .confidence
+                                            }
+                                            % · Mitte
+                                            {recognitionResult.centerSign.match
+                                                .rotation !== 0 &&
+                                                ` · ${recognitionResult.centerSign.match.rotation}°`}
+                                        </span>
                                     </div>
                                 ) : (
-                                    <div className="drawing__match-info drawing__match-info--unknown">
-                                        <span className="drawing__extracted-rune-label">Siegel nicht erkannt</span>
-                                        <span className="drawing__match-clock">Position: Mitte</span>
-                                    </div>
+                                    <p className="drawing__match drawing__match--unknown">
+                                        Siegel nicht erkannt · Mitte
+                                    </p>
                                 )}
+                            </article>
+                        </div>
+                    )}
+
+                    {recognitionResult.matches?.length > 0 && (
+                        <div className="drawing__results">
+                            <h3 className="drawing__results-heading">Ring-Runen</h3>
+                            <div className="drawing__results-grid">
+                                {recognitionResult.matches.map((item, index) => (
+                                    <article
+                                        key={index}
+                                        className="drawing__result-card"
+                                    >
+                                        <img
+                                            src={item.image}
+                                            alt={`Erkannte Rune ${index + 1}`}
+                                            className="drawing__result-crop"
+                                        />
+                                        {item.match ? (
+                                            <div className="drawing__match">
+                                                <img
+                                                    src={item.match.rune.imagePath}
+                                                    alt={item.match.rune.name}
+                                                    className="drawing__match-ref"
+                                                    style={{
+                                                        transform: `rotate(${item.match.rotation}deg)`
+                                                    }}
+                                                />
+                                                <span className="drawing__match-name">
+                                                    {item.match.rune.name}
+                                                </span>
+                                                <span className="drawing__match-meta">
+                                                    {item.match.confidence}% ·{' '}
+                                                    {item.clockPosition} Uhr
+                                                    {item.match.rotation !== 0 &&
+                                                        ` · ${item.match.rotation}°`}
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            <p className="drawing__match drawing__match--unknown">
+                                                Nicht erkannt · {item.clockPosition}{' '}
+                                                Uhr
+                                            </p>
+                                        )}
+                                    </article>
+                                ))}
                             </div>
                         </div>
                     )}
-                    {recognitionResult.matches?.length > 0 && (
-                        <div className="drawing__extracted-runes">
-                            {recognitionResult.matches.map((item, index) => (
-                                <div key={index} className="drawing__extracted-rune">
-                                    <img
-                                        src={item.image}
-                                        alt={`Rune ${index + 1}`}
-                                        className="drawing__extracted-rune-image"
-                                    />
-                                    {item.match ? (
-                                        <div className="drawing__match-info">
-                                            <img
-                                                src={item.match.rune.imagePath}
-                                                alt={item.match.rune.name}
-                                                className="drawing__match-image"
-                                                style={{ transform: `rotate(${item.match.rotation}deg)` }}
-                                            />
-                                            <span className="drawing__match-name">{item.match.rune.name}</span>
-                                            <span className="drawing__match-confidence">{item.match.confidence}%</span>
-                                            {item.match.rotation !== 0 && (
-                                                <span className="drawing__match-rotation">Rotation: {item.match.rotation}°</span>
-                                            )}
-                                            <span className="drawing__match-clock">Position: {item.clockPosition} Uhr</span>
-                                        </div>
-                                    ) : (
-                                        <div className="drawing__match-info drawing__match-info--unknown">
-                                            <span className="drawing__extracted-rune-label">Nicht erkannt</span>
-                                            <span className="drawing__match-clock">Position: {item.clockPosition} Uhr</span>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                </section>
             )}
 
             {selectedPreset && elementParams && (
-                <div className="drawing__fire">
+                <section className="drawing__element" aria-label="Element-Animation">
                     {(() => {
                         const SHADER_STAGES = {water: WaterStage, fire: FireStage};
                         const StageComponent =
@@ -653,7 +832,7 @@ function DrawingCanvas() {
                         onReset={() => setElementParams(selectedPreset.defaults)}
                         onReplay={() => setIgniteKey((key) => key + 1)}
                     />
-                </div>
+                </section>
             )}
         </div>
     );

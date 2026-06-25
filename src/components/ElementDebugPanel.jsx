@@ -1,6 +1,10 @@
 import {PARTICLE_PARAM_CONTROLS} from '../config/elementPresets.js';
 import './ElementDebugPanel.css';
 
+const roundToTwoDecimals = (value) => Math.round(Number(value) * 100) / 100;
+
+const formatDebugValue = (value) => roundToTwoDecimals(value).toFixed(2);
+
 // Live-Regler zum Testen der Partikel-Parameter eines Elements.
 function ElementDebugPanel({title, params, onChange, onReset, onReplay}) {
     return (
@@ -17,10 +21,12 @@ function ElementDebugPanel({title, params, onChange, onReset, onReplay}) {
                         step={step}
                         value={params[key]}
                         onChange={(event) =>
-                            onChange(key, Number(event.target.value))
+                            onChange(key, roundToTwoDecimals(event.target.value))
                         }
                     />
-                    <span className="element-debug__value">{params[key]}</span>
+                    <span className="element-debug__value">
+                        {formatDebugValue(params[key])}
+                    </span>
                 </label>
             ))}
             <div className="element-debug__actions">

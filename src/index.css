@@ -1,28 +1,85 @@
 :root {
-  font-family: "Courier New", Courier, monospace;
-  line-height: 1.5;
-  font-weight: 400;
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #1a1a2e;
+    --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
+        sans-serif;
+    --font-mono: ui-monospace, 'Cascadia Code', 'Courier New', monospace;
+
+    --color-bg: #0f0f18;
+    --color-bg-elevated: #171724;
+    --color-bg-muted: #1e1e2e;
+    --color-surface: #252538;
+    --color-border: #3a3a52;
+    --color-border-subtle: #2a2a40;
+
+    --color-text: rgba(255, 255, 255, 0.92);
+    --color-text-muted: rgba(255, 255, 255, 0.62);
+    --color-text-faint: rgba(255, 255, 255, 0.42);
+
+    --color-accent: #7f5af0;
+    --color-accent-hover: #9270f5;
+    --color-success: #2cb67d;
+    --color-warning: #e6a817;
+    --color-danger: #e53170;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --radius-full: 999px;
+
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.28);
+    --shadow-focus: 0 0 0 3px rgba(127, 90, 240, 0.45);
+
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 0.75rem;
+    --space-lg: 1rem;
+    --space-xl: 1.5rem;
+    --space-2xl: 2rem;
+
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    font-weight: 400;
+    color-scheme: dark;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
 }
 
-* {
-  box-sizing: border-box;
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
 button,
 input,
 select,
 textarea {
-  font-family: inherit;
+    font: inherit;
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
+    margin: 0;
+    min-height: 100vh;
 }
 
 #root {
-  min-height: 100vh;
+    min-height: 100vh;
+}
+
+:focus-visible {
+    outline: none;
+    box-shadow: var(--shadow-focus);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

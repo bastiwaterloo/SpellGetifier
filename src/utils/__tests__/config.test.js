@@ -14,14 +14,14 @@ describe('iterative detection constants', () => {
   });
 
   it('defines the expected sizes', () => {
-    expect(ITERATIVE_SIZES).toEqual([16, 24, 32, 48, 64, 96, 128]);
+    expect(ITERATIVE_SIZES).toEqual([32, 48, 64, 96, 128, 192, 256]);
   });
 
-  it('defines 72 rotations stepping by 5 degrees from 0 to 355', () => {
-    expect(ITERATIVE_ROTATIONS).toHaveLength(72);
+  it('defines 36 rotations stepping by 10 degrees from 0 to 350', () => {
+    expect(ITERATIVE_ROTATIONS).toHaveLength(36);
     expect(ITERATIVE_ROTATIONS[0]).toBe(0);
-    expect(ITERATIVE_ROTATIONS[1]).toBe(5);
-    expect(ITERATIVE_ROTATIONS[71]).toBe(355);
+    expect(ITERATIVE_ROTATIONS[1]).toBe(10);
+    expect(ITERATIVE_ROTATIONS[35]).toBe(350);
   });
 
   it('defines scoring constants', () => {

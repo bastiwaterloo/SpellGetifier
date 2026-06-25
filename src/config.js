@@ -123,7 +123,10 @@ export const DILATION_RADIUS = 2
 // a fragment of a larger drawn glyph) is penalized — while genuinely isolated
 // runes keep clean margins and still score high. This is what lets multi-rune
 // detection reject fragment matches.
-export const TEMPLATE_MARGIN_FACTOR = 1.5
+// NOTE: the padded template must fit the working canvas for the 'valid' conv,
+// i.e. max(ITERATIVE_SIZES) * √2 * TEMPLATE_MARGIN_FACTOR <= CANVAS_WIDTH.
+// With a 256px max size this caps the factor at ~1.38.
+export const TEMPLATE_MARGIN_FACTOR = 1.3
 
 // How many rotations to score in a single batched convolution. Each rune size's
 // 72 rotations are processed in sequential sub-batches of this many channels,
@@ -131,8 +134,8 @@ export const TEMPLATE_MARGIN_FACTOR = 1.5
 // textures are released between sub-batches.
 export const ROTATION_BATCH_SIZE = 24
 
-export const ITERATIVE_SIZES = [16, 24, 32, 48, 64, 96, 128]
-export const ITERATIVE_ROTATIONS = Array.from({ length: 72 }, (_, i) => i * 5)
+export const ITERATIVE_SIZES = [32, 48, 64, 96, 128, 192, 256]
+export const ITERATIVE_ROTATIONS = Array.from({ length: 36 }, (_, i) => i * 10)
 // Minimum IoU (intersection-over-union) for a template to count as a finding.
 // IoU runs lower than the old coverage score — a near-perfect match is ~0.8,
 // so this is set below that to admit imperfect freehand drawings.

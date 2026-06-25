@@ -132,7 +132,7 @@ export const ELEMENT_PRESETS = {
       intensity: 1
     }
   },
-  Water: {
+  water_simple: {
     id: 'water',
     label: 'Wasser',
     renderMode: 'shader',

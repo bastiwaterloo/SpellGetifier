@@ -75,7 +75,7 @@ export const SIGN_NAMES = [
   "Torchstag_Sign",
   "Unburning_flame_sigil",
   "Valance_Leech_Sign",
-  "Water",
+  "water_simple",
   "Whorling_Winds",
   "Wind_(redirect)",
   "Wind_Underfoot",

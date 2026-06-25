@@ -108,6 +108,25 @@ function spawnJet(p, baseY) {
   };
 }
 
+// Spawn fine mist near the fountain crown: small, slow, long-lived, drifty.
+function spawnMist(p, baseY) {
+  const angle = Math.random() * Math.PI * 2;
+  const out = Math.random() * 0.4 * p.spread;
+  return {
+    x: Math.cos(angle) * out,
+    y: baseY + rand(0.8, 1.6),
+    z: Math.sin(angle) * out,
+    vx: rand(-0.15, 0.15),
+    vy: rand(0.05, 0.25),
+    vz: rand(-0.15, 0.15),
+    age: 0,
+    life: p.flameHeight * rand(1.6, 2.4),
+    seed: Math.random(),
+    size: sizeWorld(p.particleSize) * rand(0.35, 0.6),
+    kind: 2
+  };
+}
+
 function WaterStage({preset, params, igniteKey}) {
   const mountRef = useRef(null);
   const paramsRef = useRef(params);
@@ -153,7 +172,7 @@ function WaterStage({preset, params, igniteKey}) {
     const particles = new Array(MAX_PARTICLES);
 
     const respawn = (i, p, staggered) => {
-      const s = spawnJet(p, baseY);
+      const s = i % 6 === 0 ? spawnMist(p, baseY) : spawnJet(p, baseY);
       if (staggered) s.age = Math.random() * s.life;
       particles[i] = s;
     };
@@ -210,8 +229,9 @@ function WaterStage({preset, params, igniteKey}) {
 
         part.vx += Math.sin(time * 3 + part.seed * 10) * p.turbulence * dt;
         part.vz += Math.cos(time * 2.3 + part.seed * 7) * p.turbulence * dt;
+        const gFactor = part.kind === 2 ? 0.15 : 1.0;
         part.vx += gx * dt;
-        part.vy += gy * dt;
+        part.vy += gy * gFactor * dt;
         part.vz += gz * dt;
 
         part.x += part.vx * speed * dt;

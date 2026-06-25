@@ -22,10 +22,11 @@ import {
     createAveragedTemplate
 } from '../utils/unistrokeRecognition.jsx';
 import {calculateCircleScore as getCircleScore} from '../utils/utils.ts';
+import {runesToSpell} from '../utils/spell.js';
 import RuneAlphabet from './RuneAlphabet.jsx';
 import './DrawingCanvas.css';
 
-function DrawingCanvas() {
+function DrawingCanvas({onSpellCast}) {
     const canvasRef = useRef(null);
     const contextRef = useRef(null);
     const isDrawingRef = useRef(false);
@@ -256,6 +257,9 @@ function DrawingCanvas() {
             if (result.boxes) {
                 drawBoundingBoxes(result.boxes);
             }
+            // Aus der Liste der erkannten Runen den resultierenden Zauber
+            // ableiten und nach oben (App) melden.
+            onSpellCast?.(runesToSpell(result.matches ?? []));
         } catch (error) {
             console.error('Fehler bei der Runen-Erkennung:', error);
             setRecognitionResult({

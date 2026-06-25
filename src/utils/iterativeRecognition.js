@@ -11,7 +11,7 @@ import {
   DILATION_RADIUS,
 } from '../config.js';
 import { imageDataToMask, dilateMask } from './maskUtils.js';
-import { loadRuneImages, rasterizeRotatedScaled } from './templateMasks.js';
+import { loadTemplateImages, rasterizeRotatedScaled } from './templateMasks.js';
 import { computeBatchedScoreMap, getBackendReady } from './scoreMap.js';
 import { dedupeFindings } from './findingDedup.js';
 
@@ -49,7 +49,7 @@ export async function detectRunes(canvas) {
   const candidates = [];
 
   try {
-    const runes = await loadRuneImages();
+    const runes = await loadTemplateImages();
     let batchCount = 0;
 
     for (const rune of runes) {
@@ -82,6 +82,7 @@ export async function detectRunes(canvas) {
               candidates.push({
                 id: rune.id,
                 name: rune.name,
+                type: rune.type,
                 imagePath: rune.imagePath,
                 size,
                 rotation: rotations[c],

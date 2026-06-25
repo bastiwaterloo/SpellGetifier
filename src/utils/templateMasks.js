@@ -1,6 +1,36 @@
-import { ENABLED_RUNES, RUNES_PATH } from '../config.js';
+import {
+  ENABLED_RUNES,
+  ENABLED_SIGNS,
+  RUNES_PATH,
+  SIGNS_PATH,
+} from '../config.js';
 
 let cache = null;
+
+// Pure list of every template the iterative detector scans, with no image
+// loading. Combines the enabled runes/modifiers ("sign", from RUNES_PATH) and
+// the enabled sigils ("sigil", from SIGNS_PATH). ids are 1-based and sequential
+// across the whole list so they stay unique. Kept separate from image loading
+// so the selection logic is unit-testable without a browser Image.
+export function buildTemplateDescriptors() {
+  const groups = [
+    { items: ENABLED_RUNES, type: 'sign', path: RUNES_PATH },
+    { items: ENABLED_SIGNS, type: 'sigil', path: SIGNS_PATH },
+  ];
+
+  const descriptors = [];
+  for (const { items, type, path } of groups) {
+    for (const { file, label } of items) {
+      descriptors.push({
+        id: descriptors.length + 1,
+        name: label,
+        type,
+        imagePath: `${path}/${file}.png`,
+      });
+    }
+  }
+  return descriptors;
+}
 
 function loadImage(src) {
   return new Promise((resolve, reject) => {
@@ -31,24 +61,21 @@ export function rasterizeRotatedScaled(image, size, rotationDeg, marginFactor = 
   return ctx.getImageData(0, 0, dim, dim);
 }
 
-export async function loadRuneImages() {
+export async function loadTemplateImages() {
   if (cache) return cache;
 
-  // Only scan runes that are active in config/config.json (ENABLED_RUNES);
-  // deactivated runes are excluded so the detector never matches against them.
-  // The display name comes from the config label, not the file name.
-  const runes = [];
-  for (let index = 0; index < ENABLED_RUNES.length; index++) {
-    const { file, label } = ENABLED_RUNES[index];
-    const imagePath = `${RUNES_PATH}/${file}.png`;
-    runes.push({
-      id: index + 1,
-      name: label,
-      imagePath,
-      image: await loadImage(imagePath),
+  // Load every active template (enabled runes + enabled sigils) from
+  // buildTemplateDescriptors; deactivated entries are excluded so the detector
+  // never matches against them. Each entry keeps its type so findings can be
+  // tagged sign/sigil downstream.
+  const templates = [];
+  for (const descriptor of buildTemplateDescriptors()) {
+    templates.push({
+      ...descriptor,
+      image: await loadImage(descriptor.imagePath),
     });
   }
 
-  cache = runes;
+  cache = templates;
   return cache;
 }

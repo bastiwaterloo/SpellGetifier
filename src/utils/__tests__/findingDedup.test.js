@@ -46,6 +46,11 @@ describe('dedupeFindings', () => {
     expect(out[0].name).toBe('Convergence');
   });
 
+  it('preserves a type field on the kept finding', () => {
+    const out = dedupeFindings([make({ type: 'sigil', name: 'Fire' })], 0.5);
+    expect(out[0].type).toBe('sigil');
+  });
+
   it('suppresses small fragment matches inside a larger highest-scoring rune', () => {
     // The big rune scores highest and is kept first; its max-size radius
     // (0.5 * 128 = 64) absorbs the nearby smaller fragment hits.

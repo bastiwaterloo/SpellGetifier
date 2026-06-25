@@ -218,6 +218,20 @@ function WaterStage({preset, params, igniteKey}) {
         part.y += part.vy * speed * dt;
         part.z += part.vz * speed * dt;
 
+        // Jet droplet hits the base -> shatter in place into short foam.
+        if (part.kind === 0 && part.y <= baseY && part.vy < 0) {
+          const a = Math.random() * Math.PI * 2;
+          const sp = rand(0.2, 0.6);
+          part.kind = 1;
+          part.y = baseY;
+          part.vx = Math.cos(a) * sp;
+          part.vz = Math.sin(a) * sp;
+          part.vy = rand(0.6, 1.1);
+          part.age = 0;
+          part.life = rand(0.25, 0.5);
+          part.size = sizeWorld(p.particleSize) * rand(0.5, 0.9);
+        }
+
         const o = i * 3;
         offsets[o] = part.x;
         offsets[o + 1] = part.y;

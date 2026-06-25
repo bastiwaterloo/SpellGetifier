@@ -5,9 +5,22 @@ import {
     STROKE_COLOR,
     STROKE_WIDTH,
     ERASER_WIDTH,
-    RUNES_PATH
+    RUNES_PATH,
+    SIGNS_PATH,
+    ENABLED_RUNES,
+    ENABLED_SIGNS
 } from '../config.js';
-import {recognizeRune, loadRuneTemplates} from '../utils/runeRecognition.jsx';
+import {itterativeAnalysis} from '../utils/runeRecognition.jsx';
+import {
+    RECOGNIZERS,
+    DEFAULT_RECOGNIZER_ID,
+    getRecognizer
+} from '../utils/recognizers.js';
+import {
+    extractRunePoints,
+    createTemplateFromStroke,
+    createAveragedTemplate
+} from '../utils/unistrokeRecognition.jsx';
 import {calculateCircleScore as getCircleScore} from '../utils/utils.ts';
 import RuneAlphabet from './RuneAlphabet.jsx';
 import './DrawingCanvas.css';
@@ -25,6 +38,20 @@ function DrawingCanvas() {
     const [recognitionResult, setRecognitionResult] = useState(null);
     const [isRecognizing, setIsRecognizing] = useState(false);
     const [isErasing, setIsErasing] = useState(false);
+    const [isSpellMenuOpen, setIsSpellMenuOpen] = useState(false);
+    const spellMenuRef = useRef(null);
+    const [recognizerId, setRecognizerId] = useState(DEFAULT_RECOGNIZER_ID);
+    const [isDebugMenuOpen, setIsDebugMenuOpen] = useState(false);
+    const debugMenuRef = useRef(null);
+
+    // Trainer: Proben einer Rune sammeln und daraus Templates erzeugen.
+    const [isTrainingMode, setIsTrainingMode] = useState(false);
+    const [trainingName, setTrainingName] = useState('');
+    const [samples, setSamples] = useState([]);
+    const [trainingMessage, setTrainingMessage] = useState('');
+    const [templateOutput, setTemplateOutput] = useState('');
+
+    const activeRecognizer = getRecognizer(recognizerId);
 
     // Canvas mit fester Größe einrichten (HiDPI-fähig).
     const setupCanvas = useCallback(() => {
@@ -45,8 +72,54 @@ function DrawingCanvas() {
 
     useEffect(() => {
         setupCanvas();
-        loadRuneTemplates();
     }, [setupCanvas]);
+
+    // Vorlagen/Beschreibungen des aktiven Recognizers vorladen.
+    useEffect(() => {
+        getRecognizer(recognizerId).loadTemplates();
+    }, [recognizerId]);
+
+    useEffect(() => {
+        if (!isSpellMenuOpen) return undefined;
+        const handlePointerDown = (event) => {
+            if (
+                spellMenuRef.current &&
+                !spellMenuRef.current.contains(event.target)
+            ) {
+                setIsSpellMenuOpen(false);
+            }
+        };
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') setIsSpellMenuOpen(false);
+        };
+        document.addEventListener('pointerdown', handlePointerDown);
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('pointerdown', handlePointerDown);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isSpellMenuOpen]);
+
+    useEffect(() => {
+        if (!isDebugMenuOpen) return undefined;
+        const handlePointerDown = (event) => {
+            if (
+                debugMenuRef.current &&
+                !debugMenuRef.current.contains(event.target)
+            ) {
+                setIsDebugMenuOpen(false);
+            }
+        };
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') setIsDebugMenuOpen(false);
+        };
+        document.addEventListener('pointerdown', handlePointerDown);
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('pointerdown', handlePointerDown);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isDebugMenuOpen]);
 
     // Kürzester Abstand eines Punktes zur Strecke a–b.
     const distanceToSegment = (point, a, b) => {
@@ -178,21 +251,19 @@ function DrawingCanvas() {
         setRecognitionResult(null);
 
         try {
-            const result = await recognizeRune(canvas);
+            const result = await spell(input);
             setRecognitionResult(result);
             if (result.boxes) {
                 drawBoundingBoxes(result.boxes);
             }
         } catch (error) {
-            console.error('Fehler bei der Runen-Erkennung:', error);
+            console.error('Fehler beim Wirken des Zaubers:', error);
             setRecognitionResult({
                 count: 0,
                 boxes: [],
                 images: [],
                 message: 'Fehler bei der Erkennung'
             });
-        } finally {
-            setIsRecognizing(false);
         }
     };
 
@@ -211,7 +282,18 @@ function DrawingCanvas() {
                     onTouchMove={draw}
                     onTouchEnd={stopDrawing}
                 />
-                <RuneAlphabet />
+                <RuneAlphabet
+                    title="Siegel"
+                    items={ENABLED_SIGNS}
+                    path={SIGNS_PATH}
+                    side="left"
+                />
+                <RuneAlphabet
+                    title="Runen"
+                    items={ENABLED_RUNES}
+                    path={RUNES_PATH}
+                    side="right"
+                />
             </div>
 
             <div className="drawing__actions">
@@ -247,13 +329,98 @@ function DrawingCanvas() {
                     onClick={calculateCircleScore}
                     disabled={!hasDrawing}
                 >
-                    Auswerten
+                    Kreis bewerten
                 </button>
             </div>
 
+            {isTrainingMode && (
+                <div className="drawing__trainer">
+                    <h2 className="drawing__trainer-title">Template-Trainer</h2>
+                    <p className="drawing__trainer-hint">
+                        Rune benennen, dann mehrmals (≈5×) mit gleichem
+                        Startpunkt und gleicher Richtung zeichnen und je „Sample
+                        aufnehmen".
+                    </p>
+                    <label className="drawing__trainer-field">
+                        Runenname
+                        <input
+                            type="text"
+                            className="drawing__trainer-input"
+                            value={trainingName}
+                            placeholder="z. B. Feuer"
+                            onChange={(event) =>
+                                setTrainingName(event.target.value)
+                            }
+                        />
+                    </label>
+                    <div className="drawing__trainer-actions">
+                        <button
+                            type="button"
+                            className="drawing__button drawing__button--secondary"
+                            onClick={captureSample}
+                            disabled={!hasDrawing}
+                        >
+                            Sample aufnehmen ({samples.length})
+                        </button>
+                        <button
+                            type="button"
+                            className="drawing__button drawing__button--secondary"
+                            onClick={buildAverageTemplate}
+                            disabled={!samples.length}
+                        >
+                            Average-Template
+                        </button>
+                        <button
+                            type="button"
+                            className="drawing__button drawing__button--secondary"
+                            onClick={buildIndividualTemplates}
+                            disabled={!samples.length}
+                        >
+                            Einzel-Templates
+                        </button>
+                        <button
+                            type="button"
+                            className="drawing__button drawing__button--secondary"
+                            onClick={discardSamples}
+                            disabled={!samples.length}
+                        >
+                            Samples leeren
+                        </button>
+                    </div>
+                    {trainingMessage && (
+                        <p className="drawing__trainer-message">
+                            {trainingMessage}
+                        </p>
+                    )}
+                    {templateOutput && (
+                        <div className="drawing__trainer-output">
+                            <div className="drawing__trainer-output-head">
+                                <span>JSON für runeTemplates.ts</span>
+                                <button
+                                    type="button"
+                                    className="drawing__button drawing__button--secondary"
+                                    onClick={copyTemplateOutput}
+                                >
+                                    Kopieren
+                                </button>
+                            </div>
+                            <textarea
+                                className="drawing__trainer-textarea"
+                                readOnly
+                                value={templateOutput}
+                                rows={10}
+                            />
+                        </div>
+                    )}
+                </div>
+            )}
+
             <div className="drawing__result" aria-live="polite">
                 {score === null ? (
-                    <p>Zeichne eine Rune und klicke dann auf Speichern.</p>
+                    <p>
+                        Zeichne etwas und werte den Kreis aus oder wirke einen
+                        Zauber.
+                    </p>
                 ) : (
                     <p>
                         Score: <strong>{score}</strong> von 100
@@ -263,7 +430,7 @@ function DrawingCanvas() {
 
             {isRecognizing && (
                 <div className="drawing__recognition">
-                    <p>Erkenne Rune...</p>
+                    <p>Wirke Zauber…</p>
                 </div>
             )}
 
@@ -285,6 +452,16 @@ function DrawingCanvas() {
                                 </div>
                             ))}
                         </div>
+                    )}
+                    {recognitionResult.findings && recognitionResult.findings.length > 0 && (
+                        <ul className="drawing__findings">
+                            {recognitionResult.findings.map((finding, index) => (
+                                <li key={index} className="drawing__finding">
+                                    <strong>{finding.name}</strong>
+                                    {` · ${finding.size}px · (${Math.round(finding.x)}, ${Math.round(finding.y)}) · ${finding.rotation}° · ${finding.score}%`}
+                                </li>
+                            ))}
+                        </ul>
                     )}
                 </div>
             )}

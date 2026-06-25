@@ -1,5 +1,6 @@
 import { RUNES_PATH, RUNE_NAMES, RUNE_COUNT } from '../config.js';
 import { callGeminiVision, parseJsonResponse } from './geminiApi.jsx';
+import { detectRunes } from './iterativeRecognition.js';
 
 let runeDescriptions = null;
 
@@ -311,4 +312,9 @@ export async function recognizeRune(canvas) {
             message: `Fehler: ${error.message}`
         };
     }
+}
+
+// Iterativer Abgleich (lokal, ohne API): findet alle Runen im Bild.
+export async function itterativeAnalysis(canvas) {
+    return detectRunes(canvas);
 }

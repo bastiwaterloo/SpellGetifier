@@ -12,22 +12,35 @@
     justify-content: center;
 }
 
-/* Leinwand bleibt zentriert; die Runen werden rechts daneben gelegt,
-   ohne die Zentrierung der Leinwand zu beeinflussen. */
+/* Leinwand bleibt zentriert; die Zeichen werden links, die Runen rechts
+   daneben gelegt, ohne die Zentrierung der Leinwand zu beeinflussen. */
 .drawing__stage .rune-alphabet {
     position: absolute;
     top: 0;
+}
+
+.drawing__stage .rune-alphabet--right {
     left: calc(100% + 1rem);
+}
+
+.drawing__stage .rune-alphabet--left {
+    right: calc(100% + 1rem);
 }
 
 @media (max-width: 900px) {
     .drawing__stage {
         flex-wrap: wrap;
+        justify-content: center;
         gap: 1rem;
     }
 
     .drawing__stage .rune-alphabet {
         position: static;
+    }
+
+    /* Reihenfolge auf schmalen Schirmen: Zeichen, Leinwand, Runen. */
+    .drawing__stage .rune-alphabet--left {
+        order: -1;
     }
 }
 

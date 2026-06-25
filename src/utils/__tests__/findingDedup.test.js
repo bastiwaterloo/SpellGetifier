@@ -32,4 +32,20 @@ describe('dedupeFindings', () => {
     );
     expect(out).toHaveLength(2);
   });
+
+  it('keeps the larger rune and suppresses a higher-scoring small one inside it', () => {
+    // A small 24px finding scores higher than a big 128px finding that contains
+    // it. The big finding's radius (0.5 * 128 = 64) covers the small one's
+    // center (~30px away), so only the larger rune survives.
+    const out = dedupeFindings(
+      [
+        make({ name: 'Bend', size: 128, x: 182, y: 168, score: 0.6 }),
+        make({ name: 'Enlarge', size: 24, x: 172, y: 196, score: 0.65 }),
+        make({ name: 'Radial', size: 16, x: 193, y: 133, score: 0.63 }),
+      ],
+      0.5,
+    );
+    expect(out).toHaveLength(1);
+    expect(out[0].name).toBe('Bend');
+  });
 });

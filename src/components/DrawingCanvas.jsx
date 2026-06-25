@@ -249,7 +249,7 @@ function DrawingCanvas() {
                                     className="drawing__menu-item"
                                     onClick={() => castSpell(recognizeRune)}
                                 >
-                                    ZaubAIrn
+                                    Zaub-AI-rn
                                 </button>
                             </li>
                             <li role="none">

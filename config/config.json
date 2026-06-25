@@ -27,7 +27,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/d/dd/Levitation.png",
     "explanation": "Levitation (浮遊の矢, fuyū no ya ) is a directional sign that has two apparent functions, these depending on the sigil which is paired with the sign. The reason for this is unknown. The arrow-like side of the sign typically faces inwards.",
     "image_filename": "Levitation.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -37,7 +37,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/3/31/Pull.png",
     "explanation": "Pull (引き寄せの矢, hikiyose no ya ) is a directional sign that causes anything matching its seal's sigil (water, air, fire, etc) to be pulled towards the seal when the arrow portion of the sign is pointing inwards. It is likely that, if inverted, the sign will instead push things away. When pointed inwards at an angle, the spell will have both a pulling and twisting effect, and it's likely that if rotated a full 90 degrees, the spell will just twist without pulling.",
     "image_filename": "Pull.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -47,7 +47,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/1/15/Crush.png",
     "explanation": "Crush (破砕の矢, hasai no ya ) is a semi-directional sign that breaks things apart. When paired with an earth sigil, crush will cause objects to disintegrate , breaking them into tiny pieces until they reach a sand-like or powdered state. If the sign is inverted and the spell is used on a powdered substance, the powder will reform into its original shape . However, as soon as the spell wears off or the spell is removed, the powder will return to simply being a pile of dust.",
     "image_filename": "Crush.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -57,7 +57,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/a/a3/Dancing_Puppet.png",
     "explanation": "Puppet (踊る人形の矢, odoru ningyō no ya ) is highly unusual, appearing to be the only sign (aside from sights set ) that allows one to control a spell with their mind. More specifically, puppet seems to allow a \"user\" (possibly either the person who drew or last touched the spell) to control the movement of the object it is drawn on. The nature of this movement seems to be dependent on the sigil of the spell. For example, wind-based puppet spells, such as the flying puppet of diversion and cloak spell , only seem to be capable of arial movement. While it is never stated, directly or otherwise, that puppet spells move in accordance with the user's mind, there is strong circumstantial evidence to support the idea. For example, Sasaran was able to maneuver his cloak with incredible accuracy and precision during his fight with Qifrey . With his cloak lacking any visible controls through which this could be explained, it is reasonable to assume that he piloted it using his mind. Interestingly, the sealchair , which is similar to Sasaran's cloak in that it lacks visible controls yet can still be operated with clear precision and intent, features a number of signs on its underside which closely resemble puppet . It is possible that these are variants. It is possible that puppet can be turned inside out to reverse its effect,in which case it would be considered semi-directional. However, this is currently unknown.",
     "image_filename": "Dancing_Puppet.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -87,7 +87,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/d/d0/Convergence.png",
     "explanation": "Convergence (収束の矢, shūsoku no ya ) causes the magic of its spell to \"converge,\" centering down to single point. The sign could be semi-directional based on its behavior in the wall of wind spell. It is unclear exactly how convergence focuses magic, but the effect of spells such as wall of wind and the wall anchored floatglow lamp suggest that it might make the magic manifest about or from a single point. The sign can also make loose particles pack tightly together and become somewhat rigid, as explained by the disciples of Qifrey's Atelier when they were designing the serpent's bed of sand . One of the triangle's points is typically seen pointing inwards.",
     "image_filename": "Convergence.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -97,7 +97,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/3/33/Collection.png",
     "explanation": "Collection will collect material located above and around the seal, allowing it to be used by a spell. It is either directional or semi-directional and has never been seen inverted. The open side is typically seen facing inwards.",
     "image_filename": "Collection.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -107,7 +107,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/be/Billowing.png",
     "explanation": "Billow (もくもくの矢, mokumoku no ya ) is a non-directional sign that allows a spell to produce a fluffy cloud that is said to be extremely comfortable to sit on . Collection or supposedly is needed to collect and convert certain materials into clouds, but there seem to be some materials that cannot be converted. Similar to repetition , billowing can take the place of a sigil within a spell. Its only appearance has been within the Serpent’s Bed of Sand, so the exact details of how it works aren't quite clear.",
     "image_filename": "Billowing.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -117,7 +117,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/bb/Repetition.png",
     "explanation": "Repetition (くりかえしの矢, kurikaeshi no ya ) As of the bonus from Volume 12 , the status of repetition has been retconned from that of a sign to a sigil see it's entry Here",
     "image_filename": "Repetition.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -127,7 +127,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/6/63/Weave.png",
     "explanation": "The Stretch sign (also known as Weave ) can turn solid objects affected by the spell into long, flexible ribbons upon contact with the seal. It is most likely non-directional, but has never been seen inverted. It was used by Richeh in her ribbon spells . This sign is supposed to surround the central sigil.",
     "image_filename": "Weave.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -137,7 +137,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/e/e5/Coil_Sign.png",
     "explanation": "Coil causes physical matter to manifest in a spring or coil like shape. The sign is likely non-directional and cannot be inverted. Note: coil can only affect physical matter and will have no effect on liquids or gasses.",
     "image_filename": "Coil_Sign.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -157,7 +157,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/0/08/Entwine.png",
     "explanation": "Entwine (巻きつきの矢, maki-tsuki no ya ), first seen in the capture pennant spell , functions to somehow make an object it is drawn on (such as a ribbon) wrap or “entwine” itself around other objects. The mechanism through which this is achieved is unknown. It is most likely a semi-directional sign and has never been seen inverted.",
     "image_filename": "Entwine.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -167,7 +167,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/9/90/Sign_of_Wind.png",
     "explanation": "The sign of wind (風の矢, kaze no ya ) is an asymmetrical sign with a strange history. Prior to the volume 12 bonus, it had only ever made an appearance in chapter 1 . In this chapter, the sign seemed to serve the same purpose as the wind sigil, serving as a sigil for both the sylph shoes seal and the pegasus carriage spell . However, with the sign not appearing in any subsequent chapters and even being replaced within the sylph shoes, fans believed the sign to have been a retconned version of a wind sigil. However, with its inclusion in the pegasus carriage spell reaffirmed as of the volume 12 bonus, it is now clear that the sign is still canon. Its function, beyond its relation to wind, is unclear.",
     "image_filename": "Sign_of_Wind.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -187,7 +187,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/1/17/Gather.png",
     "explanation": "Gather (集める矢, atsumeru ya ) seems to serve a very similar function and design to collection , letting a spell use material from its surroundings to construct its effect. How it differs is unclear, but gather may be less passive than collection and actively draw material in rather than just collect things nearby. This, however, is unconfirmed. The sign is seen in the vapor bubble spell . The sign is either directional or semi-directional and has never been seen inverted.",
     "image_filename": "Gather.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -197,7 +197,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/5/55/Glaives.png",
     "explanation": "Glaives function to determine how deeply magic will embed itself into the flesh. They are most likely semi-directional and have never been seen inverted. They likely date back to before the Day of the Pact , and have only ever been seen in the memory erasure spell variants and the slime rendering seal drawn by Engendale . Interestingly, it is possible that glaives aren't classified as signs based on Engendale's comments regarding them, but how exactly this is the case is left unclear.",
     "image_filename": "Glaives.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -207,7 +207,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/4/47/Solidify.png",
     "explanation": "Solidify (凝固の矢) likely causes magic drawn within/connecting to it to become more solid. It appears that this sign can be written both on its own and with signs/sigils/seals written within one of its circles and warrant the same effect. A rule of thumb to discern it from linked seals: If the lines are straight, and it is linked to an empty seal, it's solidify!",
     "image_filename": "Solidify.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -237,7 +237,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/b7/Sign_of_concealment_redraw.png",
     "explanation": "Conceal hides or “conceals” whatever it is targeting, granting perceived invisibility, and forming a shadowy form leaving room for another image to be put in its place.",
     "image_filename": "Sign_of_concealment_redraw.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -247,7 +247,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/5/52/Sign_of_reflection_redraw.png",
     "explanation": "Reflection likely functions to target a reflected image on whatever it is drawn on to be used within an illusion spell. It's known that what image reflection targets can be specified based on its explanation in Mirror Cloak of Borrowshade",
     "image_filename": "Sign_of_reflection_redraw.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -257,7 +257,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/c/cd/Diamond_%28what_does_it_do%29.png",
     "explanation": "Diamond can be found within the spell of reduction used on the period piece contraption, which uses an inverted enlarge sign to make nearby objects shrink. The sign is non-directional. By comparing this spell to the floating expansion spell , which also contains an enlarge sign, it is possible to isolate diamond's effect. Most likely, diamond will cause a spell to only affect nearby objects while not affecting the object the spell is drawn on.",
     "image_filename": "Diamond.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -267,7 +267,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/d/dc/Window.png",
     "explanation": "Window (窓の矢, mado no ya ) can be found at the center of the floating expansion spell , which makes use of an enlarge sign to make the object it is drawn on grow in size. The sign is non-directional. By comparing this spell to the spell of reduction , which also contains an (albeit inverted) enlarge sign, it is possible to isolate window's effect. Most likely, window will cause a spell to only affect the object it is drawn on.",
     "image_filename": "Window.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -307,7 +307,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/8/8e/Bolt.png",
     "explanation": "Bolt is a component of the water bolt spell. It is a non-directional sign. Bolt causes the magic of its spell to manifest in the form of bolts-like projectiles. When paired with a region sign, which controls the spell's direction, the projectiles will be shot with dangerous speed.",
     "image_filename": "Bolt.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -317,7 +317,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/1/1d/Rain.png",
     "explanation": "Rain cause's its spell to produce an effect very similar to rainfall down into its immediate area. It may be limited to only water spells, but it would likely work with other sigils such as fire or light to create firework-like effects, or possibly even generating a lava rain with a pairing of fire and earth. This sign is meant to surround the central sigil, which is placed in the empty space at its center. As rain can be turned inside out to reverse its effect, it is considered semi-directional.",
     "image_filename": "Rain.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -327,7 +327,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/9/96/Orb.png",
     "explanation": "Orb , a non-directional sign, has the affect of creating a spherical space above a seal within which the material the spell controls will collect. Material will only collect in this area if it is added in directly. Material will fill this space bottom to top, collecting at the bottom of the spherical region, still affected by gravity. When more material is added, it will gradually fill the space higher and higher in the same way you would see in a bucket or a cup. It is seen one time in a spell Qifrey uses to create a sphere of water, achieving this by pouring it into the spherical region of the spell directly.",
     "image_filename": "Orb.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -337,7 +337,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/b7/Purify_Sign.png",
     "explanation": "Purify is an asymmetric sign found in both the Purify spell and the sewer grate purifier . It functions to separate out any impurities from the magic of its sigil. For example, it will separate out particulates and contaminants from water or dust from air.",
     "image_filename": "Purify_Sign.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -347,7 +347,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/4/4c/Link_Sign.png",
     "explanation": "The exact effects of Link are unknown, but it is confirmed that this sign functions to somehow link magic between the object it is drawn on and all other objects that were broken off, removed from, or made out of the same original object. For example, the split-shard bangles are rings all carved from fragments of the same original crystal. Constructed from a light sigil, a weave sign, and a link sign, the spell on the rings will create a ribbon of light between the ring it is drawn on and all other rings constructed from that crystal. What a link spell would be like paired with a sign other than weave, however, is unknown. Link is most likely a semi-directional sign and has never been seen inverted.",
     "image_filename": "Link_Sign.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -357,7 +357,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/d/de/Stasis_Sign.png",
     "explanation": "based on its use in the Snowfending spell, and the translation of Episode 11 textbooks, Stillness is used to hold magic in place, likely having a magical effect remain static in a single location. This is likely used to hold heat over/on Coco's house in the Snowfending spell",
     "image_filename": "Stasis_Sign.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
@@ -367,7 +367,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/4/45/Sign_of_projection_redraw.png",
     "explanation": "Project is likely used to project an effect outwards. It is likely project is only capable of projecting images specified by the spell",
     "image_filename": "Sign_of_projection_redraw.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sigil",

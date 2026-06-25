@@ -4,7 +4,7 @@ export const CANVAS_WIDTH = 500;
 export const CANVAS_HEIGHT = 500;
 
 export const STROKE_COLOR = "#000000";
-export const STROKE_WIDTH = 2;
+export const STROKE_WIDTH = 3;
 export const ERASER_WIDTH = 20;
 
 export const RUNES_PATH = "/assets/alphabet/modifiers";
@@ -149,8 +149,9 @@ export const MATCH_THRESHOLD = 0.5
 // fragments). Fragments inside the sigil are removed afterwards
 // (suppressSigilFragments), so the lower bar does not add clutter.
 export const SIGIL_MATCH_THRESHOLD = 0.4
-// A sigil is the large central element of a seal, so only large template
-// scales are plausible. Ignoring small sigil scales prevents the lower sigil
-// threshold from admitting tiny spurious sigil matches on stray strokes.
-export const SIGIL_MIN_SIZE = 80
+// A sigil is the central element of a seal, so very small template scales are
+// implausible and tend to match stray-stroke fragments. This floor allows
+// reasonably small sigils (down to the 64px scale) while still excluding the
+// smallest scales (32/40/50) that produced spurious tiny-sigil matches.
+export const SIGIL_MIN_SIZE = 64
 export const NMS_RELATIVE = 0.5

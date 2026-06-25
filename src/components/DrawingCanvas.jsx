@@ -25,6 +25,7 @@ import {calculateCircleScore as getCircleScore} from '../utils/utils.ts';
 import RuneAlphabet from './RuneAlphabet.jsx';
 import ElementStage from './ElementStage.jsx';
 import WaterStage from './WaterStage.jsx';
+import FireStage from './FireStage.jsx';
 import ElementDebugPanel from './ElementDebugPanel.jsx';
 import {getPresetByFile} from '../config/elementPresets.js';
 import './DrawingCanvas.css';
@@ -548,21 +549,21 @@ function DrawingCanvas() {
 
             {selectedPreset && elementParams && (
                 <div className="drawing__fire">
-                    {selectedPreset.renderMode === 'shader' ? (
-                        <WaterStage
-                            key={selectedPreset.id}
-                            preset={selectedPreset}
-                            params={elementParams}
-                            igniteKey={igniteKey}
-                        />
-                    ) : (
-                        <ElementStage
-                            key={selectedPreset.id}
-                            preset={selectedPreset}
-                            params={elementParams}
-                            igniteKey={igniteKey}
-                        />
-                    )}
+                    {(() => {
+                        const SHADER_STAGES = {water: WaterStage, fire: FireStage};
+                        const StageComponent =
+                            selectedPreset.renderMode === 'shader'
+                                ? SHADER_STAGES[selectedPreset.id]
+                                : ElementStage;
+                        return (
+                            <StageComponent
+                                key={selectedPreset.id}
+                                preset={selectedPreset}
+                                params={elementParams}
+                                igniteKey={igniteKey}
+                            />
+                        );
+                    })()}
                     <ElementDebugPanel
                         title={selectedPreset.label}
                         params={elementParams}

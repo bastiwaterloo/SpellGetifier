@@ -115,19 +115,20 @@ export const ELEMENT_PRESETS = {
   Fire_sigil: {
     id: 'fire',
     label: 'Feuer',
-    color: fireColor,
-    spawn: fireSpawn,
+    renderMode: 'shader',
+    color: fireColor,         // kept for reference; FireStage colors in-shader
+    spawn: fireSpawn,         // kept for reference; FireStage spawns internally
     gravity: [0, 0, 0],
     cameraTarget: [0, 0.9, 0],
     blending: 'additive',
     opacity: 1,
     defaults: {
-      particleCount: 600,
-      riseSpeed: 1.6,
-      spread: 0.6,
-      flameHeight: 2.2,
-      turbulence: 0.8,
-      particleSize: 14,
+      particleCount: 900,
+      riseSpeed: 1.8,
+      spread: 0.5,
+      flameHeight: 2.0,
+      turbulence: 1.2,
+      particleSize: 16,
       intensity: 1
     }
   },

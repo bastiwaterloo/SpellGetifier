@@ -1,0 +1,35 @@
+.element-stage {
+    width: 360px;
+    height: 360px;
+    border-radius: 12px;
+    border: 1px solid #3a2540;
+    overflow: hidden;
+}
+
+.element-stage canvas {
+    display: block;
+}
+
+/* Pro Element ein passender Hintergrund. */
+.element-stage--fire {
+    background: radial-gradient(circle at 50% 80%, #2a1208, #0d0710 70%);
+    border-color: #3a2540;
+}
+
+.element-stage--water {
+    background: radial-gradient(circle at 50% 20%, #08203a, #06070f 70%);
+    border-color: #1f3a5a;
+}
+
+.element-stage--light {
+    background: radial-gradient(circle at 50% 45%, #2a2410, #0a0a10 70%);
+    border-color: #4a3f1f;
+}
+
+@media (max-width: 720px) {
+    .element-stage {
+        width: 100%;
+        max-width: 360px;
+        height: 320px;
+    }
+}

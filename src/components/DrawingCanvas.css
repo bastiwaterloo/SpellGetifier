@@ -51,6 +51,15 @@
     flex-wrap: wrap;
 }
 
+/* Feuer-POC: 3D-Stage + Debug-Regler nebeneinander. */
+.drawing__fire {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    align-items: flex-start;
+}
+
 .drawing__button {
     color: #fff;
     border: none;

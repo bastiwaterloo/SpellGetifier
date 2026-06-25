@@ -41,6 +41,31 @@
     min-width: 0;
 }
 
+/* Anklickbare Variante: Button füllt die Zelle und übernimmt das Layout. */
+.rune-alphabet__select {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    width: 100%;
+    padding: 0;
+    color: inherit;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    min-width: 0;
+}
+
+.rune-alphabet__select--active {
+    outline: 2px solid #ff7a18;
+    outline-offset: 2px;
+    border-radius: 6px;
+}
+
+.rune-alphabet__select:hover .rune-alphabet__image {
+    box-shadow: 0 0 0 2px rgba(255, 122, 24, 0.5);
+}
+
 .rune-alphabet__image {
     width: 100%;
     aspect-ratio: 1 / 1;

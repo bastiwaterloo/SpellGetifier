@@ -1,0 +1,57 @@
+.element-debug {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    width: 260px;
+    padding: 1rem;
+    border-radius: 12px;
+    background: #14142099;
+    border: 1px solid #2a2a40;
+}
+
+.element-debug__title {
+    margin: 0 0 0.25rem;
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.element-debug__row {
+    display: grid;
+    grid-template-columns: 6rem 1fr 2.5rem;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.element-debug__slider {
+    width: 100%;
+    accent-color: #ff7a18;
+}
+
+.element-debug__value {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.element-debug__actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+}
+
+.element-debug__button {
+    flex: 1;
+    padding: 0.4rem 0.5rem;
+    font-size: 0.78rem;
+    color: #fff;
+    background: #31314f;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.element-debug__button:hover {
+    background: #404069;
+}

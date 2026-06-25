@@ -23,6 +23,9 @@ import {
 } from '../utils/unistrokeRecognition.jsx';
 import {calculateCircleScore as getCircleScore} from '../utils/utils.ts';
 import RuneAlphabet from './RuneAlphabet.jsx';
+import ElementStage from './ElementStage.jsx';
+import ElementDebugPanel from './ElementDebugPanel.jsx';
+import {getPresetByFile} from '../config/elementPresets.js';
 import './DrawingCanvas.css';
 
 function DrawingCanvas() {
@@ -52,6 +55,27 @@ function DrawingCanvas() {
     const [templateOutput, setTemplateOutput] = useState('');
 
     const activeRecognizer = getRecognizer(recognizerId);
+
+    // Siegel-Auswahl + Element-Animations-POC.
+    const [selectedSigilFile, setSelectedSigilFile] = useState(null);
+    const [elementParams, setElementParams] = useState(null);
+    const [igniteKey, setIgniteKey] = useState(0);
+
+    const selectedPreset = getPresetByFile(selectedSigilFile);
+
+    const handleSelectSigil = (file) => {
+        setSelectedSigilFile(file);
+        // Animierbares Siegel: Defaults laden und Animation (neu) zünden.
+        const preset = getPresetByFile(file);
+        if (preset) {
+            setElementParams(preset.defaults);
+            setIgniteKey((key) => key + 1);
+        }
+    };
+
+    const updateElementParam = (key, value) => {
+        setElementParams((prev) => ({...prev, [key]: value}));
+    };
 
     // Canvas mit fester Größe einrichten (HiDPI-fähig).
     const setupCanvas = useCallback(() => {
@@ -300,6 +324,8 @@ function DrawingCanvas() {
                     items={ENABLED_SIGNS}
                     path={SIGNS_PATH}
                     side="left"
+                    onSelect={handleSelectSigil}
+                    selectedFile={selectedSigilFile}
                 />
                 <RuneAlphabet
                     title="Runen"
@@ -516,6 +542,24 @@ function DrawingCanvas() {
                             ))}
                         </div>
                     )}
+                </div>
+            )}
+
+            {selectedPreset && elementParams && (
+                <div className="drawing__fire">
+                    <ElementStage
+                        key={selectedPreset.id}
+                        preset={selectedPreset}
+                        params={elementParams}
+                        igniteKey={igniteKey}
+                    />
+                    <ElementDebugPanel
+                        title={selectedPreset.label}
+                        params={elementParams}
+                        onChange={updateElementParam}
+                        onReset={() => setElementParams(selectedPreset.defaults)}
+                        onReplay={() => setIgniteKey((key) => key + 1)}
+                    />
                 </div>
             )}
         </div>

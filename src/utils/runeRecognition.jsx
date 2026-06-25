@@ -54,10 +54,13 @@ async function loadImageAsBase64(imagePath) {
 function buildCountPrompt() {
     return `Analyze this image of handdrawn runes on white background.
 
-IMPORTANT: A single rune can have MULTIPLE disconnected strokes/parts.
-Look at the reference rune images - notice how some runes consist of separate lines that belong together.
+IMPORTANT: 
+- A single rune can have MULTIPLE disconnected strokes/parts.
+- The runes are usually drawn INSIDE A CIRCLE. IGNORE the circle - it is NOT a rune.
+- Only count the rune symbols inside the circle, not the circle itself.
 
 Your task: Count how many COMPLETE RUNES are in the drawing.
+- Do NOT count the surrounding circle
 - Do NOT count individual strokes as separate runes
 - Group strokes that form a single rune symbol together
 - If the same rune appears multiple times, count each occurrence
@@ -69,29 +72,69 @@ Reply ONLY with valid JSON: {"count":N}`;
 
 function buildBoxPrompt(count) {
     return `This image contains exactly ${count} handdrawn rune(s) on white background.
+The runes are drawn INSIDE A CIRCLE. IGNORE the circle - only find bounding boxes for the runes.
 
-Find the EXACT pixel-perfect bounding box for each rune.
+Find the EXACT pixel-perfect bounding box for each rune (NOT the circle).
 
 For each rune, find:
-- The LEFTMOST black pixel → this is x
-- The TOPMOST black pixel → this is y
-- The RIGHTMOST black pixel → x + w
-- The BOTTOMMOST black pixel → y + h
+- The LEFTMOST black pixel of the RUNE → this is x
+- The TOPMOST black pixel of the RUNE → this is y
+- The RIGHTMOST black pixel of the RUNE → x + w
+- The BOTTOMMOST black pixel of the RUNE → y + h
 
 A rune may have disconnected strokes - include ALL strokes of one rune in ONE box.
+Do NOT include the surrounding circle in the bounding box.
 
 Return coordinates as PERCENTAGE (0-100) of image width/height.
 x and y are the top-left corner. w is width, h is height.
 
-The box edges must touch the outermost pixels of the rune - no extra space.
-
-Return EXACTLY ${count} box${count > 1 ? 'es' : ''}.
+Return EXACTLY ${count} box${count > 1 ? 'es' : ''} for the runes only.
 
 JSON only: {"runes":[{"x":N,"y":N,"w":N,"h":N}]}`;
 }
 
+function buildIdentifyPrompt() {
+    return `The FIRST image shows a SINGLE handdrawn rune on white background.
+The following ${RUNE_COUNT} images are the REFERENCE runes (numbered 1 to ${RUNE_COUNT}).
+
+IMPORTANT: 
+- The reference images show the STANDARD orientation (0 degrees).
+- The handdrawn rune may be ROTATED compared to the reference.
+- IGNORE any circle or arc that may be visible - focus ONLY on the rune symbol.
+
+Your task:
+1. Find which reference rune matches the handdrawn rune (ignore any circle)
+2. Determine the rotation angle in 15° steps (0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225, 240, 255, 270, 285, 300, 315, 330, 345)
+
+Reply ONLY with valid JSON:
+{"runeId":N,"confidence":0-100,"rotation":DEGREES}
+
+- runeId: Number of the matching reference rune (1 to ${RUNE_COUNT}), or null if no match
+- confidence: Match percentage (0-100)
+- rotation: Degrees clockwise in 15° steps (0, 15, 30, ... 345). Use 0 if rotation is very small.`;
+}
+
 const OUTPUT_SIZE = 128;
 const MAX_MERGE_DISTANCE = 8;
+
+function calculateClockPosition(box, canvasWidth, canvasHeight) {
+    const centerX = canvasWidth / 2;
+    const centerY = canvasHeight / 2;
+    
+    const boxCenterX = (box.x + box.w / 2) / 100 * canvasWidth;
+    const boxCenterY = (box.y + box.h / 2) / 100 * canvasHeight;
+    
+    const dx = boxCenterX - centerX;
+    const dy = boxCenterY - centerY;
+    
+    let angle = Math.atan2(dy, dx) * (180 / Math.PI);
+    angle = (angle + 90 + 360) % 360;
+    
+    let clockPos = Math.round(angle / 30);
+    if (clockPos === 0) clockPos = 12;
+    
+    return clockPos;
+}
 
 function findConnectedComponents(canvas) {
     const width = canvas.width;
@@ -154,10 +197,35 @@ function findConnectedComponents(canvas) {
     }));
 }
 
+function isCircleLike(component) {
+    const aspectRatio = component.w / component.h;
+    const isSquarish = aspectRatio > 0.7 && aspectRatio < 1.4;
+    const isLarge = component.w > 40 && component.h > 40;
+    const coversLargeArea = component.w * component.h > 2000;
+    return isSquarish && isLarge && coversLargeArea;
+}
+
+function filterOutCircle(components) {
+    if (components.length <= 1) return components;
+    
+    const sorted = [...components].sort((a, b) => (b.w * b.h) - (a.w * a.h));
+    const largest = sorted[0];
+    
+    if (isCircleLike(largest)) {
+        console.log('Kreis erkannt und gefiltert:', largest);
+        return components.filter(c => c !== largest);
+    }
+    
+    return components;
+}
+
 function mergeComponentsIntoRunes(components) {
     if (components.length === 0) return [];
     
-    let groups = components.map(c => [c]);
+    const filtered = filterOutCircle(components);
+    if (filtered.length === 0) return [];
+    
+    let groups = filtered.map(c => [c]);
     
     let merged = true;
     while (merged) {
@@ -236,8 +304,45 @@ function extractRuneImages(canvas, boxes) {
             offsetX, offsetY, scaledW, scaledH
         );
         
-        return tempCanvas.toDataURL('image/png');
+        const dataUrl = tempCanvas.toDataURL('image/png');
+        return {
+            dataUrl,
+            base64: dataUrl.split(',')[1]
+        };
     });
+}
+
+function normalizeRotation(rotation) {
+    if (rotation === undefined || rotation === null) return 0;
+    let r = Math.round(rotation / 15) * 15;
+    r = ((r % 360) + 360) % 360;
+    if (r < 15 || r > 345) return 0;
+    return r;
+}
+
+async function identifySingleRune(runeBase64, runeImages, runes) {
+    const response = await callGeminiVision(
+        buildIdentifyPrompt(),
+        [{ base64: runeBase64 }, ...runeImages]
+    );
+    console.log('Identify Antwort:', response.text);
+    
+    const result = parseJsonResponse(response.text);
+    if (!result || result.runeId === null) {
+        return null;
+    }
+    
+    const matchedRune = runes.find(r => r.id === result.runeId);
+    if (!matchedRune) return null;
+    
+    const normalizedRotation = normalizeRotation(result.rotation);
+    console.log(`Rotation: ${result.rotation}° → normalisiert: ${normalizedRotation}°`);
+    
+    return {
+        rune: matchedRune,
+        confidence: result.confidence || 0,
+        rotation: normalizedRotation
+    };
 }
 
 export async function recognizeRune(canvas) {
@@ -294,13 +399,38 @@ export async function recognizeRune(canvas) {
             console.log('Erkannte Runen nach Pixel-Analyse:', count, boxes);
         }
         
-        const runeImageUrls = extractRuneImages(canvas, boxes);
+        const extractedRunes = extractRuneImages(canvas, boxes);
+        console.log('Extrahierte Runen:', extractedRunes.length);
+        
+        const dpr = window.devicePixelRatio || 1;
+        const canvasWidth = canvas.width / dpr;
+        const canvasHeight = canvas.height / dpr;
+        
+        const matches = [];
+        for (let i = 0; i < extractedRunes.length; i++) {
+            console.log(`Identifiziere Rune ${i + 1}/${extractedRunes.length}...`);
+            const match = await identifySingleRune(extractedRunes[i].base64, runeImages, runes);
+            const clockPosition = calculateClockPosition(boxes[i], canvasWidth, canvasHeight);
+            console.log(`Rune ${i + 1} Uhrposition: ${clockPosition}`);
+            matches.push({
+                image: extractedRunes[i].dataUrl,
+                match: match,
+                clockPosition: clockPosition
+            });
+        }
+        
+        const recognizedNames = matches
+            .filter(m => m.match)
+            .map(m => m.match.rune.name);
         
         return {
             count,
             boxes,
-            images: runeImageUrls,
-            message: `${count} Rune${count !== 1 ? 'n' : ''} erkannt`
+            matches,
+            images: extractedRunes.map(r => r.dataUrl),
+            message: recognizedNames.length > 0 
+                ? `Erkannt: ${recognizedNames.join(', ')}` 
+                : `${count} Rune${count !== 1 ? 'n' : ''} gefunden, keine identifiziert`
         };
 
     } catch (error) {
@@ -308,6 +438,7 @@ export async function recognizeRune(canvas) {
         return {
             count: 1,
             boxes: [],
+            matches: [],
             images: [canvas.toDataURL('image/png')],
             message: `Fehler: ${error.message}`
         };

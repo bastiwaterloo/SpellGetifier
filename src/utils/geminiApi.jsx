@@ -1,5 +1,5 @@
 const API_BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
-const MODEL = 'gemini-3.5-flash';
+const MODEL = 'gemini-2.5-flash';
 const MAX_RETRIES = 5;
 
 async function sleep(ms) {

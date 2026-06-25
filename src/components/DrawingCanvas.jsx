@@ -10,7 +10,7 @@ import {
     ENABLED_RUNES,
     ENABLED_SIGNS
 } from '../config.js';
-import {itterativeAnalysis} from '../utils/runeRecognition.jsx';
+import { recognizeRune, itterativeAnalysis } from '../utils/runeRecognition.jsx';
 import {
     RECOGNIZERS,
     DEFAULT_RECOGNIZER_ID,
@@ -251,19 +251,21 @@ function DrawingCanvas() {
         setRecognitionResult(null);
 
         try {
-            const result = await spell(input);
+            const result = await recognizeRune(canvas);
             setRecognitionResult(result);
             if (result.boxes) {
                 drawBoundingBoxes(result.boxes);
             }
         } catch (error) {
-            console.error('Fehler beim Wirken des Zaubers:', error);
+            console.error('Fehler bei der Runen-Erkennung:', error);
             setRecognitionResult({
                 count: 0,
                 boxes: [],
                 images: [],
                 message: 'Fehler bei der Erkennung'
             });
+        } finally {
+            setIsRecognizing(false);
         }
     };
 
@@ -437,31 +439,39 @@ function DrawingCanvas() {
             {recognitionResult && (
                 <div className="drawing__recognition drawing__recognition--success">
                     <p>{recognitionResult.message}</p>
-                    {recognitionResult.images?.length > 0 && (
+                    {recognitionResult.matches?.length > 0 && (
                         <div className="drawing__extracted-runes">
-                            {recognitionResult.images.map((imgUrl, index) => (
+                            {recognitionResult.matches.map((item, index) => (
                                 <div key={index} className="drawing__extracted-rune">
                                     <img
-                                        src={imgUrl}
+                                        src={item.image}
                                         alt={`Rune ${index + 1}`}
                                         className="drawing__extracted-rune-image"
                                     />
-                                    <span className="drawing__extracted-rune-label">
-                                        Rune {index + 1}
-                                    </span>
+                                    {item.match ? (
+                                        <div className="drawing__match-info">
+                                            <img
+                                                src={item.match.rune.imagePath}
+                                                alt={item.match.rune.name}
+                                                className="drawing__match-image"
+                                                style={{ transform: `rotate(${item.match.rotation}deg)` }}
+                                            />
+                                            <span className="drawing__match-name">{item.match.rune.name}</span>
+                                            <span className="drawing__match-confidence">{item.match.confidence}%</span>
+                                            {item.match.rotation !== 0 && (
+                                                <span className="drawing__match-rotation">Rotation: {item.match.rotation}°</span>
+                                            )}
+                                            <span className="drawing__match-clock">Position: {item.clockPosition} Uhr</span>
+                                        </div>
+                                    ) : (
+                                        <div className="drawing__match-info drawing__match-info--unknown">
+                                            <span className="drawing__extracted-rune-label">Nicht erkannt</span>
+                                            <span className="drawing__match-clock">Position: {item.clockPosition} Uhr</span>
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
-                    )}
-                    {recognitionResult.findings && recognitionResult.findings.length > 0 && (
-                        <ul className="drawing__findings">
-                            {recognitionResult.findings.map((finding, index) => (
-                                <li key={index} className="drawing__finding">
-                                    <strong>{finding.name}</strong>
-                                    {` · ${finding.size}px · (${Math.round(finding.x)}, ${Math.round(finding.y)}) · ${finding.rotation}° · ${finding.score}%`}
-                                </li>
-                            ))}
-                        </ul>
                     )}
                 </div>
             )}

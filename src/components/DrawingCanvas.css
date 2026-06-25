@@ -232,6 +232,49 @@
     color: #333;
 }
 
+.drawing__match-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #ddd;
+}
+
+.drawing__match-image {
+    width: 48px;
+    height: 48px;
+    image-rendering: pixelated;
+}
+
+.drawing__match-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #2cb67d;
+}
+
+.drawing__match-confidence {
+    font-size: 0.7rem;
+    color: #666;
+}
+
+.drawing__match-rotation {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #7f5af0;
+}
+
+.drawing__match-clock {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #e6a817;
+}
+
+.drawing__match-info--unknown {
+    color: #999;
+}
+
 .drawing__dropdown {
     position: relative;
     display: inline-block;

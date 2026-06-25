@@ -86,6 +86,32 @@ const DROPLET_FRAG = `
   }
 `;
 
+const POOL_VERT = `
+  varying vec2 vPos;
+  void main() {
+    vPos = position.xy;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const POOL_FRAG = `
+  precision mediump float;
+  uniform float uTime;
+  uniform float uIntensity;
+  uniform float uRadius;
+  varying vec2 vPos;
+  void main() {
+    float radius = length(vPos);
+    float ripple = sin(radius * 9.0 - uTime * 2.2) * 0.5 + 0.5;
+    float ripple2 = sin(radius * 18.0 - uTime * 3.1) * 0.5 + 0.5;
+    float sheen = 0.35 * ripple + 0.15 * ripple2;
+    vec3 col = mix(vec3(0.06, 0.20, 0.38), vec3(0.20, 0.55, 0.85), sheen);
+    float edge = smoothstep(uRadius, uRadius * 0.6, radius);
+    float alpha = edge * (0.45 + 0.25 * sheen) * uIntensity;
+    gl_FragColor = vec4(col, alpha);
+  }
+`;
+
 // Map the world-unit particle size from the pixel-ish particleSize slider.
 const sizeWorld = (particleSize) => particleSize * 0.011;
 
@@ -205,6 +231,25 @@ function WaterStage({preset, params, igniteKey}) {
     points.frustumCulled = false;
     scene.add(points);
 
+    const poolRadius = preset.water?.poolRadius ?? 2.0;
+    const poolGeo = new THREE.CircleGeometry(poolRadius, 64);
+    const poolMat = new THREE.ShaderMaterial({
+      vertexShader: POOL_VERT,
+      fragmentShader: POOL_FRAG,
+      uniforms: {
+        uTime: {value: 0},
+        uIntensity: {value: 1},
+        uRadius: {value: poolRadius}
+      },
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.NormalBlending
+    });
+    const pool = new THREE.Mesh(poolGeo, poolMat);
+    pool.rotation.x = -Math.PI / 2;
+    pool.position.y = baseY;
+    scene.add(pool);
+
     const clock = new THREE.Clock();
     let rafId = 0;
 
@@ -218,6 +263,8 @@ function WaterStage({preset, params, igniteKey}) {
       const count = Math.min(Math.round(p.particleCount), MAX_PARTICLES);
 
       material.uniforms.uIntensity.value = p.intensity * dyn.ignite;
+      poolMat.uniforms.uTime.value = time;
+      poolMat.uniforms.uIntensity.value = p.intensity * dyn.ignite;
 
       for (let i = 0; i < count; i++) {
         let part = particles[i];
@@ -292,6 +339,8 @@ function WaterStage({preset, params, igniteKey}) {
       base.dispose();
       geometry.dispose();
       material.dispose();
+      poolGeo.dispose();
+      poolMat.dispose();
       renderer.dispose();
       if (renderer.domElement.parentNode === mount) {
         mount.removeChild(renderer.domElement);

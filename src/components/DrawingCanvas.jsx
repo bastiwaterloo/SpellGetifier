@@ -510,7 +510,7 @@ function DrawingCanvas() {
                     </p>
                 ) : (
                     <p>
-                        Score: <strong>{score}</strong> von 100
+                        Kreis: <strong>{score}%</strong> perfekt
                     </p>
                 )}
                 {attackStrength !== null && selectedPreset && (

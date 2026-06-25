@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
+  DETECTION_RESOLUTION,
   ITERATIVE_SIZES,
   ITERATIVE_ROTATIONS,
   MATCH_THRESHOLD,
@@ -8,6 +9,11 @@ import {
 } from '../../config.js';
 
 describe('iterative detection constants', () => {
+  it('defines a detection resolution within the WebGL-safe range', () => {
+    expect(DETECTION_RESOLUTION).toBe(250);
+    expect(DETECTION_RESOLUTION).toBeLessThanOrEqual(350);
+  });
+
   it('defines the expected sizes', () => {
     expect(ITERATIVE_SIZES).toEqual([16, 24, 32, 48, 64, 96, 128]);
   });

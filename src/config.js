@@ -49,6 +49,11 @@ export const RUNE_NAMES = [
 
 export const RUNE_COUNT = RUNE_NAMES.length
 
+// Working resolution for the iterative scan. The canvas is downscaled to this
+// square size before convolution so conv2d intermediate textures stay under the
+// WebGL maximum texture size (16384) for the largest templates. Must be <= 350.
+export const DETECTION_RESOLUTION = 250
+
 export const ITERATIVE_SIZES = [16, 24, 32, 48, 64, 96, 128]
 export const ITERATIVE_ROTATIONS = Array.from({ length: 72 }, (_, i) => i * 5)
 export const MATCH_THRESHOLD = 0.6

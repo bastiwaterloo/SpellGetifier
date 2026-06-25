@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { dedupeFindings } from '../findingDedup.js';
+import { dedupeFindings, suppressSigilFragments } from '../findingDedup.js';
 
 const make = (over) => ({
   id: 1, name: 'Bolt', imagePath: '/x.png',
@@ -64,5 +64,40 @@ describe('dedupeFindings', () => {
     );
     expect(out).toHaveLength(1);
     expect(out[0].name).toBe('Bend');
+  });
+});
+
+describe('suppressSigilFragments', () => {
+  // A drawn sigil (center) plus ring runes around it. Fragment matches that
+  // land INSIDE the sigil are spurious; real ring runes sit outside it.
+  const f = (over) => ({
+    id: 1, name: 'x', type: 'sign', imagePath: '/x.png',
+    size: 32, x: 0, y: 0, rotation: 0, score: 0.6, ...over,
+  });
+
+  it('removes sign fragments whose center is inside a sigil footprint', () => {
+    const sigil = f({ type: 'sigil', name: 'Fire', size: 200, x: 250, y: 250, score: 0.6 });
+    // even though the fragment scores higher, it is inside the sigil glyph
+    const fragment = f({ type: 'sign', name: 'Coil', size: 32, x: 260, y: 285, score: 0.62 });
+
+    const out = suppressSigilFragments([sigil, fragment]);
+
+    expect(out.map((o) => o.name)).toEqual(['Fire']);
+  });
+
+  it('keeps ring runes whose center is outside the sigil footprint', () => {
+    const sigil = f({ type: 'sigil', name: 'Fire', size: 200, x: 250, y: 250 });
+    const ringRune = f({ type: 'sign', name: 'Bolt', size: 48, x: 430, y: 250 });
+
+    const out = suppressSigilFragments([sigil, ringRune]);
+
+    expect(out.map((o) => o.name).sort()).toEqual(['Bolt', 'Fire']);
+  });
+
+  it('leaves findings untouched when no sigil is present', () => {
+    const a = f({ name: 'Coil', x: 100, y: 100 });
+    const b = f({ name: 'Bolt', x: 300, y: 300 });
+
+    expect(suppressSigilFragments([a, b])).toHaveLength(2);
   });
 });

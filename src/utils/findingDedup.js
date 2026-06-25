@@ -23,3 +23,23 @@ export function dedupeFindings(candidates, nmsRelative) {
 
   return kept;
 }
+
+// Remove spurious rune ("sign") matches that fall inside a detected sigil's
+// glyph. A drawn sigil sits in the center surrounded by real ring runes; the
+// detector also picks up small fragments of the sigil's own strokes as runes.
+// Those fragments land within the sigil's footprint, while genuine ring runes
+// sit outside it — so a sign whose center is within ±size/2 (per axis) of any
+// sigil's center is dropped. Sigils and outside runes are kept untouched.
+export function suppressSigilFragments(findings) {
+  const sigils = findings.filter((f) => f.type === 'sigil');
+  if (sigils.length === 0) return findings;
+
+  return findings.filter((f) => {
+    if (f.type === 'sigil') return true;
+    const insideSigil = sigils.some((s) => {
+      const half = s.size / 2;
+      return Math.abs(f.x - s.x) <= half && Math.abs(f.y - s.y) <= half;
+    });
+    return !insideSigil;
+  });
+}

@@ -3,7 +3,9 @@ import {
   CANVAS_WIDTH,
   DETECTION_RESOLUTION,
   MATCH_THRESHOLD,
+  SIGIL_MATCH_THRESHOLD,
   NMS_RELATIVE,
+  SIGIL_MIN_SIZE,
   ITERATIVE_SIZES,
   ITERATIVE_ROTATIONS,
   TEMPLATE_MARGIN_FACTOR,
@@ -13,7 +15,7 @@ import {
 import { imageDataToMask, dilateMask } from './maskUtils.js';
 import { loadTemplateImages, rasterizeRotatedScaled } from './templateMasks.js';
 import { computeBatchedScoreMap, getBackendReady } from './scoreMap.js';
-import { dedupeFindings } from './findingDedup.js';
+import { dedupeFindings, suppressSigilFragments } from './findingDedup.js';
 
 // Downscale the (DPR-scaled) canvas to the square detection working resolution
 // on a white background, then threshold to an ink mask. Working at a reduced
@@ -54,6 +56,9 @@ export async function detectRunes(canvas) {
 
     for (const rune of runes) {
       for (const size of ITERATIVE_SIZES) {
+        // Sigils are the large central element — skip small scales so a stray
+        // stroke can't match a tiny sigil fragment.
+        if (rune.type === 'sigil' && size < SIGIL_MIN_SIZE) continue;
         // All rotations of one size share footprint dimensions, so they batch
         // into multi-channel convolutions. Process them in sequential
         // sub-batches to bound peak GPU memory.
@@ -75,9 +80,14 @@ export async function detectRunes(canvas) {
             masks,
           );
 
+          // Sigils match more loosely than ring runes (large freehand glyph),
+          // so they clear a lower bar.
+          const threshold =
+            rune.type === 'sigil' ? SIGIL_MATCH_THRESHOLD : MATCH_THRESHOLD;
+
           for (let c = 0; c < results.length; c++) {
             const { score, col, row } = results[c];
-            if (score >= MATCH_THRESHOLD) {
+            if (score >= threshold) {
               // Center in working coords, converted back to canvas coords.
               candidates.push({
                 id: rune.id,
@@ -106,7 +116,10 @@ export async function detectRunes(canvas) {
     drawingTensor.dispose();
   }
 
-  const findings = dedupeFindings(candidates, NMS_RELATIVE).map((f) => ({
+  // NMS first, then drop rune fragments that sit inside a detected sigil's
+  // glyph (the sigil is the center element; real runes ring it from outside).
+  const deduped = suppressSigilFragments(dedupeFindings(candidates, NMS_RELATIVE));
+  const findings = deduped.map((f) => ({
     ...f,
     score: Math.round(f.score * 100),
   }));

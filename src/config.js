@@ -143,4 +143,14 @@ export const ITERATIVE_ROTATIONS = Array.from({ length: 36 }, (_, i) => i * 10)
 // IoU runs lower than the old coverage score — a near-perfect match is ~0.8,
 // so this is set below that to admit imperfect freehand drawings.
 export const MATCH_THRESHOLD = 0.5
+// Sigils are large central glyphs drawn freehand, so their holistic IoU runs
+// lower and more variable than the ring runes'. A lower bar keeps a slightly
+// imperfect sigil from dropping out entirely (which left only spurious rune
+// fragments). Fragments inside the sigil are removed afterwards
+// (suppressSigilFragments), so the lower bar does not add clutter.
+export const SIGIL_MATCH_THRESHOLD = 0.4
+// A sigil is the large central element of a seal, so only large template
+// scales are plausible. Ignoring small sigil scales prevents the lower sigil
+// threshold from admitting tiny spurious sigil matches on stray strokes.
+export const SIGIL_MIN_SIZE = 80
 export const NMS_RELATIVE = 0.5

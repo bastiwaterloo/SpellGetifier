@@ -48,6 +48,12 @@ function DrawingCanvas() {
     const [score, setScore] = useState(null);
     const [recognitionResult, setRecognitionResult] = useState(null);
     const [isRecognizing, setIsRecognizing] = useState(false);
+    // Segmentierungs-Methode: 'ai' (Gemini) oder 'local' (Pixel-Analyse).
+    const [segmentMethod, setSegmentMethod] = useState('ai');
+    // Klassifikations-Methode: 'ai' (Gemini) oder 'local' ($P-Templates).
+    const [classifyMethod, setClassifyMethod] = useState('ai');
+    // Bounding-Boxen auf den Canvas zeichnen (verfälscht sonst lokale Re-Runs).
+    const [showBoxes, setShowBoxes] = useState(true);
     const [isErasing, setIsErasing] = useState(false);
     const [isSpellMenuOpen, setIsSpellMenuOpen] = useState(false);
     const spellMenuRef = useRef(null);
@@ -344,9 +350,13 @@ function DrawingCanvas() {
         setRecognitionResult(null);
 
         try {
-            const result = await recognizeRune(canvas);
+            const result = await recognizeRune(canvas, {
+                segmentMethod,
+                classifyMethod,
+                strokes: pointsRef.current
+            });
             setRecognitionResult(result);
-            if (result.boxes || result.centerBox) {
+            if (showBoxes && (result.boxes || result.centerBox)) {
                 drawBoundingBoxes(result.boxes, result.centerBox);
             }
             // Element automatisch aus dem erkannten Mitte-Siegel ableiten.
@@ -379,6 +389,68 @@ function DrawingCanvas() {
 
     return (
         <div className="drawing">
+            <div className="drawing__methods">
+                <fieldset className="drawing__segment">
+                    <legend className="drawing__segment-legend">
+                        Segmentierung
+                    </legend>
+                    <label className="drawing__segment-option">
+                        <input
+                            type="radio"
+                            name="segment-method"
+                            value="ai"
+                            checked={segmentMethod === 'ai'}
+                            onChange={() => setSegmentMethod('ai')}
+                        />
+                        Gemini
+                    </label>
+                    <label className="drawing__segment-option">
+                        <input
+                            type="radio"
+                            name="segment-method"
+                            value="local"
+                            checked={segmentMethod === 'local'}
+                            onChange={() => setSegmentMethod('local')}
+                        />
+                        Lokal
+                    </label>
+                    <label className="drawing__segment-option">
+                        <input
+                            type="checkbox"
+                            checked={showBoxes}
+                            onChange={(event) =>
+                                setShowBoxes(event.target.checked)
+                            }
+                        />
+                        Boxen anzeigen
+                    </label>
+                </fieldset>
+                <fieldset className="drawing__segment">
+                    <legend className="drawing__segment-legend">
+                        Klassifikation
+                    </legend>
+                    <label className="drawing__segment-option">
+                        <input
+                            type="radio"
+                            name="classify-method"
+                            value="ai"
+                            checked={classifyMethod === 'ai'}
+                            onChange={() => setClassifyMethod('ai')}
+                        />
+                        Gemini
+                    </label>
+                    <label className="drawing__segment-option">
+                        <input
+                            type="radio"
+                            name="classify-method"
+                            value="local"
+                            checked={classifyMethod === 'local'}
+                            onChange={() => setClassifyMethod('local')}
+                        />
+                        Lokal ($P)
+                    </label>
+                </fieldset>
+            </div>
             <div className="drawing__stage">
                 <canvas
                     ref={canvasRef}

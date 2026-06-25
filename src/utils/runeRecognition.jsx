@@ -9,6 +9,8 @@ import {
 } from '../config.js';
 import { callGeminiVision, parseJsonResponse } from './geminiApi.jsx';
 import { detectRunes } from './iterativeRecognition.js';
+import { classifyRune, classifySign } from './localClassification.js';
+import { calculateCircleScore } from './utils.ts';
 
 let runeDescriptions = null;
 let signDescriptions = null;
@@ -491,120 +493,187 @@ async function identifySingleRune(runeBase64, runeImages, runes) {
     };
 }
 
-export async function recognizeRune(canvas) {
+// Lokale Segmentierung: rein über Pixel-Connected-Components, ohne KI.
+// Liefert dasselbe Format wie die KI-Variante: { count, boxes, centerBox }
+// (Boxen in Prozent-Koordinaten 0..100).
+function segmentLocal(canvas) {
+    const components = findConnectedComponents(canvas);
+    const filtered = filterOutCircle(components);
+    const {center, ring} = partitionComponentsByRegion(
+        filtered,
+        CANVAS_WIDTH,
+        CANVAS_HEIGHT
+    );
+    const centerBox = center.length ? mergeCenterSigilComponents(center) : null;
+    const boxes = mergeComponentsIntoRunes(ring);
+    return {count: boxes.length, boxes, centerBox};
+}
+
+// KI-Segmentierung: Anzahl + Ring-Boxen via Gemini; Center-Siegel und ein
+// Fallback für fehlende Ring-Boxen weiterhin lokal über Pixel-Komponenten.
+async function segmentAi(canvas, drawingBase64, runeImages) {
+    const countResponse = await callGeminiVision(
+        buildCountPrompt(),
+        [{base64: drawingBase64}, ...runeImages]
+    );
+    const countResult = parseJsonResponse(countResponse.text);
+    let count = countResult?.count;
+    if (count === undefined) {
+        const numberMatch = countResponse.text.match(/\d+/);
+        count = numberMatch ? parseInt(numberMatch[0], 10) : 1;
+    }
+    count = Math.max(0, count);
+
+    const boxResponse = await callGeminiVision(
+        buildBoxPrompt(Math.max(1, count)),
+        [{base64: drawingBase64}]
+    );
+    const boxResult = parseJsonResponse(boxResponse.text);
+    let boxes = (boxResult?.runes || []).filter(
+        (b) =>
+            typeof b.x === 'number' &&
+            typeof b.y === 'number' &&
+            typeof b.w === 'number' &&
+            typeof b.h === 'number'
+    );
+
+    const components = findConnectedComponents(canvas);
+    const filtered = filterOutCircle(components);
+    const {center, ring} = partitionComponentsByRegion(
+        filtered,
+        CANVAS_WIDTH,
+        CANVAS_HEIGHT
+    );
+    let centerBox = center.length ? mergeCenterSigilComponents(center) : null;
+
+    if (boxes.length > 0) {
+        const split = splitBoxesByRegion(boxes, CANVAS_WIDTH, CANVAS_HEIGHT);
+        boxes = split.ringBoxes;
+        if (!centerBox && split.centerBoxes.length > 0) {
+            centerBox = mergeCenterSigilComponents(split.centerBoxes);
+        }
+    }
+
+    if (boxes.length < count) {
+        // Gemini hat zu wenige Boxen geliefert -> lokale Pixel-Analyse.
+        boxes = mergeComponentsIntoRunes(ring);
+        count = boxes.length;
+    } else {
+        boxes = boxes.filter((b) => !isCenterRegion(b, CANVAS_WIDTH, CANVAS_HEIGHT));
+    }
+
+    return {count, boxes, centerBox};
+}
+
+// Den umschließenden Kreis-Strich entfernen, damit er nicht in die lokale
+// Klassifikation einzelner Glyphen einfließt.
+function removeCircleStroke(strokes) {
+    let bestIndex = -1;
+    let bestScore = -1;
+    strokes.forEach((stroke, index) => {
+        if (stroke.length < 12) return;
+        const score = calculateCircleScore([stroke], false);
+        if (score > bestScore) {
+            bestScore = score;
+            bestIndex = index;
+        }
+    });
+    return bestIndex >= 0 && bestScore >= 70
+        ? strokes.filter((_, index) => index !== bestIndex)
+        : strokes;
+}
+
+// Striche (Canvas-Pixel), deren Schwerpunkt in einer Box (Prozent 0..100) liegt.
+function strokesForBox(strokes, box, pad = 8) {
+    const x0 = (box.x / 100) * CANVAS_WIDTH - pad;
+    const y0 = (box.y / 100) * CANVAS_HEIGHT - pad;
+    const x1 = ((box.x + box.w) / 100) * CANVAS_WIDTH + pad;
+    const y1 = ((box.y + box.h) / 100) * CANVAS_HEIGHT + pad;
+    return strokes.filter((stroke) => {
+        if (!stroke.length) return false;
+        const cx = stroke.reduce((sum, p) => sum + p.x, 0) / stroke.length;
+        const cy = stroke.reduce((sum, p) => sum + p.y, 0) / stroke.length;
+        return cx >= x0 && cx <= x1 && cy >= y0 && cy <= y1;
+    });
+}
+
+export async function recognizeRune(
+    canvas,
+    {segmentMethod = 'ai', classifyMethod = 'ai', strokes = []} = {}
+) {
     const runes = await loadRuneDescriptions();
     const signs = await loadSignDescriptions();
 
     try {
-        const drawingBase64 = canvasToBase64(canvas);
+        const needGeminiSeg = segmentMethod === 'ai';
+        const needGeminiClass = classifyMethod === 'ai';
 
-        const runeImages = await Promise.all(
-            runes.map(async (rune) => {
-                const base64 = await loadImageAsBase64(rune.imagePath);
-                return { base64 };
-            })
-        );
-
-        const signImages = await Promise.all(
-            signs.map(async (sign) => {
-                const base64 = await loadImageAsBase64(sign.imagePath);
-                return { base64 };
-            })
-        );
-
-        const countResponse = await callGeminiVision(
-            buildCountPrompt(),
-            [{ base64: drawingBase64 }, ...runeImages]
-        );
-        console.log('Count Antwort:', countResponse.text);
-        
-        const countResult = parseJsonResponse(countResponse.text);
-        let count = countResult?.count;
-        if (count === undefined) {
-            const numberMatch = countResponse.text.match(/\d+/);
-            count = numberMatch ? parseInt(numberMatch[0], 10) : 1;
-        }
-        count = Math.max(0, count);
-        console.log('Erkannte Anzahl (Ring):', count);
-
-        const boxResponse = await callGeminiVision(
-            buildBoxPrompt(Math.max(1, count)),
-            [{ base64: drawingBase64 }]
-        );
-        console.log('Box Antwort:', boxResponse.text);
-        
-        const boxResult = parseJsonResponse(boxResponse.text);
-        let boxes = boxResult?.runes || [];
-        console.log('Gefundene Boxes:', boxes);
-        
-        boxes = boxes.filter(b => 
-            typeof b.x === 'number' && 
-            typeof b.y === 'number' &&
-            typeof b.w === 'number' &&
-            typeof b.h === 'number'
-        );
+        // Referenzbilder / Canvas-Base64 nur laden, wenn Gemini sie braucht.
+        const drawingBase64 = needGeminiSeg ? canvasToBase64(canvas) : null;
+        const runeImages =
+            needGeminiSeg || needGeminiClass
+                ? await Promise.all(
+                      runes.map(async (rune) => ({
+                          base64: await loadImageAsBase64(rune.imagePath)
+                      }))
+                  )
+                : [];
+        const signImages = needGeminiClass
+            ? await Promise.all(
+                  signs.map(async (sign) => ({
+                      base64: await loadImageAsBase64(sign.imagePath)
+                  }))
+              )
+            : [];
 
         const dpr = window.devicePixelRatio || 1;
         const canvasWidth = canvas.width / dpr;
         const canvasHeight = canvas.height / dpr;
 
-        let centerBox = null;
+        // Segmentierung wählbar: lokal (Pixel) oder KI (Gemini).
+        const {count, boxes, centerBox} =
+            segmentMethod === 'local'
+                ? segmentLocal(canvas)
+                : await segmentAi(canvas, drawingBase64, runeImages);
+
+        // Für lokale Klassifikation: Striche ohne den umschließenden Kreis.
+        const runeStrokes =
+            classifyMethod === 'local' ? removeCircleStroke(strokes) : [];
+
         let centerSign = null;
-
-        const components = findConnectedComponents(canvas);
-        console.log('Gefundene Komponenten:', components.length);
-        const filteredComponents = filterOutCircle(components);
-        const { center: centerComponents, ring: ringComponents } = partitionComponentsByRegion(
-            filteredComponents,
-            CANVAS_WIDTH,
-            CANVAS_HEIGHT
-        );
-
-        if (centerComponents.length > 0) {
-            centerBox = mergeCenterSigilComponents(centerComponents);
-            console.log(`Center-Siegel: ${centerComponents.length} Komponenten → 1 Box`, centerBox);
-        }
-
-        if (boxes.length > 0) {
-            const split = splitBoxesByRegion(boxes, CANVAS_WIDTH, CANVAS_HEIGHT);
-            boxes = split.ringBoxes;
-            if (!centerBox && split.centerBoxes.length > 0) {
-                centerBox = mergeCenterSigilComponents(split.centerBoxes);
-                console.log('Center-Siegel Box (Gemini):', centerBox);
-            }
-        }
-
-        if (boxes.length < count) {
-            console.warn(`Nur ${boxes.length} Ring-Boxes von Gemini, erwarte ${count}. Nutze Pixel-Analyse.`);
-            boxes = mergeComponentsIntoRunes(ringComponents);
-            count = boxes.length;
-            console.log('Erkannte Ring-Runen nach Pixel-Analyse:', count, boxes);
-        } else {
-            boxes = boxes.filter(b => !isCenterRegion(b, CANVAS_WIDTH, CANVAS_HEIGHT));
-        }
 
         if (centerBox) {
             const [extractedCenter] = extractRuneImages(canvas, [centerBox]);
-            console.log('Identifiziere Center-Siegel...');
-            const centerMatch = signs.length
-                ? await identifyCenterSign(extractedCenter.base64, signImages, signs)
-                : null;
+            const centerMatch =
+                classifyMethod === 'local'
+                    ? await classifySign(strokesForBox(runeStrokes, centerBox))
+                    : signs.length
+                      ? await identifyCenterSign(extractedCenter.base64, signImages, signs)
+                      : null;
             centerSign = {
                 image: extractedCenter.dataUrl,
                 match: centerMatch,
                 clockPosition: 'Mitte'
             };
         }
-        
+
         const extractedRunes = extractRuneImages(canvas, boxes);
-        console.log('Extrahierte Ring-Runen:', extractedRunes.length);
-        
+
         const matches = [];
         for (let i = 0; i < extractedRunes.length; i++) {
-            console.log(`Identifiziere Rune ${i + 1}/${extractedRunes.length}...`);
-            const match = await identifySingleRune(extractedRunes[i].base64, runeImages, runes);
-            const clockPosition = calculateClockPosition(boxes[i], canvasWidth, canvasHeight);
-            console.log(`Rune ${i + 1} Uhrposition: ${clockPosition}`);
+            const match =
+                classifyMethod === 'local'
+                    ? await classifyRune(strokesForBox(runeStrokes, boxes[i]))
+                    : await identifySingleRune(
+                          extractedRunes[i].base64,
+                          runeImages,
+                          runes
+                      );
+            const clockPosition = calculateClockPosition(
+                boxes[i],
+                canvasWidth,
+                canvasHeight
+            );
             matches.push({
                 image: extractedRunes[i].dataUrl,
                 match: match,

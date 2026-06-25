@@ -5,7 +5,10 @@ import {
     STROKE_COLOR,
     STROKE_WIDTH,
     ERASER_WIDTH,
-    RUNES_PATH
+    RUNES_PATH,
+    SIGNS_PATH,
+    ENABLED_RUNES,
+    ENABLED_SIGNS
 } from '../config.js';
 import {itterativeAnalysis} from '../utils/runeRecognition.jsx';
 import {
@@ -342,7 +345,18 @@ function DrawingCanvas() {
                     onTouchMove={draw}
                     onTouchEnd={stopDrawing}
                 />
-                <RuneAlphabet />
+                <RuneAlphabet
+                    title="Siegel"
+                    items={ENABLED_SIGNS}
+                    path={SIGNS_PATH}
+                    side="left"
+                />
+                <RuneAlphabet
+                    title="Runen"
+                    items={ENABLED_RUNES}
+                    path={RUNES_PATH}
+                    side="right"
+                />
             </div>
 
             <div className="drawing__actions">

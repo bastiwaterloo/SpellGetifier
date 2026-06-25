@@ -129,8 +129,8 @@ export async function recognizeRune(canvas) {
 
 // Platzhalter-Zauber: der eigentliche iterative Abgleich folgt später.
 // Gleiches Ergebnis-Schema wie recognizeRune, damit die Anzeige unverändert bleibt.
-export async function itterativeAnalysis(canvas) {
-    void canvas;
+export async function itterativeAnalysis(input) {
+    void input;
     return {
         match: null,
         confidence: 0,

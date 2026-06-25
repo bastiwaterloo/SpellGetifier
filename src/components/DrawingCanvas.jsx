@@ -383,7 +383,7 @@ function DrawingCanvas() {
                         type="button"
                         className="drawing__button drawing__button--secondary"
                         onClick={() => setIsSpellMenuOpen((open) => !open)}
-                        disabled={!hasDrawing || isRecognizing}
+                        disabled={isRecognizing}
                         aria-haspopup="menu"
                         aria-expanded={isSpellMenuOpen}
                     >
@@ -400,7 +400,7 @@ function DrawingCanvas() {
                                         castSpell(activeRecognizer.recognize)
                                     }
                                 >
-                                    ZaubAIrn
+                                    Zaub-AI-rn
                                 </button>
                             </li>
                             <li role="none">
@@ -592,6 +592,16 @@ function DrawingCanvas() {
                                 className="drawing__rune-image"
                             />
                         </div>
+                    )}
+                    {recognitionResult.findings && recognitionResult.findings.length > 0 && (
+                        <ul className="drawing__findings">
+                            {recognitionResult.findings.map((finding, index) => (
+                                <li key={index} className="drawing__finding">
+                                    <strong>{finding.name}</strong>
+                                    {` · ${finding.size}px · (${Math.round(finding.x)}, ${Math.round(finding.y)}) · ${finding.rotation}° · ${finding.score}%`}
+                                </li>
+                            ))}
+                        </ul>
                     )}
                 </div>
             )}

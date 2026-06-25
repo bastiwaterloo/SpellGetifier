@@ -210,6 +210,19 @@
     background: #31314f;
 }
 
+.drawing__findings {
+    list-style: none;
+    margin: 0.75rem 0 0;
+    padding: 0;
+    text-align: left;
+    font-size: 0.85rem;
+}
+
+.drawing__finding {
+    padding: 0.15rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
 .drawing__menu--debug {
     padding: 0.5rem;
     gap: 0.35rem;

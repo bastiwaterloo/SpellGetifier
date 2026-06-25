@@ -51,3 +51,7 @@ npm run preview
         ├── DrawingCanvas.jsx     # Zeichen-Canvas
         └── DrawingCanvas.css
 ```
+
+## Dokumentation
+
+- [TensorFlow.js – Referenz](docs/TensorFlowJS.md) — Funktionsweise von TensorFlow.js und mögliche Anbindung an die Runen-/Zauber-Erkennung

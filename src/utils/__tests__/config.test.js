@@ -14,7 +14,7 @@ describe('iterative detection constants', () => {
   });
 
   it('defines the expected sizes', () => {
-    expect(ITERATIVE_SIZES).toEqual([32, 48, 64, 96, 128, 192, 256]);
+    expect(ITERATIVE_SIZES).toEqual([32, 40, 50, 64, 80, 100, 128, 160, 200, 256]);
   });
 
   it('defines 36 rotations stepping by 10 degrees from 0 to 350', () => {

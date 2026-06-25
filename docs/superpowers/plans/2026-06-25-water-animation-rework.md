@@ -294,6 +294,10 @@ function WaterStage({preset, params, igniteKey}) {
       transparent: true,
       depthWrite: false,
       depthTest: true,
+      // DoubleSide is REQUIRED: the velocity-stretch basis (perp, along) in the
+      // vertex shader is left-handed, which flips the quad winding. Without this,
+      // every billboard is back-facing and culled (draws nothing).
+      side: THREE.DoubleSide,
       blending: THREE.NormalBlending
     });
 

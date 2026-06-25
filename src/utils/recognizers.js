@@ -10,6 +10,10 @@ import {
     recognizeRune as recognizeWithUnistroke,
     loadRuneTemplates as loadUnistrokeTemplates
 } from './unistrokeRecognition.jsx';
+import {
+    recognizeRune as recognizeWithPDollar,
+    loadRuneTemplates as loadPDollarTemplates
+} from './pDollarRecognition.jsx';
 
 export const RECOGNIZERS = [
     {
@@ -18,6 +22,13 @@ export const RECOGNIZERS = [
         loadTemplates: loadUnistrokeTemplates,
         // Lokaler $1-Recognizer arbeitet auf den aufgezeichneten Punkten.
         recognize: ({strokes}) => recognizeWithUnistroke(strokes)
+    },
+    {
+        id: 'pdollar',
+        label: '$P (Vektor-Templates)',
+        loadTemplates: loadPDollarTemplates,
+        // $P-Point-Cloud-Recognizer mit aus SVGs erzeugten Templates.
+        recognize: ({strokes}) => recognizeWithPDollar(strokes)
     },
     {
         id: 'gemini',

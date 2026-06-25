@@ -1,4 +1,4 @@
-import { RUNE_NAMES, RUNES_PATH } from '../config.js';
+import { ENABLED_RUNES, RUNES_PATH } from '../config.js';
 
 let cache = null;
 
@@ -34,13 +34,16 @@ export function rasterizeRotatedScaled(image, size, rotationDeg, marginFactor = 
 export async function loadRuneImages() {
   if (cache) return cache;
 
+  // Only scan runes that are active in config/config.json (ENABLED_RUNES);
+  // deactivated runes are excluded so the detector never matches against them.
+  // The display name comes from the config label, not the file name.
   const runes = [];
-  for (let index = 0; index < RUNE_NAMES.length; index++) {
-    const fileName = RUNE_NAMES[index];
-    const imagePath = `${RUNES_PATH}/${fileName}.png`;
+  for (let index = 0; index < ENABLED_RUNES.length; index++) {
+    const { file, label } = ENABLED_RUNES[index];
+    const imagePath = `${RUNES_PATH}/${file}.png`;
     runes.push({
       id: index + 1,
-      name: fileName.replace(/_/g, ' '),
+      name: label,
       imagePath,
       image: await loadImage(imagePath),
     });

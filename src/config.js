@@ -48,3 +48,9 @@ export const RUNE_NAMES = [
 ]
 
 export const RUNE_COUNT = RUNE_NAMES.length
+
+export const ITERATIVE_SIZES = [8, 16, 24, 32, 48, 64, 96, 128]
+export const ITERATIVE_ROTATIONS = Array.from({ length: 72 }, (_, i) => i * 5)
+export const MATCH_THRESHOLD = 0.6
+export const PENALTY_WEIGHT = 1.0
+export const NMS_RELATIVE = 0.5

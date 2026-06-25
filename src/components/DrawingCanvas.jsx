@@ -305,6 +305,16 @@ function DrawingCanvas() {
                             />
                         </div>
                     )}
+                    {recognitionResult.findings && recognitionResult.findings.length > 0 && (
+                        <ul className="drawing__findings">
+                            {recognitionResult.findings.map((finding, index) => (
+                                <li key={index} className="drawing__finding">
+                                    <strong>{finding.name}</strong>
+                                    {` · ${finding.size}px · (${Math.round(finding.x)}, ${Math.round(finding.y)}) · ${finding.rotation}° · ${finding.score}%`}
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
             )}
         </div>

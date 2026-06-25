@@ -1,5 +1,6 @@
 import { RUNES_PATH, RUNE_NAMES, RUNE_COUNT } from '../config.js';
 import { callGeminiVision, parseJsonResponse } from './geminiApi.jsx';
+import { detectRunes } from './iterativeRecognition.js';
 
 let runeDescriptions = null;
 
@@ -127,13 +128,7 @@ export async function recognizeRune(canvas) {
     }
 }
 
-// Platzhalter-Zauber: der eigentliche iterative Abgleich folgt später.
-// Gleiches Ergebnis-Schema wie recognizeRune, damit die Anzeige unverändert bleibt.
+// Iterativer Abgleich (lokal, ohne API): findet alle Runen im Bild.
 export async function itterativeAnalysis(canvas) {
-    void canvas;
-    return {
-        match: null,
-        confidence: 0,
-        message: 'Alter Zauber: noch nicht implementiert'
-    };
+    return detectRunes(canvas);
 }

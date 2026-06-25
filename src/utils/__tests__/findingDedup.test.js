@@ -33,15 +33,27 @@ describe('dedupeFindings', () => {
     expect(out).toHaveLength(2);
   });
 
-  it('keeps the larger rune and suppresses a higher-scoring small one inside it', () => {
-    // A small 24px finding scores higher than a big 128px finding that contains
-    // it. The big finding's radius (0.5 * 128 = 64) covers the small one's
-    // center (~30px away), so only the larger rune survives.
+  it('keeps the higher-scoring finding when overlapping detections differ in size', () => {
+    // A spurious larger match must not beat a better smaller one at the same spot.
     const out = dedupeFindings(
       [
-        make({ name: 'Bend', size: 128, x: 182, y: 168, score: 0.6 }),
-        make({ name: 'Enlarge', size: 24, x: 172, y: 196, score: 0.65 }),
-        make({ name: 'Radial', size: 16, x: 193, y: 133, score: 0.63 }),
+        make({ name: 'Convergence', size: 128, x: 250, y: 250, score: 0.79 }),
+        make({ name: 'Collection', size: 192, x: 250, y: 250, score: 0.54 }),
+      ],
+      0.5,
+    );
+    expect(out).toHaveLength(1);
+    expect(out[0].name).toBe('Convergence');
+  });
+
+  it('suppresses small fragment matches inside a larger highest-scoring rune', () => {
+    // The big rune scores highest and is kept first; its max-size radius
+    // (0.5 * 128 = 64) absorbs the nearby smaller fragment hits.
+    const out = dedupeFindings(
+      [
+        make({ name: 'Bend', size: 128, x: 182, y: 168, score: 0.83 }),
+        make({ name: 'Enlarge', size: 24, x: 172, y: 196, score: 0.6 }),
+        make({ name: 'Radial', size: 16, x: 193, y: 133, score: 0.58 }),
       ],
       0.5,
     );

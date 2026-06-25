@@ -446,6 +446,9 @@ export async function recognizeRune(canvas) {
 }
 
 // Iterativer Abgleich (lokal, ohne API): findet alle Runen im Bild.
-export async function itterativeAnalysis(canvas) {
+// Nimmt – wie die Recognizer in recognizers.js – ein Input-Objekt
+// {canvas, strokes} entgegen, akzeptiert aber auch ein rohes Canvas.
+export async function itterativeAnalysis(input) {
+    const canvas = input?.canvas ?? input;
     return detectRunes(canvas);
 }

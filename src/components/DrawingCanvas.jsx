@@ -28,6 +28,7 @@ import WaterStage from './WaterStage.jsx';
 import FireStage from './FireStage.jsx';
 import ElementDebugPanel from './ElementDebugPanel.jsx';
 import {getPresetByFile} from '../config/elementPresets.js';
+import {computeQuality, buildAttackParams} from '../utils/attackMapping.js';
 import './DrawingCanvas.css';
 
 function DrawingCanvas() {
@@ -62,8 +63,30 @@ function DrawingCanvas() {
     const [selectedSigilFile, setSelectedSigilFile] = useState(null);
     const [elementParams, setElementParams] = useState(null);
     const [igniteKey, setIgniteKey] = useState(0);
+    // Stärke der zuletzt gewirkten Attacke (0..100), aus der Zeichenqualität.
+    const [attackStrength, setAttackStrength] = useState(null);
 
     const selectedPreset = getPresetByFile(selectedSigilFile);
+
+    // Konfidenz des erkannten Mitte-Siegels (Element), sonst Mittel der Ring-Runen.
+    const getElementConfidence = (result) => {
+        if (result?.centerSign?.match) {
+            return result.centerSign.match.confidence;
+        }
+        const ring = result?.matches?.filter((m) => m.match) ?? [];
+        if (!ring.length) return null;
+        const sum = ring.reduce((acc, m) => acc + (m.match.confidence ?? 0), 0);
+        return Math.round(sum / ring.length);
+    };
+
+    // Zeichenqualität -> Attacken-Stärke: Power-Parameter skalieren + neu zünden.
+    const igniteAttack = (preset, signals) => {
+        if (!preset) return;
+        const quality = computeQuality(signals);
+        setElementParams(buildAttackParams(preset, quality));
+        setAttackStrength(Math.round(quality * 100));
+        setIgniteKey((key) => key + 1);
+    };
 
     const handleSelectSigil = (file) => {
         setSelectedSigilFile(file);
@@ -244,10 +267,19 @@ function DrawingCanvas() {
         setHasDrawing(false);
         setScore(null);
         setRecognitionResult(null);
+        setAttackStrength(null);
     };
 
     const calculateCircleScore = () => {
-        setScore(getCircleScore(pointsRef.current));
+        const circleScore = getCircleScore(pointsRef.current);
+        setScore(circleScore);
+        // Bei gewähltem Element die Attacke an der Kreisqualität ausrichten.
+        if (selectedPreset) {
+            igniteAttack(selectedPreset, {
+                circleScore,
+                confidence: getElementConfidence(recognitionResult)
+            });
+        }
     };
 
     const drawBoundingBoxes = (boxes, centerBox = null) => {
@@ -292,6 +324,20 @@ function DrawingCanvas() {
             setRecognitionResult(result);
             if (result.boxes || result.centerBox) {
                 drawBoundingBoxes(result.boxes, result.centerBox);
+            }
+            // Element automatisch aus dem erkannten Mitte-Siegel ableiten.
+            const sigilFile = result?.centerSign?.match?.sign?.fileName ?? null;
+            const recognizedPreset = getPresetByFile(sigilFile);
+            const preset = recognizedPreset ?? selectedPreset;
+            if (recognizedPreset) {
+                setSelectedSigilFile(sigilFile); // UI-Auswahl spiegeln
+            }
+            // Erkennungs-Konfidenz + Kreisqualität bestimmen die Attacken-Stärke.
+            if (preset) {
+                igniteAttack(preset, {
+                    circleScore: getCircleScore(pointsRef.current),
+                    confidence: getElementConfidence(result)
+                });
             }
         } catch (error) {
             console.error('Fehler bei der Runen-Erkennung:', error);
@@ -465,6 +511,12 @@ function DrawingCanvas() {
                 ) : (
                     <p>
                         Score: <strong>{score}</strong> von 100
+                    </p>
+                )}
+                {attackStrength !== null && selectedPreset && (
+                    <p>
+                        Attacke ({selectedPreset.label}):{' '}
+                        <strong>{attackStrength}%</strong> Stärke
                     </p>
                 )}
             </div>

@@ -28,7 +28,12 @@ import WaterStage from './WaterStage.jsx';
 import FireStage from './FireStage.jsx';
 import ElementDebugPanel from './ElementDebugPanel.jsx';
 import {getPresetByFile} from '../config/elementPresets.js';
-import {computeQuality, buildAttackParams} from '../utils/attackMapping.js';
+import {
+    computeQuality,
+    buildAttackParams,
+    applyRuneModifiers,
+    RUNE_MODIFIERS
+} from '../utils/attackMapping.js';
 import './DrawingCanvas.css';
 
 function DrawingCanvas() {
@@ -65,6 +70,8 @@ function DrawingCanvas() {
     const [igniteKey, setIgniteKey] = useState(0);
     // Stärke der zuletzt gewirkten Attacke (0..100), aus der Zeichenqualität.
     const [attackStrength, setAttackStrength] = useState(null);
+    // Namen der Ring-Runen, die die Attacke modifiziert haben (für die Anzeige).
+    const [modifierNames, setModifierNames] = useState([]);
 
     const selectedPreset = getPresetByFile(selectedSigilFile);
 
@@ -79,12 +86,27 @@ function DrawingCanvas() {
         return Math.round(sum / ring.length);
     };
 
-    // Zeichenqualität -> Attacken-Stärke: Power-Parameter skalieren + neu zünden.
+    // Erkannte Ring-Runen als {file, name} (für Modifier + Anzeige).
+    const getRunes = (result) =>
+        (result?.matches ?? [])
+            .filter((m) => m.match?.rune)
+            .map((m) => ({file: m.match.rune.fileName, name: m.match.rune.name}));
+
+    // Zeichenqualität -> Stärke (Power-Parameter), Ring-Runen -> Charakter-Modifier.
     const igniteAttack = (preset, signals) => {
         if (!preset) return;
+        const runes = signals.runes ?? [];
+        const runeFiles = runes.map((rune) => rune.file);
         const quality = computeQuality(signals);
-        setElementParams(buildAttackParams(preset, quality));
+        const params = applyRuneModifiers(
+            buildAttackParams(preset, quality),
+            runeFiles
+        );
+        setElementParams(params);
         setAttackStrength(Math.round(quality * 100));
+        setModifierNames(
+            runes.filter((rune) => RUNE_MODIFIERS[rune.file]).map((rune) => rune.name)
+        );
         setIgniteKey((key) => key + 1);
     };
 
@@ -268,6 +290,7 @@ function DrawingCanvas() {
         setScore(null);
         setRecognitionResult(null);
         setAttackStrength(null);
+        setModifierNames([]);
     };
 
     const calculateCircleScore = () => {
@@ -277,7 +300,8 @@ function DrawingCanvas() {
         if (selectedPreset) {
             igniteAttack(selectedPreset, {
                 circleScore,
-                confidence: getElementConfidence(recognitionResult)
+                confidence: getElementConfidence(recognitionResult),
+                runes: getRunes(recognitionResult)
             });
         }
     };
@@ -336,7 +360,8 @@ function DrawingCanvas() {
             if (preset) {
                 igniteAttack(preset, {
                     circleScore: getCircleScore(pointsRef.current),
-                    confidence: getElementConfidence(result)
+                    confidence: getElementConfidence(result),
+                    runes: getRunes(result)
                 });
             }
         } catch (error) {
@@ -517,6 +542,11 @@ function DrawingCanvas() {
                     <p>
                         Attacke ({selectedPreset.label}):{' '}
                         <strong>{attackStrength}%</strong> Stärke
+                    </p>
+                )}
+                {modifierNames.length > 0 && (
+                    <p>
+                        Modifier: <strong>{modifierNames.join(', ')}</strong>
                     </p>
                 )}
             </div>

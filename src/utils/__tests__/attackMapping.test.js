@@ -1,5 +1,11 @@
 import {describe, it, expect} from 'vitest';
-import {computeQuality, buildAttackParams, POWER_FLOORS} from '../attackMapping.js';
+import {
+    computeQuality,
+    buildAttackParams,
+    POWER_FLOORS,
+    applyRuneModifiers,
+    RUNE_MODIFIERS
+} from '../attackMapping.js';
 
 const preset = {
     defaults: {
@@ -50,5 +56,36 @@ describe('buildAttackParams', () => {
         expect(high.particleCount).toBeGreaterThan(low.particleCount);
         expect(high.intensity).toBeGreaterThan(low.intensity);
         expect(high.flameHeight).toBeGreaterThan(low.flameHeight);
+    });
+});
+
+describe('applyRuneModifiers', () => {
+    const base = buildAttackParams(preset, 1);
+
+    it('leaves params unchanged without runes', () => {
+        expect(applyRuneModifiers(base, [])).toEqual(base);
+    });
+
+    it('ignores unknown runes', () => {
+        expect(applyRuneModifiers(base, ['DoesNotExist'])).toEqual(base);
+    });
+
+    it('applies a single rune modifier (Column = tall narrow beam)', () => {
+        const out = applyRuneModifiers(base, ['Column']);
+        expect(out.flameHeight).toBeGreaterThan(base.flameHeight);
+        expect(out.spread).toBeLessThan(base.spread);
+    });
+
+    it('stacks multiple runes multiplicatively', () => {
+        const one = applyRuneModifiers(base, ['Repetition']);
+        const two = applyRuneModifiers(base, ['Repetition', 'Collection']);
+        expect(two.particleCount).toBeGreaterThan(one.particleCount);
+    });
+
+    it('clamps results to the slider ranges', () => {
+        const out = applyRuneModifiers(base, Object.keys(RUNE_MODIFIERS));
+        expect(out.particleCount).toBeLessThanOrEqual(2000);
+        expect(out.intensity).toBeLessThanOrEqual(1);
+        expect(out.spread).toBeGreaterThanOrEqual(0);
     });
 });

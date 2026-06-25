@@ -1,3 +1,5 @@
+import RUNE_DATA from "../config/config.json";
+
 export const CANVAS_WIDTH = 500;
 export const CANVAS_HEIGHT = 500;
 
@@ -80,3 +82,26 @@ export const SIGN_NAMES = [
 ];
 
 export const SIGN_COUNT = SIGN_NAMES.length;
+
+// Aktivierte Einträge (disabled === false) aus config/config.json, nach Dateiname
+// gruppiert. type "sign" gehört zum modifiers-Ordner (Runen, rechts),
+// type "sigil" zum signs-Ordner (Zeichen, links). Der Anzeigename kommt aus
+// dem config-Feld `name`, nicht mehr aus dem Dateinamen.
+const labelByBasename = (type) =>
+  new Map(
+    RUNE_DATA.filter((entry) => entry.type === type && entry.disabled === false).map(
+      (entry) => [entry.image_filename.replace(/\.[^.]+$/, ""), entry.name]
+    )
+  );
+
+const SIGN_LABELS = labelByBasename("sign");
+const SIGIL_LABELS = labelByBasename("sigil");
+
+// Nur in der UI angezeigte Listen: gefiltert auf aktivierte Einträge.
+// file = Bild-Basisname (zum Laden), label = Anzeigename aus config.
+export const ENABLED_RUNES = RUNE_NAMES.filter((file) => SIGN_LABELS.has(file)).map(
+  (file) => ({ file, label: SIGN_LABELS.get(file) })
+);
+export const ENABLED_SIGNS = SIGN_NAMES.filter((file) => SIGIL_LABELS.has(file)).map(
+  (file) => ({ file, label: SIGIL_LABELS.get(file) })
+);

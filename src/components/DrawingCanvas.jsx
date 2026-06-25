@@ -6,9 +6,9 @@ import {
     STROKE_WIDTH,
     ERASER_WIDTH,
     RUNES_PATH,
-    RUNE_NAMES,
     SIGNS_PATH,
-    SIGN_NAMES
+    ENABLED_RUNES,
+    ENABLED_SIGNS
 } from '../config.js';
 import {recognizeRune, loadRuneTemplates, itterativeAnalysis} from '../utils/runeRecognition.jsx';
 import {calculateCircleScore as getCircleScore} from '../utils/utils.ts';
@@ -212,13 +212,13 @@ function DrawingCanvas() {
                 />
                 <RuneAlphabet
                     title="Zeichen"
-                    names={SIGN_NAMES}
+                    items={ENABLED_SIGNS}
                     path={SIGNS_PATH}
                     side="left"
                 />
                 <RuneAlphabet
                     title="Runen"
-                    names={RUNE_NAMES}
+                    items={ENABLED_RUNES}
                     path={RUNES_PATH}
                     side="right"
                 />

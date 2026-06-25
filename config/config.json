@@ -6,7 +6,8 @@
     "id": "Column",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/5/5e/Column.png",
     "explanation": "Column (柱の矢, hashira no ya ) is a directional sign that causes a spell to manifest in a column or beam above the seal. If the signs aren't balanced, the spell will manifest in the direction with the most or the largest signs . The longer line typically faces inwards, as seen in the watershot seal and wall breaker seal . However, the sign is occasionally inverted, as seen in the snugstone seal and crystal shard seal . Inverting the sign seems to make the spell emit out in all directions, similar to dispersion . It is unknown what, if anything, differentiates inverted column's effect from that of dispersion .",
-    "image_filename": "Column.png"
+    "image_filename": "Column.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -15,7 +16,8 @@
     "id": "Dispersion",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/9/92/Dispersion.png",
     "explanation": "Dispersion (拡散の矢, kakusan no ya ) causes the magic of its seal to pour or \"disperse\" outwards. It isn't known if this sign is directional or semi-directional. It has many similarities to column , with it essentially being a column that leaks its magic outwards rather than shooting or beaming it in a certain direction. Both its normal and inverted variations have been seen, with the difference in their effects being unclear. Interestingly, the effect of inverted column very closely matches that of dispersion, as seen in the snugstone seal . What differentiates the two is currently unknown.",
-    "image_filename": "Dispersion.png"
+    "image_filename": "Dispersion.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -24,7 +26,8 @@
     "id": "Levitation",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/d/dd/Levitation.png",
     "explanation": "Levitation (浮遊の矢, fuyū no ya ) is a directional sign that has two apparent functions, these depending on the sigil which is paired with the sign. The reason for this is unknown. The arrow-like side of the sign typically faces inwards.",
-    "image_filename": "Levitation.png"
+    "image_filename": "Levitation.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -33,7 +36,8 @@
     "id": "Pull",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/3/31/Pull.png",
     "explanation": "Pull (引き寄せの矢, hikiyose no ya ) is a directional sign that causes anything matching its seal's sigil (water, air, fire, etc) to be pulled towards the seal when the arrow portion of the sign is pointing inwards. It is likely that, if inverted, the sign will instead push things away. When pointed inwards at an angle, the spell will have both a pulling and twisting effect, and it's likely that if rotated a full 90 degrees, the spell will just twist without pulling.",
-    "image_filename": "Pull.png"
+    "image_filename": "Pull.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -42,7 +46,8 @@
     "id": "Crush",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/1/15/Crush.png",
     "explanation": "Crush (破砕の矢, hasai no ya ) is a semi-directional sign that breaks things apart. When paired with an earth sigil, crush will cause objects to disintegrate , breaking them into tiny pieces until they reach a sand-like or powdered state. If the sign is inverted and the spell is used on a powdered substance, the powder will reform into its original shape . However, as soon as the spell wears off or the spell is removed, the powder will return to simply being a pile of dust.",
-    "image_filename": "Crush.png"
+    "image_filename": "Crush.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -51,7 +56,8 @@
     "id": "Puppet",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/a/a3/Dancing_Puppet.png",
     "explanation": "Puppet (踊る人形の矢, odoru ningyō no ya ) is highly unusual, appearing to be the only sign (aside from sights set ) that allows one to control a spell with their mind. More specifically, puppet seems to allow a \"user\" (possibly either the person who drew or last touched the spell) to control the movement of the object it is drawn on. The nature of this movement seems to be dependent on the sigil of the spell. For example, wind-based puppet spells, such as the flying puppet of diversion and cloak spell , only seem to be capable of arial movement. While it is never stated, directly or otherwise, that puppet spells move in accordance with the user's mind, there is strong circumstantial evidence to support the idea. For example, Sasaran was able to maneuver his cloak with incredible accuracy and precision during his fight with Qifrey . With his cloak lacking any visible controls through which this could be explained, it is reasonable to assume that he piloted it using his mind. Interestingly, the sealchair , which is similar to Sasaran's cloak in that it lacks visible controls yet can still be operated with clear precision and intent, features a number of signs on its underside which closely resemble puppet . It is possible that these are variants. It is possible that puppet can be turned inside out to reverse its effect,in which case it would be considered semi-directional. However, this is currently unknown.",
-    "image_filename": "Dancing_Puppet.png"
+    "image_filename": "Dancing_Puppet.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -60,7 +66,8 @@
     "id": "Float",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/c/c8/Float.png",
     "explanation": "Float is a non-directional sign that will make things float in midair, seemingly letting them ignore gravity.",
-    "image_filename": "Float.png"
+    "image_filename": "Float.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -69,7 +76,8 @@
     "id": "Region",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/b0/Direction.png",
     "explanation": "Region (領域の矢, ryōiki no ya ) is a directional sign that determines where magic will manifest in relation to a seal. For instance, if the region signs within a seal point all to the same side of the spell, the magic will shoot in that direction . Similarly, if all of the region signs within a spell point inwards, the magic will only manifest within the ring of the seal, and if they all point outwards, the magic will manifest outside the ring while not taking effect at all within the bounds of the seal. Interestingly, if region signs are arranged so that they are pointing towards one another, both towards the center and exterior of the seal in opposition to one another, the magic will only manifest directly on the ring of the seal, as can be seen in floating drops spell.",
-    "image_filename": "Direction.png"
+    "image_filename": "Direction.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -78,7 +86,8 @@
     "id": "Convergence",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/d/d0/Convergence.png",
     "explanation": "Convergence (収束の矢, shūsoku no ya ) causes the magic of its spell to \"converge,\" centering down to single point. The sign could be semi-directional based on its behavior in the wall of wind spell. It is unclear exactly how convergence focuses magic, but the effect of spells such as wall of wind and the wall anchored floatglow lamp suggest that it might make the magic manifest about or from a single point. The sign can also make loose particles pack tightly together and become somewhat rigid, as explained by the disciples of Qifrey's Atelier when they were designing the serpent's bed of sand . One of the triangle's points is typically seen pointing inwards.",
-    "image_filename": "Convergence.png"
+    "image_filename": "Convergence.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -87,7 +96,8 @@
     "id": "Collection",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/3/33/Collection.png",
     "explanation": "Collection will collect material located above and around the seal, allowing it to be used by a spell. It is either directional or semi-directional and has never been seen inverted. The open side is typically seen facing inwards.",
-    "image_filename": "Collection.png"
+    "image_filename": "Collection.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -96,7 +106,8 @@
     "id": "Billow",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/be/Billowing.png",
     "explanation": "Billow (もくもくの矢, mokumoku no ya ) is a non-directional sign that allows a spell to produce a fluffy cloud that is said to be extremely comfortable to sit on . Collection or supposedly is needed to collect and convert certain materials into clouds, but there seem to be some materials that cannot be converted. Similar to repetition , billowing can take the place of a sigil within a spell. Its only appearance has been within the Serpent’s Bed of Sand, so the exact details of how it works aren't quite clear.",
-    "image_filename": "Billowing.png"
+    "image_filename": "Billowing.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -105,7 +116,8 @@
     "id": "Repetition",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/bb/Repetition.png",
     "explanation": "Repetition (くりかえしの矢, kurikaeshi no ya ) As of the bonus from Volume 12 , the status of repetition has been retconned from that of a sign to a sigil see it's entry Here",
-    "image_filename": "Repetition.png"
+    "image_filename": "Repetition.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -114,7 +126,8 @@
     "id": "Stretch",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/6/63/Weave.png",
     "explanation": "The Stretch sign (also known as Weave ) can turn solid objects affected by the spell into long, flexible ribbons upon contact with the seal. It is most likely non-directional, but has never been seen inverted. It was used by Richeh in her ribbon spells . This sign is supposed to surround the central sigil.",
-    "image_filename": "Weave.png"
+    "image_filename": "Weave.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -123,7 +136,8 @@
     "id": "Coil",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/e/e5/Coil_Sign.png",
     "explanation": "Coil causes physical matter to manifest in a spring or coil like shape. The sign is likely non-directional and cannot be inverted. Note: coil can only affect physical matter and will have no effect on liquids or gasses.",
-    "image_filename": "Coil_Sign.png"
+    "image_filename": "Coil_Sign.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -132,7 +146,8 @@
     "id": "Cool",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/b8/Cooling.png",
     "explanation": "Cool (冷やす矢, hiyasu ya ) is a non-directional sign that presumably cools things down. First introduced in the volume 12 bonus, it is featured in the vapor bubble spell, presumably to either make the water cooler to drink or to help it condense from the air for the contraption to gather.",
-    "image_filename": "Cooling.png"
+    "image_filename": "Cooling.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -141,7 +156,8 @@
     "id": "Entwine",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/0/08/Entwine.png",
     "explanation": "Entwine (巻きつきの矢, maki-tsuki no ya ), first seen in the capture pennant spell , functions to somehow make an object it is drawn on (such as a ribbon) wrap or “entwine” itself around other objects. The mechanism through which this is achieved is unknown. It is most likely a semi-directional sign and has never been seen inverted.",
-    "image_filename": "Entwine.png"
+    "image_filename": "Entwine.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -150,7 +166,8 @@
     "id": "Sign_of_Wind",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/9/90/Sign_of_Wind.png",
     "explanation": "The sign of wind (風の矢, kaze no ya ) is an asymmetrical sign with a strange history. Prior to the volume 12 bonus, it had only ever made an appearance in chapter 1 . In this chapter, the sign seemed to serve the same purpose as the wind sigil, serving as a sigil for both the sylph shoes seal and the pegasus carriage spell . However, with the sign not appearing in any subsequent chapters and even being replaced within the sylph shoes, fans believed the sign to have been a retconned version of a wind sigil. However, with its inclusion in the pegasus carriage spell reaffirmed as of the volume 12 bonus, it is now clear that the sign is still canon. Its function, beyond its relation to wind, is unclear.",
-    "image_filename": "Sign_of_Wind.png"
+    "image_filename": "Sign_of_Wind.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -159,7 +176,8 @@
     "id": "Aeriforms_Defined",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/3/3e/Aeriforms_Defined.png",
     "explanation": "Aeriforms defined (気体の示す矢, kitai o shimesu ya ) are somewhat confusing thanks to the conflicting nature of its name and design. There are two basic variants of the base wind sigil: wind and aeriforms. The wind sigil makes a spell move air, while aeriforms causes a spell to create air. Confusingly, aeriforms defined has the same design as the modifiers on the wind sigil, yet shares a name with the aeriforms sigil. This conflicting information makes it difficult to determine the function of the sign, though it is known that it can serve as a modifier to the wind underfoot sigil, as seen in the pegasus carriage spell . The sign is most likely semi-directional and has never been seen inverted.",
-    "image_filename": "Aeriforms_Defined.png"
+    "image_filename": "Aeriforms_Defined.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -168,7 +186,8 @@
     "id": "Gather",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/1/17/Gather.png",
     "explanation": "Gather (集める矢, atsumeru ya ) seems to serve a very similar function and design to collection , letting a spell use material from its surroundings to construct its effect. How it differs is unclear, but gather may be less passive than collection and actively draw material in rather than just collect things nearby. This, however, is unconfirmed. The sign is seen in the vapor bubble spell . The sign is either directional or semi-directional and has never been seen inverted.",
-    "image_filename": "Gather.png"
+    "image_filename": "Gather.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -177,7 +196,8 @@
     "id": "Glaives",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/5/55/Glaives.png",
     "explanation": "Glaives function to determine how deeply magic will embed itself into the flesh. They are most likely semi-directional and have never been seen inverted. They likely date back to before the Day of the Pact , and have only ever been seen in the memory erasure spell variants and the slime rendering seal drawn by Engendale . Interestingly, it is possible that glaives aren't classified as signs based on Engendale's comments regarding them, but how exactly this is the case is left unclear.",
-    "image_filename": "Glaives.png"
+    "image_filename": "Glaives.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -186,7 +206,8 @@
     "id": "Solidify",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/4/47/Solidify.png",
     "explanation": "Solidify (凝固の矢) likely causes magic drawn within/connecting to it to become more solid. It appears that this sign can be written both on its own and with signs/sigils/seals written within one of its circles and warrant the same effect. A rule of thumb to discern it from linked seals: If the lines are straight, and it is linked to an empty seal, it's solidify!",
-    "image_filename": "Solidify.png"
+    "image_filename": "Solidify.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -195,7 +216,8 @@
     "id": "Bind",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/a/a0/Binding.png",
     "explanation": "based on the name and it's use in Raincleaver , Bind (留める矢) may be used to halt movement of material and bind it together, causing it to act and be moved as a single unit.",
-    "image_filename": "Binding.png"
+    "image_filename": "Binding.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -204,7 +226,8 @@
     "id": "Envelop",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/3/37/Bend.png",
     "explanation": "Envelop (衣まといの矢) likely causes a magic effect to envelop/surround what it is targeting. In Raincleaver it is likely what is causing the water to wrap around the entire sword rather than just manifesting out of the seals, and has a similar effect in Gathering Shadows",
-    "image_filename": "Bend.png"
+    "image_filename": "Bend.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -213,7 +236,8 @@
     "id": "Conceal",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/b7/Sign_of_concealment_redraw.png",
     "explanation": "Conceal hides or “conceals” whatever it is targeting, granting perceived invisibility, and forming a shadowy form leaving room for another image to be put in its place.",
-    "image_filename": "Sign_of_concealment_redraw.png"
+    "image_filename": "Sign_of_concealment_redraw.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -222,7 +246,8 @@
     "id": "Reflect",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/5/52/Sign_of_reflection_redraw.png",
     "explanation": "Reflection likely functions to target a reflected image on whatever it is drawn on to be used within an illusion spell. It's known that what image reflection targets can be specified based on its explanation in Mirror Cloak of Borrowshade",
-    "image_filename": "Sign_of_reflection_redraw.png"
+    "image_filename": "Sign_of_reflection_redraw.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -231,7 +256,8 @@
     "id": "Diamond",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/c/cd/Diamond_%28what_does_it_do%29.png",
     "explanation": "Diamond can be found within the spell of reduction used on the period piece contraption, which uses an inverted enlarge sign to make nearby objects shrink. The sign is non-directional. By comparing this spell to the floating expansion spell , which also contains an enlarge sign, it is possible to isolate diamond's effect. Most likely, diamond will cause a spell to only affect nearby objects while not affecting the object the spell is drawn on.",
-    "image_filename": "Diamond_(what_does_it_do).png"
+    "image_filename": "Diamond.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -240,7 +266,8 @@
     "id": "Window",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/d/dc/Window.png",
     "explanation": "Window (窓の矢, mado no ya ) can be found at the center of the floating expansion spell , which makes use of an enlarge sign to make the object it is drawn on grow in size. The sign is non-directional. By comparing this spell to the spell of reduction , which also contains an (albeit inverted) enlarge sign, it is possible to isolate window's effect. Most likely, window will cause a spell to only affect the object it is drawn on.",
-    "image_filename": "Window.png"
+    "image_filename": "Window.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -249,7 +276,8 @@
     "id": "Enlarge",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/5/58/Enlarge.png",
     "explanation": "Enlarge is a semi-directional sign that will cause objects to grow in size (or shrink if inverted). Whether it causes a change in size to just the object it is drawn on or just to objects nearby is seemingly controlled by the presence of either a window or diamond sign respectively. It causes objects to either grow (corners point outwards) or shrink (corners point inwards). A sign may or may not be needed, but it would have to be placed in the center regardless.",
-    "image_filename": "Enlarge.png"
+    "image_filename": "Enlarge.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -258,7 +286,8 @@
     "id": "Crosshair",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/bf/Crosshair_%28idk%29.png",
     "explanation": "Crosshair is a component of the rainflinger seal. The sign is non-directional. Likely it functions to cause magic to only target things with a corresponding magic aspect as it with the magical effects in the spell",
-    "image_filename": "Crosshair_(idk).png"
+    "image_filename": "Crosshair.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -267,7 +296,8 @@
     "id": "Radial",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/bd/Radial.png",
     "explanation": "Radial is a component of the snugstone spell . While it's exact function is unclear, it likely serves to decrease the power of the spells it is used in, such as converting fire into heat.",
-    "image_filename": "Radial.png"
+    "image_filename": "Radial.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -276,7 +306,8 @@
     "id": "Bolt",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/8/8e/Bolt.png",
     "explanation": "Bolt is a component of the water bolt spell. It is a non-directional sign. Bolt causes the magic of its spell to manifest in the form of bolts-like projectiles. When paired with a region sign, which controls the spell's direction, the projectiles will be shot with dangerous speed.",
-    "image_filename": "Bolt.png"
+    "image_filename": "Bolt.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -285,7 +316,8 @@
     "id": "Rain",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/1/1d/Rain.png",
     "explanation": "Rain cause's its spell to produce an effect very similar to rainfall down into its immediate area. It may be limited to only water spells, but it would likely work with other sigils such as fire or light to create firework-like effects, or possibly even generating a lava rain with a pairing of fire and earth. This sign is meant to surround the central sigil, which is placed in the empty space at its center. As rain can be turned inside out to reverse its effect, it is considered semi-directional.",
-    "image_filename": "Rain.png"
+    "image_filename": "Rain.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -294,7 +326,8 @@
     "id": "Orb",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/9/96/Orb.png",
     "explanation": "Orb , a non-directional sign, has the affect of creating a spherical space above a seal within which the material the spell controls will collect. Material will only collect in this area if it is added in directly. Material will fill this space bottom to top, collecting at the bottom of the spherical region, still affected by gravity. When more material is added, it will gradually fill the space higher and higher in the same way you would see in a bucket or a cup. It is seen one time in a spell Qifrey uses to create a sphere of water, achieving this by pouring it into the spherical region of the spell directly.",
-    "image_filename": "Orb.png"
+    "image_filename": "Orb.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -303,7 +336,8 @@
     "id": "Purify",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/b7/Purify_Sign.png",
     "explanation": "Purify is an asymmetric sign found in both the Purify spell and the sewer grate purifier . It functions to separate out any impurities from the magic of its sigil. For example, it will separate out particulates and contaminants from water or dust from air.",
-    "image_filename": "Purify_Sign.png"
+    "image_filename": "Purify_Sign.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -312,7 +346,8 @@
     "id": "Link",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/4/4c/Link_Sign.png",
     "explanation": "The exact effects of Link are unknown, but it is confirmed that this sign functions to somehow link magic between the object it is drawn on and all other objects that were broken off, removed from, or made out of the same original object. For example, the split-shard bangles are rings all carved from fragments of the same original crystal. Constructed from a light sigil, a weave sign, and a link sign, the spell on the rings will create a ribbon of light between the ring it is drawn on and all other rings constructed from that crystal. What a link spell would be like paired with a sign other than weave, however, is unknown. Link is most likely a semi-directional sign and has never been seen inverted.",
-    "image_filename": "Link_Sign.png"
+    "image_filename": "Link_Sign.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -321,7 +356,8 @@
     "id": "Stillness",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/d/de/Stasis_Sign.png",
     "explanation": "based on its use in the Snowfending spell, and the translation of Episode 11 textbooks, Stillness is used to hold magic in place, likely having a magical effect remain static in a single location. This is likely used to hold heat over/on Coco's house in the Snowfending spell",
-    "image_filename": "Stasis_Sign.png"
+    "image_filename": "Stasis_Sign.png",
+    "disabled": false
   },
   {
     "type": "sign",
@@ -330,7 +366,8 @@
     "id": "Project",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/4/45/Sign_of_projection_redraw.png",
     "explanation": "Project is likely used to project an effect outwards. It is likely project is only capable of projecting images specified by the spell",
-    "image_filename": "Sign_of_projection_redraw.png"
+    "image_filename": "Sign_of_projection_redraw.png",
+    "disabled": false
   },
   {
     "type": "sigil",
@@ -339,7 +376,8 @@
     "id": "Fire_2",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/d/d8/Fire_sigil.png",
     "explanation": "The base fire sigil (炎の紋, honō no mon ) works to create and manipulate flames or heat depending on the spell in question. The base fire sigil is considered one of the four primary tetrad.",
-    "image_filename": "Fire_sigil.png"
+    "image_filename": "Fire_sigil.png",
+    "disabled": false
   },
   {
     "type": "sigil",
@@ -348,7 +386,8 @@
     "id": "Unburning_Flames",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/8/8d/Unburning_flame_sigil.png",
     "explanation": "The unburning flames sigil's exact function is unclear, but it is somehow involved in the production of heatless flames as seen in the phantasmal fireball . It is possible that this sigil alone is not enough to produce flames without heat and additional signs are needed, but this is currently unknown.",
-    "image_filename": "Unburning_flame_sigil.png"
+    "image_filename": "Unburning_flame_sigil.png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -357,7 +396,8 @@
     "id": "Light",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/a/a6/Light.png",
     "explanation": "A variant of the fire sigil, the light sigil (光の紋, hikari no mon ) functions to produce magic that manifests in the form of light.",
-    "image_filename": "Light.png"
+    "image_filename": "Light.png",
+    "disabled": false
   },
   {
     "type": "sigil",
@@ -366,7 +406,8 @@
     "id": "Water_2",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/9/9d/Water.png",
     "explanation": "The water sigil (水の紋, mizu no mon ) works to manipulate, collect, and create water. It is worth noting that many water spells meant to be used over long periods collect water rather than create it. This suggests that creating water is more energetically costly than collecting it. The water sigil is considered one of the four primary tetrad.",
-    "image_filename": "Water.png"
+    "image_filename": "Water.png",
+    "disabled": false
   },
   {
     "type": "sigil",
@@ -375,7 +416,8 @@
     "id": "Earth_2",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/1/1e/Earth.png",
     "explanation": "The earth sigil (地の紋, chi no mon ) allows for the manipulation of numerous solid substances, chiefly wood, stone, sand, and soil. However, it does not allow for the creation of these solid materials, as seen when it was used in the earth lift spell. The earth sigil is also known as the sigil of might (力の紋, chikara no mon ), and is considered one of the four primary tetrad.",
-    "image_filename": "Earth.png"
+    "image_filename": "Earth.png",
+    "disabled": false
   },
   {
     "type": "sigil",
@@ -384,7 +426,8 @@
     "id": "Wind",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/d/d7/Wind_%28redirect%29.png",
     "explanation": "The wind sigil (風の絞, kaze no mon ) allows for the movement and manipulation, but not the creation, of air. The sigil of wind is also known as the sigil of levitation (浮遊の紋, fuyū no mon ) and, is considered one of the four primary tetrad.",
-    "image_filename": "Wind_(redirect).png"
+    "image_filename": "Wind_(redirect).png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -393,7 +436,8 @@
     "id": "Aeriforms",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/4/43/Aeriforms_%28Wind%29.png",
     "explanation": "The aeriforms sigil (気体の紋, kitai no mon ) allows for the creation and manipulation (but not movement) of air.",
-    "image_filename": "Aeriforms_(Wind).png"
+    "image_filename": "Aeriforms_(Wind).png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -402,7 +446,8 @@
     "id": "Wind_Underfoot",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/d/d8/Wind_Underfoot.png",
     "explanation": "The exact function of the wind underfoot sigil (足場のある風の紋, ashiba no aru kaze no mon ) is not yet clear, but it is known that it helps to somehow support solid objects when they are suspended within air, similar to an air platform. The way this functions or the specifics of the effect are not yet clear.",
-    "image_filename": "Wind_Underfoot.png"
+    "image_filename": "Wind_Underfoot.png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -411,7 +456,8 @@
     "id": "Whorling_Winds",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/b1/Whorling_Winds.png",
     "explanation": "Whorling winds helps to manipulate air through rotation. The exact way in which this functions is unknown, as is the reason for it looking so different to the other air sigils. It being three-sided could indicate a connection to the fire sigil, meaning it might be heating the air as we do with hot air balloons.",
-    "image_filename": "Whorling_Winds.png"
+    "image_filename": "Whorling_Winds.png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -420,7 +466,8 @@
     "id": "Repetition",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/bb/Repetition.png",
     "explanation": "Repetition (くりかえしの矢, kurikaeshi no ya ) helps to prevent objects from changing by continuously resetting time for the objects it affects to the state they had when the spell first affected them. It is similar to a spring, restoring the object to its original state if that object is somehow changed. This can be used to make soft objects elastic or to prevent things from rotting.",
-    "image_filename": "Repetition.png"
+    "image_filename": "Repetition.png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -429,7 +476,8 @@
     "id": "Stop",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/9/90/Time_Stop_Redraw.jpg",
     "explanation": "Stop outright halts time for the objects it effects. By pairing it with other sigils, it becomes possible to stop time for specific aspects of an object, such as changes in heat if paired with a fire sigil.",
-    "image_filename": "Time_Stop_Redraw.jpg"
+    "image_filename": "Time_Stop_Redraw.jpg",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -438,7 +486,8 @@
     "id": "Bird_A",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/7/70/Bird.png",
     "explanation": "Bird A is a decorative sigil that creates a bird-like projection made from the seal's magic which will fly around for a while. It's only been seen once within the bird of light beacon spell, The front portion of the spell may or may not be a separate sigil entirely. The design was changed in chapter 28 . Ideally, the spell's sigil should be placed in the center of this sigil.",
-    "image_filename": "Bird.png"
+    "image_filename": "Bird.png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -447,7 +496,8 @@
     "id": "Bird_B",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/d/d8/Bird_B_Sign.png",
     "explanation": "Bird B causes magic to manifest in the shape of a bird, similar to bird A. However, the bird produced by this decorative sigil is noticeably more duck-like compared to bird A.",
-    "image_filename": "Bird_B_Sign.png"
+    "image_filename": "Bird_B_Sign.png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -456,7 +506,8 @@
     "id": "Dragon",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/5/57/Dragon_Sign.png",
     "explanation": "Dragon (巨鱗竜の紋, doragon no mon ) causes magic to manifest in the shape of a dragon . The exact dragon species that this decorative sigil imitates is unknown, although the illustration accompanying it appears to be a Dragonpass Isles Wyrm.",
-    "image_filename": "Dragon_Sign.png"
+    "image_filename": "Dragon_Sign.png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -465,7 +516,8 @@
     "id": "Flower",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/2/21/Flower_Sigil.png",
     "explanation": "Flower causes magic to manifest in the shape of various flowers. The type of flower (and possibly the amount) is determined by five, small, identical signs that surround the sigil, acting as modifiers.",
-    "image_filename": "Flower_Sigil.png"
+    "image_filename": "Flower_Sigil.png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -474,7 +526,8 @@
     "id": "Horse",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/7/74/Horse_Sign.png",
     "explanation": "Horse causes magic to manifest in the shape of a horse, as seen in the water horse spell . With the water horse spell, it is possible to pull loads via the water horse, suggesting that this decorative sigil (and perhaps others as well) has the potential for practical usage.",
-    "image_filename": "Horse_Sign.png"
+    "image_filename": "Horse_Sign.png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -483,7 +536,8 @@
     "id": "Owlcat",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/2/23/Owlcat_Sigil_Full.png",
     "explanation": "Based on its design, this sigil is likely for forming a full Owlcat (猫梟の紋, neko fukurō no mon ) as opposed to just the head of an owlcat , as is the case with the confirmed owlcat head sigil . However, this is yet to be confirmed, and more information is needed.",
-    "image_filename": "Owlcat_Sigil_Full.png"
+    "image_filename": "Owlcat_Sigil_Full.png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -492,7 +546,8 @@
     "id": "Owlcat_Head",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/4/4c/Owlcat_Sign.png",
     "explanation": "Owlcat (猫梟の紋, neko fukurō no mon ) Head causes magic to manifest in the shape of the head of an Owlcat with winter plumage, which is almost spherical in shape. This sigil is identical to the normal owlcat sigil , except it is missing the section corresponding to an owlcat's body. This implies that decorative signs can be split into smaller portions which will form the individual body parts corresponding to that section of the decorative sigil.",
-    "image_filename": "Owlcat_Sign.png"
+    "image_filename": "Owlcat_Sign.png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -501,7 +556,8 @@
     "id": "Scalewolf",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/1/1b/Scalewolf_Sign.png",
     "explanation": "Scalewolf (鱗狼の矢, uroko ōkami no mon ) causes magic to manifest in the shape of a scalewolf .",
-    "image_filename": "Scalewolf_Sign.png"
+    "image_filename": "Scalewolf_Sign.png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -510,7 +566,8 @@
     "id": "Torchstag",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/b/b5/Torchstag_Sign.png",
     "explanation": "Torchstag (松明鹿の紋, taimatsu shika no mon ) causes magic to manifest in the shape of a torchstag .",
-    "image_filename": "Torchstag_Sign.png"
+    "image_filename": "Torchstag_Sign.png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -519,7 +576,8 @@
     "id": "Liongoat",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/7/79/Liongoat_Sigil_Redraw.png",
     "explanation": "Liongoat (松明鹿の矢, shishi yagi no mon ) causes magic to manifest in the shape of a liongoat .",
-    "image_filename": "Liongoat_Sigil_Redraw.png"
+    "image_filename": "Liongoat_Sigil_Redraw.png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -528,7 +586,8 @@
     "id": "Valance_Leech",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/2/2d/Valance_Leech_Sign.png",
     "explanation": "Valance leech (帳蛭の紋, tobari hiru no mon ) causes magic to manifest in the shape of a valance leech .",
-    "image_filename": "Valance_Leech_Sign.png"
+    "image_filename": "Valance_Leech_Sign.png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -537,7 +596,8 @@
     "id": "Frillram",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/a/ae/Frillram_Sigil.png",
     "explanation": "Frillram (襟巻羊, Erimakihitsuji ) causes magic to manifest in the shape of a Frillram .",
-    "image_filename": "Frillram_Sigil.png"
+    "image_filename": "Frillram_Sigil.png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -546,7 +606,8 @@
     "id": "Sword",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/6/65/Sword_Sigil.png",
     "explanation": "Sword (剣の紋) causes magic to manifest in the shape of a sword, or target sword(s). It is featured in the Raincleaver Spell and is the very first object-based decorative sigil we've come across.",
-    "image_filename": "Sword_Sigil.png"
+    "image_filename": "Sword_Sigil.png",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -555,7 +616,8 @@
     "id": "Crystalize",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/e/e3/Ice_Sigil.jpg",
     "explanation": "Crystalize causes things around such as air or water, or otherwise specified by the seal, to crystalize. This can form crystal , or even ice. It is unknown what dictates whether the sigil turns things to ice or crystal, and may be up to user intent",
-    "image_filename": "Ice_Sigil.jpg"
+    "image_filename": "Ice_Sigil.jpg",
+    "disabled": true
   },
   {
     "type": "sigil",
@@ -564,6 +626,7 @@
     "id": "Smoke",
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/f/fb/Smoke_Sigil.png",
     "explanation": "Smoke, (煙, kemuri ) works to create and generate smoke. It has not been seen whether or not the sigil is also capable of manipulating smoke",
-    "image_filename": "Smoke_Sigil.png"
+    "image_filename": "Smoke_Sigil.png",
+    "disabled": true
   }
 ]

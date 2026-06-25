@@ -25,6 +25,7 @@
     padding: 0;
     list-style: none;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .rune-alphabet__item {
@@ -36,6 +37,8 @@
     border-radius: 8px;
     background: #0f0f1a;
     border: 1px solid #2a2a40;
+    /* Erlaubt den Grid-Spalten zu schrumpfen, statt horizontal zu überlaufen. */
+    min-width: 0;
 }
 
 .rune-alphabet__image {
@@ -48,6 +51,11 @@
 }
 
 .rune-alphabet__label {
+    width: 100%;
     font-size: 0.7rem;
+    line-height: 1.15;
+    text-align: center;
     color: rgba(255, 255, 255, 0.6);
+    /* Lange Runennamen umbrechen, statt sie horizontal abzuschneiden. */
+    overflow-wrap: anywhere;
 }

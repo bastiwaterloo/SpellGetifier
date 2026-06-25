@@ -7,7 +7,7 @@ import {
     ERASER_WIDTH,
     RUNES_PATH
 } from '../config.js';
-import {recognizeRune, loadRuneTemplates} from '../utils/runeRecognition.jsx';
+import {recognizeRune, loadRuneTemplates, itterativeAnalysis} from '../utils/runeRecognition.jsx';
 import {calculateCircleScore as getCircleScore} from '../utils/utils.ts';
 import RuneAlphabet from './RuneAlphabet.jsx';
 import './DrawingCanvas.css';
@@ -25,6 +25,8 @@ function DrawingCanvas() {
     const [recognitionResult, setRecognitionResult] = useState(null);
     const [isRecognizing, setIsRecognizing] = useState(false);
     const [isErasing, setIsErasing] = useState(false);
+    const [isSpellMenuOpen, setIsSpellMenuOpen] = useState(false);
+    const spellMenuRef = useRef(null);
 
     // Canvas mit fester Größe einrichten (HiDPI-fähig).
     const setupCanvas = useCallback(() => {
@@ -47,6 +49,24 @@ function DrawingCanvas() {
         setupCanvas();
         loadRuneTemplates();
     }, [setupCanvas]);
+
+    useEffect(() => {
+        if (!isSpellMenuOpen) return undefined;
+        const handlePointerDown = (event) => {
+            if (spellMenuRef.current && !spellMenuRef.current.contains(event.target)) {
+                setIsSpellMenuOpen(false);
+            }
+        };
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') setIsSpellMenuOpen(false);
+        };
+        document.addEventListener('pointerdown', handlePointerDown);
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('pointerdown', handlePointerDown);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isSpellMenuOpen]);
 
     // Kürzester Abstand eines Punktes zur Strecke a–b.
     const distanceToSegment = (point, a, b) => {
@@ -151,30 +171,25 @@ function DrawingCanvas() {
         setScore(getCircleScore(pointsRef.current));
     };
 
-    const downloadCanvas = async () => {
+    const castSpell = async (spell) => {
         const canvas = canvasRef.current;
-
+        setIsSpellMenuOpen(false);
         setIsRecognizing(true);
         setRecognitionResult(null);
 
         try {
-            const result = await recognizeRune(canvas);
+            const result = await spell(canvas);
             setRecognitionResult(result);
         } catch (error) {
-            console.error('Fehler bei der Runen-Erkennung:', error);
+            console.error('Fehler beim Wirken des Zaubers:', error);
             setRecognitionResult({
                 match: null,
                 confidence: 0,
                 message: 'Fehler bei der Erkennung'
             });
-        } finally {
-            setIsRecognizing(false);
         }
 
-        const link = document.createElement('a');
-        link.download = 'zeichnung.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
+        setIsRecognizing(false);
     };
 
     return (
@@ -214,26 +229,55 @@ function DrawingCanvas() {
                 >
                     Löschen
                 </button>
-                <button
-                    type="button"
-                    className="drawing__button drawing__button--secondary"
-                    onClick={downloadCanvas}
-                >
-                    Speichern
-                </button>
+                <div className="drawing__dropdown" ref={spellMenuRef}>
+                    <button
+                        type="button"
+                        className="drawing__button drawing__button--secondary"
+                        onClick={() => setIsSpellMenuOpen((open) => !open)}
+                        disabled={!hasDrawing || isRecognizing}
+                        aria-haspopup="menu"
+                        aria-expanded={isSpellMenuOpen}
+                    >
+                        Zauber wirken ▾
+                    </button>
+                    {isSpellMenuOpen && (
+                        <ul className="drawing__menu" role="menu">
+                            <li role="none">
+                                <button
+                                    type="button"
+                                    role="menuitem"
+                                    className="drawing__menu-item"
+                                    onClick={() => castSpell(recognizeRune)}
+                                >
+                                    ZaubAIrn
+                                </button>
+                            </li>
+                            <li role="none">
+                                <button
+                                    type="button"
+                                    role="menuitem"
+                                    className="drawing__menu-item"
+                                    onClick={() => castSpell(itterativeAnalysis)}
+                                >
+                                    Alter Zauber
+                                </button>
+                            </li>
+                        </ul>
+                    )}
+                </div>
                 <button
                     type="button"
                     className="drawing__button drawing__button--primary"
                     onClick={calculateCircleScore}
                     disabled={!hasDrawing}
                 >
-                    Auswerten
+                    Kreis bewerten
                 </button>
             </div>
 
             <div className="drawing__result" aria-live="polite">
                 {score === null ? (
-                    <p>Zeichne eine Rune und klicke dann auf Speichern.</p>
+                    <p>Zeichne etwas und werte den Kreis aus oder wirke einen Zauber.</p>
                 ) : (
                     <p>
                         Score: <strong>{score}</strong> von 100
@@ -243,7 +287,7 @@ function DrawingCanvas() {
 
             {isRecognizing && (
                 <div className="drawing__recognition">
-                    <p>Erkenne Rune...</p>
+                    <p>Wirke Zauber…</p>
                 </div>
             )}
 

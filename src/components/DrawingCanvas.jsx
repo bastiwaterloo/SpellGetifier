@@ -224,22 +224,33 @@ function DrawingCanvas() {
         setScore(getCircleScore(pointsRef.current));
     };
 
-    const drawBoundingBoxes = (boxes) => {
+    const drawBoundingBoxes = (boxes, centerBox = null) => {
         const ctx = contextRef.current;
-        if (!ctx || !boxes?.length) return;
+        if (!ctx) return;
         
         ctx.save();
-        ctx.strokeStyle = 'red';
         ctx.lineWidth = 2;
         ctx.globalCompositeOperation = 'source-over';
-        
-        boxes.forEach(box => {
-            const x = (box.x / 100) * CANVAS_WIDTH;
-            const y = (box.y / 100) * CANVAS_HEIGHT;
-            const w = (box.w / 100) * CANVAS_WIDTH;
-            const h = (box.h / 100) * CANVAS_HEIGHT;
+
+        if (boxes?.length) {
+            ctx.strokeStyle = 'red';
+            boxes.forEach(box => {
+                const x = (box.x / 100) * CANVAS_WIDTH;
+                const y = (box.y / 100) * CANVAS_HEIGHT;
+                const w = (box.w / 100) * CANVAS_WIDTH;
+                const h = (box.h / 100) * CANVAS_HEIGHT;
+                ctx.strokeRect(x, y, w, h);
+            });
+        }
+
+        if (centerBox) {
+            ctx.strokeStyle = 'blue';
+            const x = (centerBox.x / 100) * CANVAS_WIDTH;
+            const y = (centerBox.y / 100) * CANVAS_HEIGHT;
+            const w = (centerBox.w / 100) * CANVAS_WIDTH;
+            const h = (centerBox.h / 100) * CANVAS_HEIGHT;
             ctx.strokeRect(x, y, w, h);
-        });
+        }
         
         ctx.restore();
     };
@@ -253,8 +264,8 @@ function DrawingCanvas() {
         try {
             const result = await recognizeRune(canvas);
             setRecognitionResult(result);
-            if (result.boxes) {
-                drawBoundingBoxes(result.boxes);
+            if (result.boxes || result.centerBox) {
+                drawBoundingBoxes(result.boxes, result.centerBox);
             }
         } catch (error) {
             console.error('Fehler bei der Runen-Erkennung:', error);
@@ -439,6 +450,38 @@ function DrawingCanvas() {
             {recognitionResult && (
                 <div className="drawing__recognition drawing__recognition--success">
                     <p>{recognitionResult.message}</p>
+                    {recognitionResult.centerSign && (
+                        <div className="drawing__extracted-runes drawing__extracted-runes--center">
+                            <div className="drawing__extracted-rune drawing__extracted-rune--center">
+                                <img
+                                    src={recognitionResult.centerSign.image}
+                                    alt="Center Sigil"
+                                    className="drawing__extracted-rune-image"
+                                />
+                                {recognitionResult.centerSign.match ? (
+                                    <div className="drawing__match-info">
+                                        <img
+                                            src={recognitionResult.centerSign.match.sign.imagePath}
+                                            alt={recognitionResult.centerSign.match.sign.name}
+                                            className="drawing__match-image"
+                                            style={{ transform: `rotate(${recognitionResult.centerSign.match.rotation}deg)` }}
+                                        />
+                                        <span className="drawing__match-name">{recognitionResult.centerSign.match.sign.name}</span>
+                                        <span className="drawing__match-confidence">{recognitionResult.centerSign.match.confidence}%</span>
+                                        {recognitionResult.centerSign.match.rotation !== 0 && (
+                                            <span className="drawing__match-rotation">Rotation: {recognitionResult.centerSign.match.rotation}°</span>
+                                        )}
+                                        <span className="drawing__match-clock">Position: Mitte</span>
+                                    </div>
+                                ) : (
+                                    <div className="drawing__match-info drawing__match-info--unknown">
+                                        <span className="drawing__extracted-rune-label">Siegel nicht erkannt</span>
+                                        <span className="drawing__match-clock">Position: Mitte</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
                     {recognitionResult.matches?.length > 0 && (
                         <div className="drawing__extracted-runes">
                             {recognitionResult.matches.map((item, index) => (

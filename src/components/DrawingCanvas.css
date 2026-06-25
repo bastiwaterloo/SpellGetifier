@@ -209,6 +209,14 @@
     margin-top: 0.75rem;
 }
 
+.drawing__extracted-runes--center {
+    margin-bottom: 0.5rem;
+}
+
+.drawing__extracted-rune--center {
+    border: 2px solid #2563eb;
+}
+
 .drawing__extracted-rune {
     display: flex;
     flex-direction: column;

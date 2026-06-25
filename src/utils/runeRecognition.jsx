@@ -1,8 +1,17 @@
-import { RUNES_PATH, RUNE_NAMES, RUNE_COUNT } from '../config.js';
+import {
+    RUNES_PATH,
+    RUNE_NAMES,
+    RUNE_COUNT,
+    SIGNS_PATH,
+    ENABLED_SIGNS,
+    CANVAS_WIDTH,
+    CANVAS_HEIGHT
+} from '../config.js';
 import { callGeminiVision, parseJsonResponse } from './geminiApi.jsx';
 import { detectRunes } from './iterativeRecognition.js';
 
 let runeDescriptions = null;
+let signDescriptions = null;
 
 async function loadRuneDescriptions() {
     if (runeDescriptions) return runeDescriptions;
@@ -19,6 +28,19 @@ async function loadRuneDescriptions() {
 
 export async function loadRuneTemplates() {
     return loadRuneDescriptions();
+}
+
+async function loadSignDescriptions() {
+    if (signDescriptions) return signDescriptions;
+
+    signDescriptions = ENABLED_SIGNS.map(({ file, label }, index) => ({
+        id: index + 1,
+        name: label,
+        fileName: file,
+        imagePath: `${SIGNS_PATH}/${file}.png`
+    }));
+
+    return signDescriptions;
 }
 
 function canvasToBase64(canvas) {
@@ -57,10 +79,12 @@ function buildCountPrompt() {
 IMPORTANT: 
 - A single rune can have MULTIPLE disconnected strokes/parts.
 - The runes are usually drawn INSIDE A CIRCLE. IGNORE the circle - it is NOT a rune.
-- Only count the rune symbols inside the circle, not the circle itself.
+- There is usually ONE SIGIL in the CENTER of the circle. Do NOT count it.
+- Only count rune symbols on the RING around the center (clock positions), not the circle itself.
 
-Your task: Count how many COMPLETE RUNES are in the drawing.
+Your task: Count how many COMPLETE RUNES are on the ring around the center.
 - Do NOT count the surrounding circle
+- Do NOT count the center sigil
 - Do NOT count individual strokes as separate runes
 - Group strokes that form a single rune symbol together
 - If the same rune appears multiple times, count each occurrence
@@ -72,9 +96,9 @@ Reply ONLY with valid JSON: {"count":N}`;
 
 function buildBoxPrompt(count) {
     return `This image contains exactly ${count} handdrawn rune(s) on white background.
-The runes are drawn INSIDE A CIRCLE. IGNORE the circle - only find bounding boxes for the runes.
+The runes are drawn INSIDE A CIRCLE on the RING around the center. IGNORE the circle and IGNORE the center sigil.
 
-Find the EXACT pixel-perfect bounding box for each rune (NOT the circle).
+Find the EXACT pixel-perfect bounding box for each ring rune (NOT the circle, NOT the center sigil).
 
 For each rune, find:
 - The LEFTMOST black pixel of the RUNE → this is x
@@ -91,6 +115,26 @@ x and y are the top-left corner. w is width, h is height.
 Return EXACTLY ${count} box${count > 1 ? 'es' : ''} for the runes only.
 
 JSON only: {"runes":[{"x":N,"y":N,"w":N,"h":N}]}`;
+}
+
+function buildIdentifySignPrompt(signCount) {
+    return `The FIRST image shows a SINGLE handdrawn sigil in the CENTER of a seal on white background.
+The following ${signCount} images are the REFERENCE sigils (numbered 1 to ${signCount}).
+
+IMPORTANT:
+- The reference images show the STANDARD orientation (0 degrees).
+- IGNORE any circle or ring runes that may be visible - focus ONLY on the center sigil.
+
+Your task:
+1. Find which reference sigil matches the handdrawn center sigil
+2. Determine the rotation angle in 15° steps (0, 15, 30, ..., 345)
+
+Reply ONLY with valid JSON:
+{"signId":N,"confidence":0-100,"rotation":DEGREES}
+
+- signId: Number of the matching reference sigil (1 to ${signCount}), or null if no match
+- confidence: Match percentage (0-100)
+- rotation: Degrees clockwise in 15° steps. Use 0 if rotation is very small.`;
 }
 
 function buildIdentifyPrompt() {
@@ -116,6 +160,84 @@ Reply ONLY with valid JSON:
 
 const OUTPUT_SIZE = 128;
 const MAX_MERGE_DISTANCE = 8;
+const CENTER_RADIUS_FRACTION = 0.40;
+const CENTER_BOX_PADDING_PERCENT = 2;
+
+function getCenterRegionRadius(canvasWidth, canvasHeight) {
+    return (Math.min(canvasWidth, canvasHeight) / 2) * CENTER_RADIUS_FRACTION;
+}
+
+function componentInCenterRegion(component, canvasWidth, canvasHeight) {
+    const cx = canvasWidth / 2;
+    const cy = canvasHeight / 2;
+    const radius = getCenterRegionRadius(canvasWidth, canvasHeight);
+
+    const boxLeft = (component.x / 100) * canvasWidth;
+    const boxTop = (component.y / 100) * canvasHeight;
+    const boxRight = ((component.x + component.w) / 100) * canvasWidth;
+    const boxBottom = ((component.y + component.h) / 100) * canvasHeight;
+
+    const closestX = Math.max(boxLeft, Math.min(cx, boxRight));
+    const closestY = Math.max(boxTop, Math.min(cy, boxBottom));
+    const dist = Math.hypot(closestX - cx, closestY - cy);
+
+    return dist <= radius;
+}
+
+function isCenterRegion(box, canvasWidth, canvasHeight) {
+    return componentInCenterRegion(box, canvasWidth, canvasHeight);
+}
+
+function partitionComponentsByRegion(components, canvasWidth, canvasHeight) {
+    const center = [];
+    const ring = [];
+
+    for (const component of components) {
+        if (componentInCenterRegion(component, canvasWidth, canvasHeight)) {
+            center.push(component);
+        } else {
+            ring.push(component);
+        }
+    }
+
+    return { center, ring };
+}
+
+function splitBoxesByRegion(boxes, canvasWidth, canvasHeight) {
+    const ringBoxes = [];
+    const centerBoxes = [];
+
+    for (const box of boxes) {
+        if (isCenterRegion(box, canvasWidth, canvasHeight)) {
+            centerBoxes.push(box);
+        } else {
+            ringBoxes.push(box);
+        }
+    }
+
+    return { ringBoxes, centerBoxes };
+}
+
+function mergeBoxes(boxes, paddingPercent = 0) {
+    if (!boxes.length) return null;
+
+    const minX = Math.min(...boxes.map(b => b.x));
+    const minY = Math.min(...boxes.map(b => b.y));
+    const maxX = Math.max(...boxes.map(b => b.x + b.w));
+    const maxY = Math.max(...boxes.map(b => b.y + b.h));
+
+    const x = Math.max(0, minX - paddingPercent);
+    const y = Math.max(0, minY - paddingPercent);
+    const w = Math.min(100 - x, maxX - minX + paddingPercent * 2);
+    const h = Math.min(100 - y, maxY - minY + paddingPercent * 2);
+
+    return { x, y, w, h };
+}
+
+function mergeCenterSigilComponents(components) {
+    if (!components.length) return null;
+    return mergeBoxes(components, CENTER_BOX_PADDING_PERCENT);
+}
 
 function calculateClockPosition(box, canvasWidth, canvasHeight) {
     const centerX = canvasWidth / 2;
@@ -320,6 +442,30 @@ function normalizeRotation(rotation) {
     return r;
 }
 
+async function identifyCenterSign(signBase64, signImages, signs) {
+    if (!signs.length) return null;
+
+    const response = await callGeminiVision(
+        buildIdentifySignPrompt(signs.length),
+        [{ base64: signBase64 }, ...signImages]
+    );
+    console.log('Center-Sign Antwort:', response.text);
+
+    const result = parseJsonResponse(response.text);
+    if (!result || result.signId === null) {
+        return null;
+    }
+
+    const matchedSign = signs.find(s => s.id === result.signId);
+    if (!matchedSign) return null;
+
+    return {
+        sign: matchedSign,
+        confidence: result.confidence || 0,
+        rotation: normalizeRotation(result.rotation)
+    };
+}
+
 async function identifySingleRune(runeBase64, runeImages, runes) {
     const response = await callGeminiVision(
         buildIdentifyPrompt(),
@@ -347,6 +493,7 @@ async function identifySingleRune(runeBase64, runeImages, runes) {
 
 export async function recognizeRune(canvas) {
     const runes = await loadRuneDescriptions();
+    const signs = await loadSignDescriptions();
 
     try {
         const drawingBase64 = canvasToBase64(canvas);
@@ -354,6 +501,13 @@ export async function recognizeRune(canvas) {
         const runeImages = await Promise.all(
             runes.map(async (rune) => {
                 const base64 = await loadImageAsBase64(rune.imagePath);
+                return { base64 };
+            })
+        );
+
+        const signImages = await Promise.all(
+            signs.map(async (sign) => {
+                const base64 = await loadImageAsBase64(sign.imagePath);
                 return { base64 };
             })
         );
@@ -370,11 +524,11 @@ export async function recognizeRune(canvas) {
             const numberMatch = countResponse.text.match(/\d+/);
             count = numberMatch ? parseInt(numberMatch[0], 10) : 1;
         }
-        count = Math.max(1, count);
-        console.log('Erkannte Anzahl:', count);
+        count = Math.max(0, count);
+        console.log('Erkannte Anzahl (Ring):', count);
 
         const boxResponse = await callGeminiVision(
-            buildBoxPrompt(count),
+            buildBoxPrompt(Math.max(1, count)),
             [{ base64: drawingBase64 }]
         );
         console.log('Box Antwort:', boxResponse.text);
@@ -389,22 +543,61 @@ export async function recognizeRune(canvas) {
             typeof b.w === 'number' &&
             typeof b.h === 'number'
         );
-        
-        if (boxes.length < count) {
-            console.warn(`Nur ${boxes.length} Boxes von Gemini, erwarte ${count}. Nutze Pixel-Analyse.`);
-            const components = findConnectedComponents(canvas);
-            console.log('Gefundene Komponenten:', components.length);
-            boxes = mergeComponentsIntoRunes(components);
-            count = boxes.length;
-            console.log('Erkannte Runen nach Pixel-Analyse:', count, boxes);
-        }
-        
-        const extractedRunes = extractRuneImages(canvas, boxes);
-        console.log('Extrahierte Runen:', extractedRunes.length);
-        
+
         const dpr = window.devicePixelRatio || 1;
         const canvasWidth = canvas.width / dpr;
         const canvasHeight = canvas.height / dpr;
+
+        let centerBox = null;
+        let centerSign = null;
+
+        const components = findConnectedComponents(canvas);
+        console.log('Gefundene Komponenten:', components.length);
+        const filteredComponents = filterOutCircle(components);
+        const { center: centerComponents, ring: ringComponents } = partitionComponentsByRegion(
+            filteredComponents,
+            CANVAS_WIDTH,
+            CANVAS_HEIGHT
+        );
+
+        if (centerComponents.length > 0) {
+            centerBox = mergeCenterSigilComponents(centerComponents);
+            console.log(`Center-Siegel: ${centerComponents.length} Komponenten → 1 Box`, centerBox);
+        }
+
+        if (boxes.length > 0) {
+            const split = splitBoxesByRegion(boxes, CANVAS_WIDTH, CANVAS_HEIGHT);
+            boxes = split.ringBoxes;
+            if (!centerBox && split.centerBoxes.length > 0) {
+                centerBox = mergeCenterSigilComponents(split.centerBoxes);
+                console.log('Center-Siegel Box (Gemini):', centerBox);
+            }
+        }
+
+        if (boxes.length < count) {
+            console.warn(`Nur ${boxes.length} Ring-Boxes von Gemini, erwarte ${count}. Nutze Pixel-Analyse.`);
+            boxes = mergeComponentsIntoRunes(ringComponents);
+            count = boxes.length;
+            console.log('Erkannte Ring-Runen nach Pixel-Analyse:', count, boxes);
+        } else {
+            boxes = boxes.filter(b => !isCenterRegion(b, CANVAS_WIDTH, CANVAS_HEIGHT));
+        }
+
+        if (centerBox) {
+            const [extractedCenter] = extractRuneImages(canvas, [centerBox]);
+            console.log('Identifiziere Center-Siegel...');
+            const centerMatch = signs.length
+                ? await identifyCenterSign(extractedCenter.base64, signImages, signs)
+                : null;
+            centerSign = {
+                image: extractedCenter.dataUrl,
+                match: centerMatch,
+                clockPosition: 'Mitte'
+            };
+        }
+        
+        const extractedRunes = extractRuneImages(canvas, boxes);
+        console.log('Extrahierte Ring-Runen:', extractedRunes.length);
         
         const matches = [];
         for (let i = 0; i < extractedRunes.length; i++) {
@@ -422,10 +615,15 @@ export async function recognizeRune(canvas) {
         const recognizedNames = matches
             .filter(m => m.match)
             .map(m => m.match.rune.name);
+        if (centerSign?.match) {
+            recognizedNames.unshift(`${centerSign.match.sign.name} (Mitte)`);
+        }
         
         return {
             count,
             boxes,
+            centerBox,
+            centerSign,
             matches,
             images: extractedRunes.map(r => r.dataUrl),
             message: recognizedNames.length > 0 
@@ -438,6 +636,8 @@ export async function recognizeRune(canvas) {
         return {
             count: 1,
             boxes: [],
+            centerBox: null,
+            centerSign: null,
             matches: [],
             images: [canvas.toDataURL('image/png')],
             message: `Fehler: ${error.message}`

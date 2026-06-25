@@ -211,7 +211,7 @@ function DrawingCanvas() {
                     onTouchEnd={stopDrawing}
                 />
                 <RuneAlphabet
-                    title="Zeichen"
+                    title="Siegel"
                     items={ENABLED_SIGNS}
                     path={SIGNS_PATH}
                     side="left"

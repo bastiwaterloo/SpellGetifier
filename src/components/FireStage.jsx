@@ -9,7 +9,7 @@ const rand = (min, max) => min + Math.random() * (max - min);
 // Flame base plane (matches the original fireSpawn origin).
 const BASE_Y = -1.0;
 // Number of low pool slots reserved for the warm glow bloom.
-const GLOW_COUNT = 14;
+const GLOW_COUNT = 18;
 
 // Billboard each instanced quad, then stretch it along the particle's
 // screen-space velocity (flames rise, so they elongate vertically). Sparks and
@@ -89,7 +89,7 @@ const FLAME_FRAG = `
     } else if (vKind > 1.5) {
       // glow bloom: broad, soft, dim
       col = vec3(1.0, 0.5, 0.2);
-      bright = smoothstep(1.0, 0.0, r) * 0.22 * fade;
+      bright = smoothstep(1.0, 0.0, r) * 0.30 * fade;
     }
 
     float a = bright * uIntensity;

@@ -9,7 +9,7 @@ import {
 
 describe('iterative detection constants', () => {
   it('defines the expected sizes', () => {
-    expect(ITERATIVE_SIZES).toEqual([8, 16, 24, 32, 48, 64, 96, 128]);
+    expect(ITERATIVE_SIZES).toEqual([16, 24, 32, 48, 64, 96, 128]);
   });
 
   it('defines 72 rotations stepping by 5 degrees from 0 to 355', () => {

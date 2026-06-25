@@ -20,13 +20,13 @@ export function getBackendReady() {
 
 // Cross-correlation of the drawing with the template (tf.conv2d does not
 // flip the kernel, so it already computes correlation). Returns a plain
-// score map; all tensors are released before returning.
-export function computeScoreMap(drawingMask, templateMask, penaltyWeight) {
-  const { width: dw, height: dh } = drawingMask;
+// score map; all tensors created inside tidy are released before returning.
+// drawingTensor is a tf.Tensor4D of shape [1, dh, dw, 1] owned by the caller —
+// it is referenced but NOT disposed here.
+export function computeScoreMap(drawingTensor, templateMask, penaltyWeight) {
   const { width: tw, height: th } = templateMask;
 
   return tf.tidy(() => {
-    const drawing = tf.tensor4d(drawingMask.data, [1, dh, dw, 1]);
     const template = tf.tensor4d(templateMask.data, [th, tw, 1, 1]);
     const ones = tf.ones([th, tw, 1, 1]);
 
@@ -34,8 +34,8 @@ export function computeScoreMap(drawingMask, templateMask, penaltyWeight) {
     for (let i = 0; i < templateMask.data.length; i++) inkCount += templateMask.data[i];
     const footprintArea = tw * th;
 
-    const coverage = tf.conv2d(drawing, template, 1, 'valid');
-    const inkUnderFootprint = tf.conv2d(drawing, ones, 1, 'valid');
+    const coverage = tf.conv2d(drawingTensor, template, 1, 'valid');
+    const inkUnderFootprint = tf.conv2d(drawingTensor, ones, 1, 'valid');
     const penalty = inkUnderFootprint.sub(coverage);
 
     const coverageRatio = inkCount > 0 ? coverage.div(inkCount) : coverage.mul(0);

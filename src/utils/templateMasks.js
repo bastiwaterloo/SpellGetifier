@@ -1,10 +1,4 @@
-import {
-  RUNE_NAMES,
-  RUNES_PATH,
-  ITERATIVE_SIZES,
-  ITERATIVE_ROTATIONS,
-} from '../config.js';
-import { imageDataToMask } from './maskUtils.js';
+import { RUNE_NAMES, RUNES_PATH } from '../config.js';
 
 let cache = null;
 
@@ -34,30 +28,21 @@ export function rasterizeRotatedScaled(image, size, rotationDeg) {
   return ctx.getImageData(0, 0, diag, diag);
 }
 
-export async function loadTemplateMasks() {
+export async function loadRuneImages() {
   if (cache) return cache;
 
-  const variants = [];
+  const runes = [];
   for (let index = 0; index < RUNE_NAMES.length; index++) {
     const fileName = RUNE_NAMES[index];
     const imagePath = `${RUNES_PATH}/${fileName}.png`;
-    const image = await loadImage(imagePath);
-
-    for (const size of ITERATIVE_SIZES) {
-      for (const rotation of ITERATIVE_ROTATIONS) {
-        const imageData = rasterizeRotatedScaled(image, size, rotation);
-        variants.push({
-          id: index + 1,
-          name: fileName.replace(/_/g, ' '),
-          imagePath,
-          size,
-          rotation,
-          mask: imageDataToMask(imageData),
-        });
-      }
-    }
+    runes.push({
+      id: index + 1,
+      name: fileName.replace(/_/g, ' '),
+      imagePath,
+      image: await loadImage(imagePath),
+    });
   }
 
-  cache = variants;
+  cache = runes;
   return cache;
 }

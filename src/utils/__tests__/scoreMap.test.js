@@ -18,7 +18,9 @@ describe('computeScoreMap', () => {
     // 2x2 drawing identical to 2x2 template, one valid position
     const drawing = mask([[1, 1], [1, 1]]);
     const template = mask([[1, 1], [1, 1]]);
-    const out = computeScoreMap(drawing, template, 1.0);
+    const drawingTensor = tf.tensor4d(drawing.data, [1, drawing.height, drawing.width, 1]);
+    const out = computeScoreMap(drawingTensor, template, 1.0);
+    drawingTensor.dispose();
     expect(out.width).toBe(1);
     expect(out.height).toBe(1);
     expect(out.scores[0]).toBeCloseTo(1.0, 5);
@@ -30,7 +32,9 @@ describe('computeScoreMap', () => {
     // (footprintArea 4 - inkCount 2) = 2 -> penaltyRatio 1 -> score 1 - 1 = 0
     const drawing = mask([[1, 1], [1, 1]]);
     const template = mask([[1, 1], [0, 0]]);
-    const out = computeScoreMap(drawing, template, 1.0);
+    const drawingTensor = tf.tensor4d(drawing.data, [1, drawing.height, drawing.width, 1]);
+    const out = computeScoreMap(drawingTensor, template, 1.0);
+    drawingTensor.dispose();
     expect(out.scores[0]).toBeCloseTo(0.0, 5);
   });
 });

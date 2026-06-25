@@ -177,7 +177,7 @@
     "image_url": "https://static.telepedia.net/witchhatatelierwiki/3/3e/Aeriforms_Defined.png",
     "explanation": "Aeriforms defined (気体の示す矢, kitai o shimesu ya ) are somewhat confusing thanks to the conflicting nature of its name and design. There are two basic variants of the base wind sigil: wind and aeriforms. The wind sigil makes a spell move air, while aeriforms causes a spell to create air. Confusingly, aeriforms defined has the same design as the modifiers on the wind sigil, yet shares a name with the aeriforms sigil. This conflicting information makes it difficult to determine the function of the sign, though it is known that it can serve as a modifier to the wind underfoot sigil, as seen in the pegasus carriage spell . The sign is most likely semi-directional and has never been seen inverted.",
     "image_filename": "Aeriforms_Defined.png",
-    "disabled": false
+    "disabled": true
   },
   {
     "type": "sign",
